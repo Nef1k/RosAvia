@@ -1,0 +1,56 @@
+{% block cert_add_block %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="testModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Создать сертификаты</h4>
+                    {{ form_errors(form) }}
+                </div>
+                <div class="modal-body">
+                    {{ form_start(form) }}
+                        <div class="modal-body">
+                            <div>
+                                <p><nobr>Продолжение нумерации</nobr></p>
+<<<<<<< master
+                                {{ form_widget(form.type[0], {'attr': {
+                                    'name': 'type',
+                                    'checked': 'checked'}})}}
+=======
+                                {{ form_widget(form.TypeChoice[0], {'attr': {'name': 'type'}})}}
+>>>>>>> local
+                                <p><nobr>Количество:</nobr></p>
+                                {{ form_widget(form.IDCert)}}
+                            </div>
+                            <div>
+                                <p><nobr>Начать с какого-то номера и сколько</nobr></p>
+                                {{ form_widget(form.TypeChoice[1], {'attr': {'name': 'type'}})}}
+                                <p><nobr>Номер первого сертификата:</nobr></p>
+                                {{ form_widget(form.IDCertFrom2)}}
+                                <p><nobr>Количество:</nobr></p>
+<<<<<<< master
+                                {{ form_errors(form.num2)}}
+                                {{ form_widget(form.num2)}}
+=======
+                                {{ form_widget(form.CertAmount2)}}
+>>>>>>> local
+                            </div>
+                            <div>
+                                <p><nobr>Начать с какого-то номера и до какого</nobr></p>
+                                {{ form_widget(form.TypeChoice[2], {'attr': {'name': 'type'}})}}
+                                <p><nobr>Номер первого сертификата</nobr></p>
+                                {{ form_widget(form.IDCertFrom3)}}
+                                <p><nobr>Номер последнего сертификата</nobr></p>
+                                {{ form_widget(form.IDCertTo3)}}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            {{ form_widget(form.cancel, {'attr': {'data-dismiss': "modal"}})}}
+                            {{ form_widget(form.save) }}
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div> <!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}

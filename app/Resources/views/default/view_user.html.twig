@@ -1,0 +1,41 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {% include "default/navigation.html.twig" %}
+
+    <div class="row">
+        <div class="col-md-9">
+            <h1>Информация о пользователе {{ user.getUsername }}</h1>
+            <div class="panel panel-default">
+                <div class="panel-heading">Общая информация</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <b>Роль в системе:</b> {{ user.getUserGroup.getDisplayName }}
+                        </div>
+                        <div class="col-md-6">
+                            <b>E-mail:</b> {{ user.getEmail }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Дополнительная информация</div>
+                <div class="panel-body">
+                    <div class="row">
+                        {% for param_name, param_value in user_params %}
+                            <div class="col-md-6">
+                                <b>{{ param_name }}:</b> {{ param_value }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Файлы пользователя</div>
+                <div class="panel-body"></div>
+            </div>
+        </div>
+        <div class="col-md-3">Тут пока пусть будет пусто</div>
+    </div>
+{% endblock %}

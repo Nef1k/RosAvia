@@ -1,0 +1,29 @@
+{% extends "base.html.twig" %}
+{% form_theme form "form/fields.html.twig" %}
+
+{% block body %}
+
+    {% include "default/navigation.html.twig" %}
+    {% block navigation %}{% endblock %}
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>Редактирование сертификата</strong>
+                </div>
+                <div class="panel-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.last_name) }}
+                    {{ form_row(form.phone_number) }}
+                    {{ form_row(form.flight_type) }}
+                    <br>
+                    <button type="submit" class="btn btn-default">Изменить</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

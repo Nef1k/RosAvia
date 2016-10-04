@@ -1,0 +1,67 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {% include "default/navigation.html.twig" %}
+
+    <div class="row">
+        <div class="col-md-9">
+            <h1>Курируемые дилеры</h1>
+            <table class="table table-striped">
+                <tr>
+                    <th>ID</th>
+                    <th>Дилер</th>
+                    <th>Процент от продаж</th>
+                    <th>Всего продано</th>
+                    <th>Долг</th>
+                </tr>
+                {% set total_unpaid = 0 %}
+                {% for dealer in dealer_list %}
+                    {% set percent = dealer.dealer_percent %}
+                    {% set total_unpaid = 0 %}
+                    <tr>
+                        <th>{{ dealer.ID_Dealer }}</th>
+                        <td><a href="{{ path("user_info", {"ID_User": dealer.ID_Dealer}) }}">{{ dealer.name }} {{ dealer.lastname }}</a></td>
+                        <td>{{ percent }}</td>
+                        <td>{{ dealer.total_sold }}</td>
+                        <td>
+                            {% set current_unpaid = (1 - ((percent)/100)) * dealer.total_unpaid %}
+                            {% set total_unpaid = total_unpaid + current_unpaid %}
+                            {{ current_unpaid }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">Сертификаты</div>
+                <div class="list-group">
+                    {% for certificate_state in certificate_states %}
+                        <a href="{{ path("view_certificates", {"state_id": certificate_state.ID_SertState }) }}" class="list-group-item">
+                            {{ certificate_state.name }}
+                            <span class="badge">{{ certificate_state.count }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Финансы</div>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        Общий долг:
+                        <strong>
+                            {{ total_unpaid }}
+                        </strong>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Новости</div>
+                <div class="panel-body">
+                    <a class="twitter-timeline"  href="https://twitter.com/hashtag/rosaviator_news" data-widget-id="759073961271500800">Твиты о #rosaviator_news</a>
+                    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

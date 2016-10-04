@@ -1,0 +1,9 @@
+#calendar .fc-today{
+    background: #dddddd;
+}
+#calendar .fc-day:hover{
+    background: #74b2e2;
+}
+#calendar .fc-day{
+    transition: all .5s;
+}

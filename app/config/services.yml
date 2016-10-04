@@ -1,0 +1,94 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+#    parameter_name: value
+
+services:
+     app.sms.auth_id:
+         class: Zelenin\SmsRu\Auth\ApiIdAuth
+         arguments: ["%app.sms.api_key%"]
+
+     app.sms:
+         class: Zelenin\SmsRu\Api
+         arguments: ["@app.sms.auth_id"]
+
+     app.certAction_checker:
+         class: AppBundle\Security\CertificateActionsChecker
+         arguments: ["@doctrine.orm.entity_manager"]
+
+     #Complex forms
+     app.certificate_group_processing_class:
+         class: AppBundle\Form\CertGroupProcessingType
+         arguments: ["@app.certificate_stuff"]
+         tags:
+             - { name: form.type }
+
+     app.user_edit_class:
+         class: AppBundle\Form\UserEditType
+         arguments: ["@doctrine.orm.entity_manager"]
+         tags:
+             - { name: form.type }
+
+     #Validators
+     validator.inputValidator:
+         class: AppBundle\Validator\Constraints\InputConstraintValidator
+         arguments: ["@doctrine.orm.entity_manager"]
+         tags:
+             - { name: validator.constraint_validator }
+     validator.CheckUserIDValidator:
+         class: AppBundle\Validator\Constraints\CheckUserIDValidator
+         arguments: ["@doctrine.orm.entity_manager"]
+         tags:
+             - { name: validator.constraint_validator }
+     validator.CheckCertsExistValidator:
+         class: AppBundle\Validator\Constraints\CheckCertsExistValidator
+         arguments: ["@doctrine.orm.entity_manager"]
+         tags:
+             - { name: validator.constraint_validator }
+     validator.CheckCertsNotExistValidator:
+         class: AppBundle\Validator\Constraints\CheckCertsNotExistValidator
+         arguments: ["@doctrine.orm.entity_manager"]
+         tags:
+             - { name: validator.constraint_validator }
+     validator.CheckCertsStateValidator:
+         class: AppBundle\Validator\Constraints\CheckCertsStateValidator
+         arguments: ["@doctrine.orm.entity_manager"]
+         tags:
+             - { name: validator.constraint_validator }
+     validator.CheckUserGroupIDValidator:
+         class: AppBundle\Validator\Constraints\CheckUserGroupIDValidator
+         arguments: ["@doctrine.orm.entity_manager"]
+         tags:
+             - { name: validator.constraint_validator }
+     validator.CheckCertStateValidator:
+         class: AppBundle\Validator\Constraints\CheckCertStateValidator
+         arguments: ["@doctrine.orm.entity_manager"]
+         tags:
+             - { name: validator.constraint_validator }
+     #Stuff
+     app.manager_stuff:
+         class: AppBundle\Stuff\ManagerStuff
+         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+
+     app.user_stuff:
+         class: AppBundle\Stuff\UserStuff
+         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+
+     app.certificate_stuff:
+         class: AppBundle\Stuff\CertificateStuff
+         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms_stuff", "@router"]
+     app.sms_stuff:
+         class: AppBundle\Stuff\SmsStuff
+         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms"]
+
+     #Voters
+     certificate_voter:
+         class: AppBundle\Security\CertificateVoter
+         public: false
+         arguments: ["@app.certAction_checker"]
+         tags:
+             - { name: security.voter }
+
+#    service_name:
+#        class: AppBundle\Directory\ClassName
+#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

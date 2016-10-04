@@ -1,0 +1,119 @@
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <!-- Modal title -->
+        <div class="modal-header">
+            <!-- Cross in the right upper coner -->
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            <!-- The title itself -->
+            <h4 class="modal-title" id="myModalLabel">Привязать новые сертификаты к пользователю <span id="username">%username%</span></h4>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="row">
+                <!-- List of already attached certificates -->
+                <div class="col-md-4">
+
+                    <!-- Section title -->
+                    <h4>Привязанные сертификаты</h4>
+
+                    <!-- The list itself -->
+                    <table class="table table-striped pre-scrollable" id="certificates-table">
+                        <tr>
+                            <th>Номер</th>
+                            <th class="col-md-12">Статус</th>
+                        </tr>
+
+                        <tr class="attached-certificates-loader text-center hidden">
+                            <td colspan="2">
+                                <img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40">
+                            </td>
+                        </tr>
+
+                        <tr class="attached-certificates-empty text-center hidden">
+                            <td colspan="2">У этого пользователя нет сертификатов</td>
+                        </tr>
+                        <!-- Attached certificates goes here from AJAX -->
+                    </table>
+                </div>
+
+                <!-- List of unattached certificates -->
+                <div class="col-md-5" id="unattached_certs">
+                    <h4>Непривязанные сертификаты</h4>
+
+                    <div class="unattached-certificates-loader text-center hidden">
+                        <img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40">
+                    </div>
+                    <div class="unattached-certificates-empty text-center hidden">
+                        Непривязанных сертификатов нет
+                    </div>
+                    <!-- List of unattached certificates goes here from AJAX -->
+                </div>
+
+                <!-- Helper panel for comfortable certificate attachment -->
+                <div class="col-md-3">
+                    <h4>Привязать</h4>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Привязать один
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" style="min-width: 60px;" id="sizing-addon3">ID</span>
+                                <input type="text" class="form-control attach-helper" placeholder="" aria-describedby="sizing-addon3" name="attach_ID">
+                                <span class="glyphicon form-control-feedback"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Привязать диапазон
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" style="min-width: 60px;" id="sizing-addon3">От</span>
+                                <input type="text" class="form-control attach-helper" placeholder="" aria-describedby="sizing-addon3" name="attach_range_from">
+                                <span class="glyphicon form-control-feedback"></span>
+                            </div>
+
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" style="min-width: 60px;" id="sizing-addon3">До</span>
+                                <input type="text" class="form-control attach-helper" placeholder="" aria-describedby="sizing-addon3" name="attach_range_to">
+                                <span class="glyphicon form-control-feedback"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Привязать количество
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" style="min-width: 60px;" id="sizing-addon3">C</span>
+                                <input type="text" class="form-control attach-helper" placeholder="" aria-describedby="sizing-addon3" name="attach_amount_from">
+                                <span class="glyphicon form-control-feedback"></span>
+                            </div>
+
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" style="min-width: 60px;" id="sizing-addon3">Кол-во</span>
+                                <input type="text" class="form-control attach-helper" placeholder="" aria-describedby="sizing-addon3" name="attach_amount_count">
+                                <span class="glyphicon form-control-feedback"></span>
+                            </div>
+
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-default" id="attach_helper_add_btn">Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- "Save" and "Close" buttons are here for a while -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+            <button id="save-btn" type="button" class="btn btn-primary">Сохранить</button>
+        </div>
+    </div>
+</div>

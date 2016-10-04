@@ -1,0 +1,15 @@
+{% block navigation %}
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">ROSAVIATOR</a>
+            </div>
+            <div class="collapse navbar-collapse" id="md-navbar-collapse-1">
+                {% block custom_menu %}{% endblock %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{{ path("logout") }}">Выйти</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}

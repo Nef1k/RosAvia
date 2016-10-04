@@ -1,0 +1,101 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {% include "default/navigation.html.twig" %}
+
+    {% block navigation %}{% endblock %}
+    <div class="row">
+        <div class="col-md-9">
+            <h1>Сертификаты</h1>
+            <table class="table table-striped">
+                <tr>
+                    <th>#</th>
+                    <th class="col-md-3">Клиент</th>
+                    <th class="col-md-1">Телефон</th>
+                    <th class="col-md-4">Полёт</th>
+                    <th class="col-md-3">Статус</th>
+                    <th class="col-md-1">Действия</th>
+                </tr>
+                {% set total_unpaid = 0 %}
+                {% if certificates %}
+                    {% for cert in certificates %}
+                        <tr>
+                            <th>{{ cert.ID_Sertificate }}</th>
+                            <td>{{ cert.client_name }} </td>
+                            <td>{{ cert.phone_number }}</td>
+                            <td>
+                                {% if cert.flight_type %}
+                                    <a target="_blank" href="{{ cert.flight_link }}">{{ cert.flight_type }}</a>
+                                    ({{ cert.flight_price }}р.)
+                                {% else %}
+                                    Не выбран
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ cert.state }}
+                                {% if cert.ID_SertState == 4 %}
+                                    {% set current_unpaid = cert.flight_price * (1 - percent/100) %}
+                                    {% set total_unpaid = total_unpaid + current_unpaid %}
+                                    ({{ current_unpaid }}р.)
+                                {% endif %}
+                            </td>
+                            <td>
+                            {% for action in cert.actions %}
+                                <a href="{{ path(action.getActionName, {"cert_id": cert.ID_Sertificate}) }}"><span class="glyphicon glyphicon-{{ action.icon }}"></span></a>
+                            {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">Нет непустых сертификатов</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">Панель управления</div>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <div class="pull-left">
+                            Доступно бланков: {{ certs_available }}
+                        </div>
+                        <div class="pull-right">
+                        {% if certs_available > 0 %}
+                            <a class="btn btn-xs btn-default" href="{{ path("edition", {"cert_id": first_blank.getIDSertificate}) }}" role="button">Выписать</a>
+                        {% endif %}
+                        </div>
+                        <br>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Финансы</div>
+                <ul class="list-group">
+                    <li class="list-group-item">Процент от продаж: {{ percent }}%</li>
+                    {% if total_unpaid > 0 %}
+                        <li class="list-group-item">
+                            К оплате: {{ total_unpaid }} р.
+                            <a href="{{ path("dealer_pay_select") }}" class="btn btn-xs btn-default">Оплатить</a>
+                        </li>
+                    {% endif %}
+                    <li class="list-group-item">
+                        Ваш менеджер: <br>
+                        <b>{{ mentor_name }}</b><br><br>
+                        Телефон для связи:<br>
+                        <b>{{ mentor_phone }}</b>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="css/style.css" type="text/css"/>
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}

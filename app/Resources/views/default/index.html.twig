@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Homepage
+{% endblock %}
+
+{% block body %}
+    {% if user %}
+        <h1>Привет, {{ user.getUsername }}</h1>
+        Ваш email: <b>{{ user.getEmail }}</b><br>
+        Ваша роль: <b>{{ role }}</b><br>
+        <a href="{{ path("logout") }}">Выйти</a>
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    <link href="{{ asset("css/style.css") }}" rel="stylesheet" type="text/css">
+{% endblock %}

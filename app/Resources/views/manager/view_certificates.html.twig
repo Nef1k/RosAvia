@@ -1,0 +1,65 @@
+{% extends "base.html.twig" %}
+{% form_theme action_form "form/fields.html.twig" %}
+
+{% block body %}
+    {% include "default/navigation.html.twig" %}
+
+    <div class="row">
+        <div class="col-md-9">
+            {% for dealer_name, dealer in dealers %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>{{ dealer_name }}</strong>
+                        <div class="pull-right">
+                            <button class="btn btn-xs btn-default">Выделить всё</button>
+                            <button class="btn btn-xs btn-default">Снять выделение</button>
+                        </div>
+                    </div>
+                    <table class="table table-hover table-striped">
+                        <tr>
+                            <th class=""></th>
+                            <th class="col-md-1">ID</th>
+                            <th class="col-md-5">Клиент</th>
+                            <th class="col-md-3">Телефон</th>
+                            <th class="col-md-3">Тип полёта</th>
+                        </tr>
+                        {% for certificate in dealer %}
+                            <tr class="certificate_row" data-id="" style="cursor:pointer;">
+                                <td>
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </td>
+                                <th>{{ certificate.getIDSertificate }}</th>
+                                <td>{{ certificate.getName }} {{ certificate.getLastName }}</td>
+                                <td>{{ certificate.getPhoneNumber }}</td>
+                                <td>
+                                    {% if certificate.getFlightType %}
+                                        <a href="{{ certificate.getFlightType.getDescriptionLink }}" target="_blank">{{ certificate.getFlightType.getName }}</a>
+                                    {% else %}
+                                        Не указан
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% else %}
+                <div class="well well-sm text-center">
+                    Тут пусто
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Обработка сертификатов</h4>
+                </div>
+                <div class="panel-body">
+                    {{ form_start(action_form) }}
+                    {{ form_widget(action_form) }}
+                    <button type="submit" class="btn btn-default">Выполнить</button>
+                    {{ form_end(action_form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

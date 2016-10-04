@@ -1,0 +1,53 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {% include "default/navigation.html.twig" %}
+
+    <h3>Сертификат №{{ certificate.getIDSertificate }}</h3>
+    <div class="row">
+        <div class="col-md-5">
+            <table class="table table-bordered">
+                <tr>
+                    <td class="col-md-5" align="center" valign="middle">Имя клиента</td>
+                    <td class="col-md-7" align="center" valign="middle">
+                        <div class="form-group">
+                            <input class="form-control" type="text" disabled="disabled" value="{{ certificate.getName }}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" valign="middle">Фамилия клиента</td>
+                    <td align="center" valign="middle">
+                        <div class="form-group">
+                            <input class="form-control" type="text" disabled="disabled" value="{{ certificate.getLastName }}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" valign="middle">Телефон клиента</td>
+                    <td align="center" valign="middle">
+                        <div class="form-group">
+                            <input class="form-control" type="text" disabled="disabled" value="{{ certificate.getPhoneNumber }}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" valign="middle">Тип полёта</td>
+                    <td align="center" valign="middle">
+                        <div class="form-group">
+                            <input class="form-control" type="text" disabled="disabled" value="{{ certificate.getFlightType.getName }}">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" valign="middle">Назначенное время</td>
+                    <td align="center" valign="middle">
+                        <div class="form-group">
+                            <input class="form-control" type="text" disabled="disabled" value="{{ certificate.getUseTime|date('d.m.Y H:i:s') }}">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}
