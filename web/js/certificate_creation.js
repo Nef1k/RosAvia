@@ -11,6 +11,7 @@ function isDefined(varible){
 function createModalNoBtn(event){
     yesNoDialog.close();
 }
+
 function createModalYesBtn(event) {
     /** @var YesNoDialog modal */
     var modal = event.data;
@@ -24,16 +25,30 @@ function createModalYesBtn(event) {
             modal.yes_caption = "Ок";
             modal.yes_handler = createModalNoBtn;
 
+
+
             var errors = data.error_msg;
             if (errors.length > 0){
                 modal.message = "Возникли следующие ошибки при добавлении сертификатов: <br>" + errors.join(" <br>");
+                $("input").val("");
             }
             else{
                 modal.message = "Сертификаты <code>"+ modal.data.join(", ") +"</code> успешно добавлены!";
+                jQuery.getJSON("/admin/user_table", function (data){
+                    $("#unattached_certs_count").html("");
+                    $("#unattached_certs_count").html(data.unattached_certs);
+                });
+                $("input").val("");
+                modal.yes_attribute1_name = "data-toggle";
+                modal.yes_attribute1_value = "collapse";
+                modal.yes_attribute2_name = "data-target";
+                modal.yes_attribute2_value = "#create_certs_hided_menu";
             }
 
             modal.applyParams();
+
         });
+
     }
 }
 
@@ -60,7 +75,6 @@ function generateAmount(offset, count){
 }
 
 function parseCreateCertificateList(){
-    console.log("something");
     var ID_Certificate = parseInt($("[name='ID_Certificate']").val());
     var range = {
         from: parseInt($("[name='range_from']").val()),
@@ -70,7 +84,6 @@ function parseCreateCertificateList(){
         from: parseInt($("[name='amount_from']").val()),
         count: parseInt($("[name='amount_count']").val())
     };
-    console.log(ID_Certificate, range, amount);
     if (!isInvalid(ID_Certificate)){
         return {
             type: "single",
@@ -95,7 +108,6 @@ function parseCreateCertificateList(){
 
 function createBtnClick(){
     var userInput = parseCreateCertificateList();
-    console.log(userInput);
     var certificateListStr = (userInput) ? userInput.certificates.join(", ") : "undefined";
 
     var msg = (userInput) ?
