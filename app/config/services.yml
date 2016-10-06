@@ -77,10 +77,15 @@ services:
      app.certificate_stuff:
          class: AppBundle\Stuff\CertificateStuff
          arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms_stuff", "@router"]
+
      app.sms_stuff:
          class: AppBundle\Stuff\SmsStuff
          arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms"]
 
+     app.file_stuff:
+         class: AppBundle\Stuff\FileStuff
+         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+         
      #Voters
      certificate_voter:
          class: AppBundle\Security\CertificateVoter
