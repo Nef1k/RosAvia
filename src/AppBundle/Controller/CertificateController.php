@@ -216,6 +216,10 @@ class CertificateController extends Controller
         $validator = $this->get('validator');
         $errors = $validator->validate($ids);
         $em = $this->getDoctrine()->getManager();
+        $Request_output = array(
+            'error_msg' => array(),
+            'error_param' => array()
+        );
         if (count($errors) == 0) {
             $cert_stuff = $this->get("app.certificate_stuff");
             $cert = $cert_stuff->CertEdition($ids->getCertId(), $field_names, $field_values);
@@ -225,10 +229,6 @@ class CertificateController extends Controller
             array_push($Request_output, 'success');
         }
         $em->flush();
-        $Request_output = array(
-            'error_msg' => array(),
-            'error_param' => array()
-        );
         foreach($errors as $error){
             array_push($Request_output['error_msg'],$error->getMessage());
             array_push($Request_output['error_param'], $error->getInvalidValue());
