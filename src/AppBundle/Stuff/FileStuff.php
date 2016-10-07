@@ -63,25 +63,25 @@ class FileStuff
     }
 
     /**
-     * @param File $cert
+     * @param File $file
      * @param array $fields
      * @return array
      */
-    public function CertToArray(File $cert, array $fields){
-        $cert_info = [];
+    public function FileToArray(File $file, array $fields){
+        $file_info = [];
         if (in_array("file_name", $fields)){
-            $cert_info["file_name"] = $cert->getFileName();
+            $file_info["file_name"] = $file->getFileName();
         }
         if (in_array("file_category", $fields)){
-            $cert_info["file_category"] = $cert->getFileCategory()->getName();
+            $file_info["file_category"] = $file->getFileCategory()->getName();
         }
         if (in_array("user_id", $fields)){
-            $cert_info["user_id"] = $cert->getUser()->getIDUser();
+            $file_info["user_id"] = $file->getUser()->getIDUser();
         }
         if (in_array("ID_File", $fields)){
-            $cert_info["ID_File"] = $cert->getIDFile();
+            $file_info["ID_File"] = $file->getIDFile();
         }
-        return $cert_info;
+        return $file_info;
     }
 
     /**
@@ -91,15 +91,15 @@ class FileStuff
      * @return array
      */
     public function GetFileArray(array $criteria, array $sort, array $fields){
-        $certs = $this->em->getRepository("AppBundle:File")->findBy($criteria, $sort);
-        $cert_list = [];
-        if ($certs != null){
-            foreach($certs AS $cert){
-                $cert_info = $this->CertToArray($cert, $fields);
-                array_push($cert_list, $cert_info);
+        $files = $this->em->getRepository("AppBundle:File")->findBy($criteria, $sort);
+        $file_list = [];
+        if ($files != null){
+            foreach($files AS $file){
+                $file_info = $this->FileToArray($file, $fields);
+                array_push($file_list, $file_info);
             }
         }
-        return $cert_list;
+        return $file_list;
     }
 
     /**
@@ -153,8 +153,8 @@ class FileStuff
         if ($sort == null) $sort = [];
         if ($criteria == null) $criteria = [];
         if ($fields == null) $fields = [];
-        $cert = $this->GetFileArray($criteria, $sort, $fields);
-        return $cert;
+        $file = $this->GetFileArray($criteria, $sort, $fields);
+        return $file;
     }
 
 }
