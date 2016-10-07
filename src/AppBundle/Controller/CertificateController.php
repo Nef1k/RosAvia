@@ -220,7 +220,7 @@ class CertificateController extends Controller
             $cert_stuff = $this->get("app.certificate_stuff");
             $cert = $cert_stuff->CertEdition($ids->getCertId(), $field_names, $field_values);
             for($i = 0; $i < count($cert); $i++) {
-                $em->persist($cert);
+                $em->persist($cert[$i]);
             }
             array_push($Request_output, 'success');
         }
