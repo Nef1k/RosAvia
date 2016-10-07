@@ -2,14 +2,15 @@
  * Created by ASUS on 20.09.2016.
  */
 
-var yesNoDialog = new YesNoDialog;
-
 function isDefined(varible){
     return (typeof varible !== "undefined");
 }
 
 function createModalNoBtn(event){
-    yesNoDialog.close();
+    /** @var YesNoDialog modal */
+    var modal = event.data;
+
+    modal.close();
 }
 function createModalYesBtn(event) {
     /** @var YesNoDialog modal */
@@ -102,6 +103,7 @@ function createBtnClick(){
         "Будут созданы сертификаты со следующими ID: <code>"+ certificateListStr +"</code>. Вы уверены?" :
         "Неправильно заполнены поля";
 
+    var yesNoDialog = new YesNoDialog;
     yesNoDialog.setModalSelector("#yes-no-modal");
     yesNoDialog.hideLoader();
     yesNoDialog.show({
