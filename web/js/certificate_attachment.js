@@ -93,21 +93,51 @@ function onCertBtnClick(event){
 }
 function onSaveBtnClick(event){
     var user_id = $(attachModalSelector).data("user_id");
+    var yesNoDialog = new YesNoDialog;
 
     if (!isAJAXing){
         isAJAXing = true;
     }
-    certificateToAttach.forEach(function(cert_id, i){
-        var postParams = {
-            id: cert_id,
-            field_names: JSON.stringify(["user_id", "id_cert_state"]),
-            field_values: JSON.stringify([user_id, 1])
-        };
 
-        jQuery.post("/certificate/edit", postParams, function(data){
-            console.log(data);
-        });
+    yesNoDialog.setModalSelector("#yes-no-modal");
+    yesNoDialog.show({
+        caption: "Привязка сертификатов",
+
+        yes_caption: "Ок",
+        no_caption: "",
+
+        yes_handler: attachModalYesBtn
     });
+    yesNoDialog.showLoader();
+    var msg = "";
+
+    var postParams = {
+        ids: JSON.stringify(certificateToAttach), //Теперь это массив
+        field_names: JSON.stringify(["user_id", "id_cert_state"]),
+        field_values: JSON.stringify([user_id, 1])
+    };
+
+    jQuery.post("/certificate/edit", postParams, function(data){
+        console.log(data);
+        var errors = data.error_msg;
+        if (errors.length > 0){
+            msg += "Возникли следующие ошибки при добавлении сертификатов: <br>" + errors.join(" <br>");
+        }
+        if (msg.length>0){
+            yesNoDialog.message = msg;
+        }
+        else{
+            msg = "Сертификаты успешно привязаны."
+        }
+        yesNoDialog.hideLoader();
+        yesNoDialog.applyParams();
+    })
+}
+
+function attachModalYesBtn(event) {
+    var modal = event.data;
+    modal.close();
+    $(attachModalSelector).on("show.bs.modal", onModalLoad);
 }
 
 function onModalLoad(event){
