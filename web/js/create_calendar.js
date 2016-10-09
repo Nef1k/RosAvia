@@ -205,7 +205,6 @@ $(document).ajaxError(function(event, jqXHR, ajaxSettings, message){
 });
 
 $(document).ready(function(e){
-    $("#some-btn").click(showModal);
 
     $("#calendar").fullCalendar({
         monthNames: ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
