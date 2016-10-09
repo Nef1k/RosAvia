@@ -109,7 +109,7 @@ function onSaveBtnClick(event){
         yes_handler: attachModalYesBtn
     });
     yesNoDialog.showLoader();
-    var msg = "";
+    var msg = "Сертификаты успешно привязаны.";
 
     var postParams = {
         ids: JSON.stringify(certificateToAttach), //Теперь это массив
@@ -118,17 +118,11 @@ function onSaveBtnClick(event){
     };
 
     jQuery.post("/certificate/edit", postParams, function(data){
-        console.log(data);
         var errors = data.error_msg;
         if (errors.length > 0){
-            msg += "Возникли следующие ошибки при добавлении сертификатов: <br>" + errors.join(" <br>");
+            msg = "Возникли следующие ошибки при добавлении сертификатов: <br>" + errors.join(" <br>");
         }
-        if (msg.length>0){
-            yesNoDialog.message = msg;
-        }
-        else{
-            msg = "Сертификаты успешно привязаны."
-        }
+        yesNoDialog.message = msg;
         yesNoDialog.hideLoader();
         yesNoDialog.applyParams();
     })
@@ -136,8 +130,18 @@ function onSaveBtnClick(event){
 
 function attachModalYesBtn(event) {
     var modal = event.data;
+    var user_id = $(attachModalSelector).data("user_id");
+
     modal.close();
-    $(attachModalSelector).on("show.bs.modal", onModalLoad);
+    $(".certificate-row").remove();
+    $(".unatt_btn").remove();
+    $(".attached-certificates-loader").removeClass("hidden");
+    $(".unattached-certificates-loader").removeClass("hidden");
+    $(attachModalSelector + " input").val("");
+    jQuery.getJSON("/admin/attach?user_id="+user_id, fillAttachModalWithData);
+    jQuery.getJSON("/admin/user_table", function (data){
+        $("#unattached_certs_count").html(data.unattached_certs)
+    })
 }
 
 function onModalLoad(event){
