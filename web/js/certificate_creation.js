@@ -9,8 +9,10 @@ function isDefined(varible){
 function createModalNoBtn(event){
     /** @var YesNoDialog modal */
     var modal = event.data;
-
     modal.close();
+    jQuery.getJSON("/admin/user_table", function (data){
+        $("#unattached_certs_count").html(data.unattached_certs)
+    })
 }
 function createModalYesBtn(event) {
     /** @var YesNoDialog modal */
@@ -32,8 +34,8 @@ function createModalYesBtn(event) {
             else{
                 modal.message = "Сертификаты <code>"+ modal.data.join(", ") +"</code> успешно добавлены!";
             }
-
             modal.applyParams();
+            $("input").val("");
         });
     }
 }
