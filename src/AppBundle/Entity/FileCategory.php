@@ -51,4 +51,52 @@ class FileCategory implements \Serializable
     {
         // TODO: Implement unserialize() method.
     }
+
+    /**
+     * Set iDFileCategory
+     *
+     * @param integer $iDFileCategory
+     *
+     * @return FileCategory
+     */
+    public function setIDFileCategory($iDFileCategory)
+    {
+        $this->ID_FileCategory = $iDFileCategory;
+
+        return $this;
+    }
+
+    /**
+     * Get iDFileCategory
+     *
+     * @return integer
+     */
+    public function getIDFileCategory()
+    {
+        return $this->ID_FileCategory;
+    }
+
+    /**
+     * Set fileCategoryName
+     *
+     * @param string $fileCategoryName
+     *
+     * @return FileCategory
+     */
+    public function setFileCategoryName($fileCategoryName)
+    {
+        $this->FileCategoryName = $fileCategoryName;
+
+        return $this;
+    }
+
+    /**
+     * Get fileCategoryName
+     *
+     * @return string
+     */
+    public function getFileCategoryName()
+    {
+        return $this->FileCategoryName;
+    }
 }
