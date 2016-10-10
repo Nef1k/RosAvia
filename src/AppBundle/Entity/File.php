@@ -45,7 +45,7 @@ class File implements \Serializable
     private $DisplayName;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\ManyToOne(targetEntity="FileCategory")
      * @ORM\JoinColumn(name="ID_Category", referencedColumnName="ID_Category", nullable=false)
      */
     private $Category;
