@@ -12,20 +12,20 @@ use Doctrine\ORM\Mapping AS ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="category")
+ * @ORM\Table(name="file_category")
  */
-class Category implements \Serializable
+class FileCategory implements \Serializable
 {
     /**
      * @ORM\Column(name="ID_Category", type="integer")
      * @ORM\Id
      */
-    private $ID_Category;
+    private $ID_FileCategory;
 
     /**
      * @ORM\Column(name="CategoryName", type="string")
      */
-    private $CategoryName;
+    private $FileCategoryName;
 
     /**
      * String representation of object
