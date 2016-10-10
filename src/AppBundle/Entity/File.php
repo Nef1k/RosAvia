@@ -79,4 +79,172 @@ class File implements \Serializable
     {
         // TODO: Implement unserialize() method.
     }
+
+    /**
+     * Set iDFile
+     *
+     * @param integer $iDFile
+     *
+     * @return File
+     */
+    public function setIDFile($iDFile)
+    {
+        $this->ID_File = $iDFile;
+
+        return $this;
+    }
+
+    /**
+     * Get iDFile
+     *
+     * @return integer
+     */
+    public function getIDFile()
+    {
+        return $this->ID_File;
+    }
+
+    /**
+     * Set fileDate
+     *
+     * @param \DateTime $fileDate
+     *
+     * @return File
+     */
+    public function setFileDate($fileDate)
+    {
+        $this->FileDate = $fileDate;
+
+        return $this;
+    }
+
+    /**
+     * Get fileDate
+     *
+     * @return \DateTime
+     */
+    public function getFileDate()
+    {
+        return $this->FileDate;
+    }
+
+    /**
+     * Set fileName
+     *
+     * @param string $fileName
+     *
+     * @return File
+     */
+    public function setFileName($fileName)
+    {
+        $this->FileName = $fileName;
+
+        return $this;
+    }
+
+    /**
+     * Get fileName
+     *
+     * @return string
+     */
+    public function getFileName()
+    {
+        return $this->FileName;
+    }
+
+    /**
+     * Set displayName
+     *
+     * @param string $displayName
+     *
+     * @return File
+     */
+    public function setDisplayName($displayName)
+    {
+        $this->DisplayName = $displayName;
+
+        return $this;
+    }
+
+    /**
+     * Get displayName
+     *
+     * @return string
+     */
+    public function getDisplayName()
+    {
+        return $this->DisplayName;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return File
+     */
+    public function setUser(\AppBundle\Entity\User $user)
+    {
+        $this->User = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->User;
+    }
+
+    /**
+     * Set category
+     *
+     * @param \AppBundle\Entity\Category $category
+     *
+     * @return File
+     */
+    public function setCategory(\AppBundle\Entity\Category $category)
+    {
+        $this->Category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \AppBundle\Entity\Category
+     */
+    public function getCategory()
+    {
+        return $this->Category;
+    }
+
+    /**
+     * Set fileType
+     *
+     * @param \AppBundle\Entity\FileType $fileType
+     *
+     * @return File
+     */
+    public function setFileType(\AppBundle\Entity\FileType $fileType)
+    {
+        $this->FileType = $fileType;
+
+        return $this;
+    }
+
+    /**
+     * Get fileType
+     *
+     * @return \AppBundle\Entity\FileType
+     */
+    public function getFileType()
+    {
+        return $this->FileType;
+    }
 }
