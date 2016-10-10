@@ -9,6 +9,7 @@
 namespace AppBundle\Stuff;
 
 use AppBundle\Entity\User;
+use AppBundle\Entity\File;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +43,7 @@ class FileStuff
      * @param $id_file_category
      * @return bool
      */
-    public function PushFile($user_id, $id_file_category)
+    public function PushFile($user_id, $id_file_category, $disp_name, $file_date)
     {
         $user = $this->em->getRepository("AppBundle:User")->find($user_id);
         $file_cat = $this->em->getRepository("AppBundle:FileCategory")->find($id_file_category);
@@ -53,7 +54,9 @@ class FileStuff
             setUser($user)->
             setFileCategory($file_cat)->
             setFileName(basename($_FILES['userfile']['name']))->
-            setFileSize($_FILES['userfile']['size']);
+            setFileSize($_FILES['userfile']['size'])->
+            setDisplayName($disp_name)->
+            setFileDate($file_date);
         if (move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_file)){
             return true;
         } else {
