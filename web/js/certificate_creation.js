@@ -30,7 +30,7 @@ function createModalYesBtn(event) {
             var errors = data.error_msg;
             if (errors.length > 0){
                 modal.message = "Возникли следующие ошибки при добавлении сертификатов: <br>" + errors.join(" <br>");
-                $("input").val("");
+                $("#create_certs_hided_menu input").val("");
             }
             else{
                 modal.message = "Сертификаты <code>"+ modal.data.join(", ") +"</code> успешно добавлены!";
@@ -38,7 +38,7 @@ function createModalYesBtn(event) {
                     $("#unattached_certs_count").html("");
                     $("#unattached_certs_count").html(data.unattached_certs);
                 });
-                $("input").val("");
+                $("#create_certs_hided_menu input").val("");
                 modal.yes_attribute1_name = "data-toggle";
                 modal.yes_attribute1_value = "collapse";
                 modal.yes_attribute2_name = "data-target";
