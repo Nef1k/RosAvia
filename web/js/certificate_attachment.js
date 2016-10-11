@@ -93,26 +93,66 @@ function onCertBtnClick(event){
 }
 function onSaveBtnClick(event){
     var user_id = $(attachModalSelector).data("user_id");
+    var yesNoDialog = new YesNoDialog;
 
     if (!isAJAXing){
         isAJAXing = true;
     }
-    certificateToAttach.forEach(function(cert_id, i){
-        var postParams = {
-            id: cert_id,
-            field_names: JSON.stringify(["user_id", "id_cert_state"]),
-            field_values: JSON.stringify([user_id, 1])
-        };
 
-        jQuery.post("/certificate/edit", postParams, function(data){
-            console.log(data);
-        });
+    yesNoDialog.setModalSelector("#yes-no-modal");
+    yesNoDialog.show({
+        caption: "Привязка сертификатов",
+
+        yes_caption: "Ок",
+        no_caption: "",
+
+
+
+        yes_handler: attachModalYesBtn
     });
+    yesNoDialog.showLoader();
+    var msg = "Сертификаты успешно привязаны.";
+
+    var postParams = {
+        ids: JSON.stringify(certificateToAttach), //Теперь это массив
+        field_names: JSON.stringify(["user_id", "id_cert_state"]),
+        field_values: JSON.stringify([user_id, 1])
+    };
+
+    jQuery.post("/certificate/edit", postParams, function(data){
+        var errors = data.error_msg;
+        if (errors.length > 0){
+            msg = "Возникли следующие ошибки при добавлении сертификатов: <br>" + errors.join(" <br>");
+        }
+        yesNoDialog.message = msg;
+        yesNoDialog.hideLoader();
+        yesNoDialog.applyParams();
+    })
+}
+
+function attachModalYesBtn(event) {
+
+
+    var modal = event.data;
+    var user_id = $(attachModalSelector).data("user_id");
+
+    modal.close();
+    $(attachModalSelector).modal("hide");
+    // $(".certificate-row").remove();
+    // $(".unatt_btn").remove();
+    // $(".attached-certificates-loader").removeClass("hidden");
+    // $(".unattached-certificates-loader").removeClass("hidden");
+    // $(attachModalSelector + " input").val("");
+    // jQuery.getJSON("/admin/attach?user_id="+user_id, fillAttachModalWithData);
+    // jQuery.getJSON("/admin/user_table", function (data){
+    //     $("#unattached_certs_count").html(data.unattached_certs)
+    // });
 }
 
 function onModalLoad(event){
     var user_id = $(this).data("user_id");
     var username = $(this).data("username");
+
 
     //Clearing up previous
     $(".attached-certificates-empty").addClass("hidden");

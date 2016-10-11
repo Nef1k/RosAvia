@@ -2,14 +2,17 @@
  * Created by ASUS on 20.09.2016.
  */
 
-var yesNoDialog = new YesNoDialog;
-
 function isDefined(varible){
     return (typeof varible !== "undefined");
 }
 
 function createModalNoBtn(event){
-    yesNoDialog.close();
+    /** @var YesNoDialog modal */
+    var modal = event.data;
+    modal.close();
+    jQuery.getJSON("/admin/user_table", function (data){
+        $("#unattached_certs_count").html(data.unattached_certs)
+    })
 }
 function createModalYesBtn(event) {
     /** @var YesNoDialog modal */
@@ -31,8 +34,8 @@ function createModalYesBtn(event) {
             else{
                 modal.message = "Сертификаты <code>"+ modal.data.join(", ") +"</code> успешно добавлены!";
             }
-
             modal.applyParams();
+            $("input").val("");
         });
     }
 }
@@ -102,6 +105,7 @@ function createBtnClick(){
         "Будут созданы сертификаты со следующими ID: <code>"+ certificateListStr +"</code>. Вы уверены?" :
         "Неправильно заполнены поля";
 
+    var yesNoDialog = new YesNoDialog;
     yesNoDialog.setModalSelector("#yes-no-modal");
     yesNoDialog.hideLoader();
     yesNoDialog.show({

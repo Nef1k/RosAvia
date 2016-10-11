@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\DataClasses\CertEdition;
 use AppBundle\Form\CertGroupProcessingType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -207,21 +208,31 @@ class CertificateController extends Controller
      * @Method("POST")
      */
     public function certEdit(Request $request){
-        $id = $request->request->get('id');
+        $ids = new CertEdition();
+        $ids->setCertId(json_decode($request->request->get('ids')));
         $field_names = json_decode($request->request->get('field_names'));
         $field_values = json_decode($request->request->get('field_values'));
         /** @var $certificate_stuff CertificateStuff */
-        $cert_stuff = $this->get("app.certificate_stuff");
-        $cert = $cert_stuff->CertEdition($id, $field_names, $field_values);
+        $validator = $this->get('validator');
+        $errors = $validator->validate($ids);
         $em = $this->getDoctrine()->getManager();
-        
-        $em->persist($cert);
-        $em->flush();
         $Request_output = array(
             'error_msg' => array(),
             'error_param' => array()
         );
-        array_push($Request_output, 'success');
+        if (count($errors) == 0) {
+            $cert_stuff = $this->get("app.certificate_stuff");
+            $cert = $cert_stuff->CertEdition($ids->getCertId(), $field_names, $field_values);
+            for($i = 0; $i < count($cert); $i++) {
+                $em->persist($cert[$i]);
+            }
+            array_push($Request_output, 'success');
+        }
+        $em->flush();
+        foreach($errors as $error){
+            array_push($Request_output['error_msg'],$error->getMessage());
+            array_push($Request_output['error_param'], $error->getInvalidValue());
+        }
         $response = new Response();
         $response->setContent(json_encode($Request_output));
         $response -> headers -> set('Content-Type', 'application/json');
