@@ -322,41 +322,43 @@ class CertificateStuff
     }
 
     /**
-     * @param int $id
+     * @param array $ids
      * @param array $field_names
      * @param array $field_values
-     * @internal param array $field_name
-     * @internal param array $field_value
      * @return Sertificate
      */
-    public function CertEdition($id, array $field_names, array $field_values){
-        /** @var  $cert Sertificate*/
-        $cert = $this->em->getRepository("AppBundle:Sertificate")->find($id);
-        if (in_array("name",$field_names)){
-            $cert->setName($field_values[array_search("name", $field_names)]);
+    public function CertEdition(array $ids, array $field_names, array $field_values){
+        $cert_list = [];
+        foreach($ids AS $id) {
+            /** @var  $cert Sertificate */
+            $cert = $this->em->getRepository("AppBundle:Sertificate")->find($id);
+            if (in_array("name", $field_names)) {
+                $cert->setName($field_values[array_search("name", $field_names)]);
+            }
+            if (in_array("last_name", $field_names)) {
+                $cert->setLastName($field_values[array_search("last_name", $field_names)]);
+            }
+            if (in_array("phone_number", $field_names)) {
+                $cert->setPhoneNumber($field_values[array_search("phone_number", $field_names)]);
+            }
+            if (in_array("id_flight_type", $field_names)) {
+                $flight_type = $this->em->getRepository("AppBundle:FlightType")->find($field_values[array_search("id_flight_type", $field_names)]);
+                $cert->setFlightType($flight_type);
+            }
+            if (in_array("id_cert_state", $field_names)) {
+                $cert_state = $this->em->getRepository("AppBundle:SertState")->find($field_values[array_search("id_cert_state", $field_names)]);
+                $cert->setSertState($cert_state);
+            }
+            if (in_array("use_time", $field_names)) {
+                $cert->setUseTime(date_create(date("d-m-Y H:i:s T", $field_values[array_search("use_time", $field_names)])));
+            }
+            if (in_array("user_id", $field_names)) {
+                $user = $this->em->getRepository("AppBundle:User")->find($field_values[array_search("user_id", $field_names)]);
+                $cert->setUser($user);
+            }
+            array_push($cert_list, $cert);
         }
-        if (in_array("last_name",$field_names)){
-            $cert->setLastName($field_values[array_search("last_name", $field_names)]);
-        }
-        if (in_array("phone_number",$field_names)){
-            $cert->setPhoneNumber($field_values[array_search("phone_number", $field_names)]);
-        }
-        if (in_array("id_flight_type",$field_names)){
-            $flight_type = $this->em->getRepository("AppBundle:FlightType")->find($field_values[array_search("id_flight_type", $field_names)]);
-            $cert->setFlightType($flight_type);
-        }
-        if (in_array("id_cert_state",$field_names)){
-            $cert_state = $this->em->getRepository("AppBundle:SertState")->find($field_values[array_search("id_cert_state", $field_names)]);
-            $cert->setSertState($cert_state);
-        }
-        if (in_array("use_time",$field_names)){
-            $cert->setUseTime(date_create(date("d-m-Y H:i:s T", $field_values[array_search("use_time", $field_names)])));
-        }
-        if (in_array("user_id",$field_names)){
-            $user = $this->em->getRepository("AppBundle:User")->find($field_values[array_search("user_id",$field_names)]);
-            $cert->setUser($user);
-        }
-        return $cert;
+        return $cert_list;
     }
 
     /**

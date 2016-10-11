@@ -15,20 +15,15 @@ class CertEdition
 {
     /**
      * @MyAssert\CheckCertsExist()
-     * @Assert\NotBlank(message = "Значение не может быть пустым."),
-     * @Assert\Type(
-     *      message = "Значение не может быть не числом.",
-     *      type = "integer")
+     * @Assert\All({
+     *     @Assert\NotBlank(message="Значение не может быть пустым."),
+     *     @Assert\Type(
+     *          type="integer",
+     *          message="Значение не может быть не числом.")
+     * })
+     * @Assert\NotNull(message = "Значение не может быть нулевым")
      */
     private $cert_id;
-
-    /**
-     * @Assert\NotBlank(message = "Значение не может быть пустым."),
-     * @Assert\Type(
-     *     message = "Значение не может быть не числом.",
-     *     type = "integer")
-     */
-    private $time;
 
     /**
      * @return mixed
@@ -45,24 +40,6 @@ class CertEdition
     public function setCertId($cert_id)
     {
         $this->cert_id = $cert_id;
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * @param mixed $time
-     * @return $this
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
         return $this;
     }
 }
