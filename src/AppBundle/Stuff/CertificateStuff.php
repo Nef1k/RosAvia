@@ -76,18 +76,18 @@ class CertificateStuff
     public function getCertificatesByMentor($mentor_id, $state_id = -1)
     {
         $query_sql = "SELECT
-            rosaviator.sertificate.ID_Sertificate,
-            rosaviator.sertificate.name,
-            rosaviator.sertificate.last_name,
-            rosaviator.sertificate.phone_number,
+            sertificate.ID_Sertificate,
+            sertificate.name,
+            sertificate.last_name,
+            sertificate.phone_number,
             
-            rosaviator.flight_type.ID_FlightType,
-            rosaviator.flight_type.name AS `flight_name`,
-            rosaviator.flight_type.price AS `flight_price`,
-            rosaviator.flight_type.description_link AS `flight_link`,
+            flight_type.ID_FlightType,
+            flight_type.name AS `flight_name`,
+            flight_type.price AS `flight_price`,
+            flight_type.description_link AS `flight_link`,
             
-            rosaviator.user.ID_User,
-            rosaviator.user.username
+            user.ID_User,
+            user.username
         FROM
             sertificate
             
@@ -99,7 +99,7 @@ class CertificateStuff
         LEFT OUTER JOIN
             `user`
         ON
-            rosaviator.user.ID_User = rosaviator.sertificate.ID_User          
+            user.ID_User = sertificate.ID_User          
             
         WHERE
             (sertificate.ID_User IN (
