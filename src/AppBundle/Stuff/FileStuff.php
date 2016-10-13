@@ -146,6 +146,67 @@ class FileStuff
     }
 
     /**
+     * @param $file
+     */
+    public function FileForceDownload($file) {
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . basename($file));
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
+    }
+
+    public function SetFileFromRequest(Request $request){
+        $file_id = $request->query->get('file_id');
+        $user_id = $request->query->get('user_id');
+        $file = '/file';
+        $Request_output = array(
+            'error_msg' => array(),
+            'error_param' => array()
+        );
+        if (($user_id == $this->tokens->getToken()->getUser()->getIDUser()) || (in_array('ROLE_ADMIN', $this->tokens->getToken()->getRoles()))){
+            if (file_exists($file)){
+                $file = $file.'/'.$user_id;
+                if (file_exists($file)){
+                    $user = $this->em->getRepository("AppBundle:User")->find($user_id);
+                    /**
+                     * @var $files File
+                     */
+                    $files = $this->em->getRepository("AppBundle:File")->findBy(array('ID_File' => $file_id, 'User' => $user));
+                    if ($files) {
+                        $file = $file . '/' . $files->getFileName();
+                        if (file_exists($file)) {
+                            $this->FileForceDownload($file);
+                        } else {
+                            array_push($Request_output['error_msg'], 'Данный файл не существует.');
+                        }
+                    }
+                    else{
+                        array_push($Request_output['error_msg'], 'Выбранный вами файл у этого пользователя отсутствует.');
+                    }
+                }
+                else{
+                    array_push($Request_output['error_msg'],'У данного пользователя нет файлов.');
+                }
+            }
+            else{
+                array_push($Request_output['error_msg'], 'На сервере нет файлов.');
+            }
+        }
+        else{
+            array_push($Request_output['error_msg'], 'Вы не можете просматривать файлы этого пользователя.');
+        }
+        return $Request_output;
+    }
+
+    /**
      * @param Request $request
      * @return array
      */
