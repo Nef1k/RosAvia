@@ -32,7 +32,7 @@ class CertificateActionsChecker
         $user_group = $user->getUserGroup();
 
         //Check whether user's group have a permission to perform action on certificate
-        if (!$currentAction->getAllowedGroups()->contains($user_group)){
+        if (!$currentAction || !$currentAction->getAllowedGroups()->contains($user_group)){
             dump("Check whether user's group have a permission to perform action on certificate");
             return false;
         }
