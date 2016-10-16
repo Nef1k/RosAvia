@@ -55,6 +55,13 @@ class File implements \Serializable
      * @ORM\JoinColumn(name="ID_FileType", referencedColumnName="ID_FileType", nullable=false)
      */
     private $FileType;
+
+    /**
+     * @ORM\Column(name="FileSize", nullable=false, type="integer")
+     */
+    private $FileSize;
+    
+    
     /**
      * String representation of object
      * @link http://php.net/manual/en/serializable.serialize.php
@@ -64,6 +71,24 @@ class File implements \Serializable
     public function serialize()
     {
         // TODO: Implement serialize() method.
+    }
+
+    /**
+     * @param mixed $FileSize
+     * @return $this
+     */
+    public function setFileSize($FileSize)
+    {
+        $this->FileSize = $FileSize;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFileSize()
+    {
+        return $this->FileSize;
     }
 
     /**
@@ -203,11 +228,11 @@ class File implements \Serializable
     /**
      * Set category
      *
-     * @param \AppBundle\Entity\Category $category
+     * @param \AppBundle\Entity\FileCategory $category
      *
      * @return File
      */
-    public function setCategory(\AppBundle\Entity\Category $category)
+    public function setCategory(FileCategory $category)
     {
         $this->Category = $category;
 
@@ -217,7 +242,7 @@ class File implements \Serializable
     /**
      * Get category
      *
-     * @return \AppBundle\Entity\Category
+     * @return \AppBundle\Entity\FileCategory
      */
     public function getCategory()
     {
@@ -231,7 +256,7 @@ class File implements \Serializable
      *
      * @return File
      */
-    public function setFileType(\AppBundle\Entity\FileType $fileType)
+    public function setFileType(FileType $fileType)
     {
         $this->FileType = $fileType;
 

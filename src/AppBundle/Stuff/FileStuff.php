@@ -8,6 +8,7 @@
 
 namespace AppBundle\Stuff;
 
+use AppBundle\Entity\FileCategory;
 use AppBundle\Entity\User;
 use AppBundle\Entity\File;
 use Doctrine\ORM\EntityManager;
@@ -45,14 +46,16 @@ class FileStuff
      */
     public function PushFile($user_id, $id_file_category, $disp_name, $file_date)
     {
+        /** @var  $user  User*/
         $user = $this->em->getRepository("AppBundle:User")->find($user_id);
+        /** @var  $file_cat FileCategory*/
         $file_cat = $this->em->getRepository("AppBundle:FileCategory")->find($id_file_category);
         $file = new File();
-        $upload_dir = '/files/'.$user_id;
+        $upload_dir = '/files/'.$user_id.'/';
         $upload_file = $upload_dir.basename($_FILES['userfile']['name']);
         $file->
             setUser($user)->
-            setFileCategory($file_cat)->
+            setCategory($file_cat)->
             setFileName(basename($_FILES['userfile']['name']))->
             setFileSize($_FILES['userfile']['size'])->
             setDisplayName($disp_name)->
@@ -76,7 +79,7 @@ class FileStuff
             $file_info["file_name"] = $file->getFileName();
         }
         if (in_array("file_category", $fields)){
-            $file_info["file_category"] = $file->getFileCategory()->getName();
+            $file_info["file_category"] = $file->getCategory()->getFileCategoryName();
         }
         if (in_array("user_id", $fields)){
             $file_info["user_id"] = $file->getUser()->getIDUser();
