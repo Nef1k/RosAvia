@@ -163,7 +163,7 @@ class FileStuff
         readfile($file);
     }
 
-    public function SetFileFromRequest(Request $request){
+    public function GetFileFromRequest(Request $request){
         $file_id = $request->query->get('file_id');
         $user_id = $request->query->get('user_id');
         $file = '/file';
@@ -174,22 +174,26 @@ class FileStuff
         if (($user_id == $this->tokens->getToken()->getUser()->getIDUser()) || (in_array('ROLE_ADMIN', $this->tokens->getToken()->getRoles()))){
             if (file_exists($file)){
                 $file = $file.'/'.$user_id;
-                if (file_exists($file)){
+                if (file_exists($file)) {
                     $user = $this->em->getRepository("AppBundle:User")->find($user_id);
-                    /**
-                     * @var $files File
-                     */
-                    $files = $this->em->getRepository("AppBundle:File")->findBy(array('ID_File' => $file_id, 'User' => $user));
-                    if ($files) {
-                        $file = $file . '/' . $files->getFileName();
-                        if (file_exists($file)) {
-                            $this->FileForceDownload($file);
+                    if ($user) {
+                        /**
+                         * @var $files File
+                         */
+                        $files = $this->em->getRepository("AppBundle:File")->findBy(array('ID_File' => $file_id, 'User' => $user));
+                        if ($files) {
+                            $file = $file . '/' . $files->getFileName();
+                            if (file_exists($file)) {
+                                $this->FileForceDownload($file);
+                            } else {
+                                array_push($Request_output['error_msg'], 'Данный файл не существует.');
+                            }
                         } else {
-                            array_push($Request_output['error_msg'], 'Данный файл не существует.');
+                            array_push($Request_output['error_msg'], 'Выбранный вами файл у этого пользователя отсутствует.');
                         }
                     }
-                    else{
-                        array_push($Request_output['error_msg'], 'Выбранный вами файл у этого пользователя отсутствует.');
+                    else {
+                        array_push($Request_output['error_msg'],'Данный пользователь не сущетвует!');
                     }
                 }
                 else{
