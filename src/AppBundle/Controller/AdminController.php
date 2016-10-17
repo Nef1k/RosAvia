@@ -468,8 +468,61 @@ class AdminController extends Controller{
 
         $response = new Response();
         $response->setContent(json_encode($Request_output));
-        $response -> headers -> set('Content-Type', 'application/json');
+        $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
 
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/admin", name="cert_state_table_show")
+     * @Method("GET")
+     */
+    public function ShowCertStateTableAction(Request $request)
+    {
+        $user = $this->getUser();
+
+        $query_sql = "SELECT
+            sertificate_state.ID_SertState AS 'id_cert_state',
+            sertificate_state.name AS 'cert_state_name',
+            COUNT(sertificates.ID_SertState) AS `count`
+        FROM
+            sertificate_state
+        
+        LEFT OUTER JOIN
+        (
+            SELECT
+                ID_Sertificate,
+                ID_SertState
+            FROM
+                sertificate
+            WHERE
+                ID_User IN (
+                    SELECT 
+                        ID_User
+                    FROM
+                        user
+                    WHERE
+                        user.ID_Mentor = :manager_id
+                )
+        ) AS sertificates
+        ON
+            sertificates.ID_SertState = sertificate_state.ID_SertState
+        
+        GROUP BY
+            sertificate_state.name
+        ORDER BY
+            sertificate_state.ID_SertState";
+        $query = $this->getDoctrine()->getConnection()->prepare($query_sql);
+        $query->execute(array(
+            "manager_id" => $user->getIDUser(),
+        ));
+        $certificate_states = $query->fetchAll();
+        $response = new Response();
+        $response->setContent(json_encode($certificate_states));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
 }
