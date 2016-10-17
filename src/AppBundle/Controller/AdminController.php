@@ -514,7 +514,9 @@ class AdminController extends Controller{
         GROUP BY
             sertificate_state.name
         ORDER BY
-            sertificate_state.ID_SertState";
+            sertificate_state.ID_SertState
+        WHERE
+            NOT (sertificate_state.ID_SertState = 0)";
         $query = $this->getDoctrine()->getConnection()->prepare($query_sql);
         $query->execute(array(
             "manager_id" => $user->getIDUser(),
