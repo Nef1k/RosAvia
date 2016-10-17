@@ -477,7 +477,7 @@ class AdminController extends Controller{
      * @param Request $request
      * @return Response
      *
-     * @Route("/admin", name="cert_state_table_show")
+     * @Route("/admin/cert_state_table_show", name="cert_state_table_show")
      * @Method("GET")
      */
     public function ShowCertStateTableAction(Request $request)
