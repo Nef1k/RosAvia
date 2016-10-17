@@ -216,6 +216,7 @@ function fillAttachModalWithData(data){
     }
 }
 function fillCertsStatesListWithData(list_selector, data) {
+    $(".cert_list_loader").addClass("hidden");
     data.forEach(function (item, i) {
         console.log(item);
         $(list_selector).append(
