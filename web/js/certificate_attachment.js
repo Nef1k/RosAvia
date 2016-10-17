@@ -217,8 +217,9 @@ function fillAttachModalWithData(data){
 }
 function fillCertsStatesListWithData(list_selector, data) {
     data.forEach(function (item, i) {
+        console.log(item);
         $(list_selector).after(
-            "<a href='{{ path('view_certificates', {'state_id':" + item.id_cert_state + "}) }}' class='list-group-item'>" +
+            "<a href='/manager/view_certificates/" + item.id_cert_state + "' class='list-group-item'>" +
             item.cert_state_name +
             "<span class='badge'>" +
             item.count +
