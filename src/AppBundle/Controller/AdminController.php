@@ -558,7 +558,7 @@ class AdminController extends Controller{
             return $this->redirectToRoute("homepage");
         }
 
-        return $this->render("manager/view_certificates.html.twig", array(
+        return $this->render("admin/view_certificates.html.twig", array(
             "dealers" => $grouped_certificates,
             "action_form" => $action_form->createView(),
         ));
