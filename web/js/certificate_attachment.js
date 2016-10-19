@@ -216,9 +216,10 @@ function fillAttachModalWithData(data){
     }
 }
 function fillCertsStatesListWithData(list_selector, data) {
+    $(".cert_list_loader").addClass("hidden");
     data.forEach(function (item, i) {
         console.log(item);
-        $(list_selector).after(
+        $(list_selector).append(
             "<a href='/manager/view_certificates/" + item.id_cert_state + "' class='list-group-item'>" +
             item.cert_state_name +
             "<span class='badge'>" +
