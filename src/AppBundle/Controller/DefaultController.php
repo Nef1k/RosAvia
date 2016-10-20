@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class DefaultController extends Controller
 {
@@ -37,7 +39,10 @@ class DefaultController extends Controller
     {
         /** @var $user_stuff UserStuff */
         $user_stuff = $this->get("app.user_stuff");
-
+        $user_auth = $this->getUser();
+        if (!((in_array('ROLE_ADMIN',$user_auth->getRoles())) || ((in_array('ROLE_DEALER',$user_auth->getRoles())) && ($user->getIDUser() == $user_auth->getIDUser())))) {
+            return $this->redirectToRoute("user_signin");
+        }
         $user_params = $user_stuff->getUserParamList($user);
 
         return $this->render("default/view_user.html.twig", array(
