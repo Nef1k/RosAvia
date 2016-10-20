@@ -378,19 +378,19 @@ class CertificateStuff
             if (in_array("phone_number", $fields)){
                 $cert_info["phone_number"] = $cert->getPhoneNumber();
             }
-            if (in_array("flight_type", $fields)){
+            if (in_array("flight_type", $fields) && ($cert->getFlightType())){
                 $cert_info["flight_type"] = $cert->getFlightType()->getName();
             }
-            if (in_array("cert_state", $fields)){
+            if (in_array("cert_state", $fields) && ($cert->getSertState())){
                 $cert_info["cert__state"] = $cert->getSertState()->getName();
             }
             if (in_array("use_time", $fields)){
                 $cert_info["use_time"] = $cert->getUseTime();
             }
-            if (in_array("user_id", $fields)){
+            if (in_array("user_id", $fields) && ($cert->getUser())){
                 $cert_info["user_id"] = $cert->getUser()->getIDUser();
             }
-            if (in_array("user_login", $fields)){
+            if (in_array("user_login", $fields) && ($cert->getUser())){
                 $cert_info["user_login"] = $cert->getUser()->getUsername();
             }
             if (in_array("ID_Sertificate", $fields)){
