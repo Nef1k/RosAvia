@@ -389,6 +389,9 @@ class CertificateStuff
         if (in_array("user_id", $fields)){
             $cert_info["user_id"] = $cert->getUser()->getIDUser();
         }
+        if (in_array("user_login", $fields)){
+            $cert_info["user_login"] = $cert->getUser()->getUsername();
+        }
         if (in_array("ID_Sertificate", $fields)){
             $cert_info["ID_Sertificate"] = $cert->getIDSertificate();
         }
