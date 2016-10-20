@@ -215,6 +215,20 @@ function fillAttachModalWithData(data){
         $(".unatt_btn").click(onCertBtnClick);
     }
 }
+function fillCertsStatesListWithData(list_selector, data) {
+    $(".cert_list_loader").addClass("hidden");
+    data.forEach(function (item, i) {
+        console.log(item);
+        $(list_selector).append(
+            "<a href='/manager/view_certificates/" + item.id_cert_state + "' class='list-group-item'>" +
+            item.cert_state_name +
+            "<span class='badge'>" +
+            item.count +
+            "</span></a>"
+        );
+    });
+}
+
 
 $(document).ready(function(event){
     $(attachModalSelector).on("show.bs.modal", onModalLoad);

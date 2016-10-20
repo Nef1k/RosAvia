@@ -15,4 +15,7 @@ $(document).ready(function(event){
 
         $(".attach-certificate-btn").click(attachBtnClick);
     });
+    jQuery.getJSON("/admin/cert_state_table_show", function (data) {
+        fillCertsStatesListWithData("#certificate_states", data);
+    })
 });
