@@ -469,13 +469,30 @@ class CertificateStuff
     }
 
     /**
+     * @param $object
+     * @return array
+     */
+    public function SortObjectConvert($object){
+        $sort = [];
+        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) $sort["ID_Sertificate"] = $object["ID_Sertificate"];
+        if ((isset($object["name"])?$object["name"]:null) != null) $sort["name"] = $object["name"];
+        if ((isset($object["last_name"])?$object["last_name"]:null) != null) $sort["last_name"] = $object["last_name"];
+        if ((isset($object["phone_number"])?$object["phone_number"]:null) != null) $sort["phone_number"] = $object["phone_number"];
+        if ((isset($object["ID_User"])?$object["ID_User"]:null) != null) $sort["ID_User"] = $object["ID_User"];
+        if ((isset($object["ID_FlightType"])?$object["ID_FlightType"]:null) != null) $sort["ID_FlightType"] = $object["ID_FlightType"];
+        if ((isset($object["ID_SertState"])?$object["ID_SertState"]:null) != null) $sort["ID_SertState"] = $object["ID_SertState"];
+        if ((isset($object["use_time"])?$object["use_time"]:null) != null) $sort["use_time"] = $object["use_time"];
+        return $sort;
+    }
+
+    /**
      * @param Request $request
      * @return array
      */
     public function GetCertArrayFromRequest(Request $request){
         $criteria = $this->objectConvert((array)json_decode($request->request->get('criteria')));
         $fields = json_decode($request->request->get('field_names'));
-        $sort = json_decode($request->request->get('sort'));
+        $sort = $this->SortObjectConvert((array)json_decode($request->request->get('sort')));
         if ($sort == null) $sort = [];
         if ($criteria == null) $criteria = [];
         if ($fields == null) $fields = [];
