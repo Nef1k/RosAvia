@@ -40,7 +40,7 @@ class DefaultController extends Controller
         /** @var $user_stuff UserStuff */
         $user_stuff = $this->get("app.user_stuff");
         $user_auth = $this->getUser();
-        if (!((in_array('ROLE_ADMIN',$user_auth->getRoles())) || ((in_array('ROLE_DEALER',$user_auth->getRoles())) && ($user->getIDUser() == $user_auth->getIDUser())))) {
+        if (!(($user_auth) && ((in_array('ROLE_ADMIN',$user_auth->getRoles())) || ((in_array('ROLE_DEALER',$user_auth->getRoles())) && ($user->getIDUser() == $user_auth->getIDUser()))))) {
             return $this->redirectToRoute("user_signin");
         }
         $user_params = $user_stuff->getUserParamList($user);
