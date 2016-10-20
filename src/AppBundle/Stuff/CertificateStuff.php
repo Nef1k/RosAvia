@@ -410,10 +410,12 @@ class CertificateStuff
     public function GetCertArray(array $criteria, array $sort, array $fields){
         $certs = $this->em->getRepository("AppBundle:Sertificate")->findBy($criteria, $sort);
         $cert_list = [];
-        if ($certs != null){
+        if ($certs){
             foreach($certs AS $cert){
-                $cert_info = $this->CertToArray($cert, $fields);
-                array_push($cert_list, $cert_info);
+                if ($cert) {
+                    $cert_info = $this->CertToArray($cert, $fields);
+                    array_push($cert_list, $cert_info);
+                }
             }
         }
         return $cert_list;
