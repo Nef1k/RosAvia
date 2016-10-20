@@ -368,36 +368,39 @@ class CertificateStuff
      */
     public function CertToArray(Sertificate $cert, array $fields){
         $cert_info = [];
-        if (in_array("name", $fields)){
-            $cert_info["name"] = $cert->getName();
+        if ($cert != null){
+            if (in_array("name", $fields)){
+                $cert_info["name"] = $cert->getName();
+            }
+            if (in_array("last_name", $fields)){
+                $cert_info["last_name"] = $cert->getLastName();
+            }
+            if (in_array("phone_number", $fields)){
+                $cert_info["phone_number"] = $cert->getPhoneNumber();
+            }
+            if (in_array("flight_type", $fields)){
+                $cert_info["flight_type"] = $cert->getFlightType()->getName();
+            }
+            if (in_array("cert_state", $fields)){
+                $cert_info["cert__state"] = $cert->getSertState()->getName();
+            }
+            if (in_array("use_time", $fields)){
+                $cert_info["use_time"] = $cert->getUseTime();
+            }
+            if (in_array("user_id", $fields)){
+                $cert_info["user_id"] = $cert->getUser()->getIDUser();
+            }
+            if (in_array("user_login", $fields)){
+                $cert_info["user_login"] = $cert->getUser()->getUsername();
+            }
+            if (in_array("ID_Sertificate", $fields)){
+                $cert_info["ID_Sertificate"] = $cert->getIDSertificate();
+            }
+            if (in_array("cert_link", $fields)){
+                $cert_link = $this->router->generate('certificate_view',["certificate" => $cert->getIDSertificate()]);
+                $cert_info["cert_link"] = $cert_link;
+            }
         }
-        if (in_array("last_name", $fields)){
-            $cert_info["last_name"] = $cert->getLastName();
-        }
-        if (in_array("phone_number", $fields)){
-            $cert_info["phone_number"] = $cert->getPhoneNumber();
-        }
-        if (in_array("flight_type", $fields)){
-            $cert_info["flight_type"] = $cert->getFlightType()->getName();
-        }
-        if (in_array("cert_state", $fields)){
-            $cert_info["cert__state"] = $cert->getSertState()->getName();
-        }
-        if (in_array("use_time", $fields)){
-            $cert_info["use_time"] = $cert->getUseTime();
-        }
-        if (in_array("user_id", $fields)){
-            $cert_info["user_id"] = $cert->getUser()->getIDUser();
-        }
-        if (in_array("user_login", $fields)){
-            $cert_info["user_login"] = $cert->getUser()->getUsername();
-        }
-        if (in_array("ID_Sertificate", $fields)){
-            $cert_info["ID_Sertificate"] = $cert->getIDSertificate();
-        }
-        if (in_array("cert_link", $fields)){
-            $cert_link = $this->router->generate('certificate_view',["certificate" => $cert->getIDSertificate()]);
-            $cert_info["cert_link"] = $cert_link;        }
         return $cert_info;
     }
 
@@ -410,9 +413,9 @@ class CertificateStuff
     public function GetCertArray(array $criteria, array $sort, array $fields){
         $certs = $this->em->getRepository("AppBundle:Sertificate")->findBy($criteria, $sort);
         $cert_list = [];
-        if ($certs){
+        if ($certs != null){
             foreach($certs AS $cert){
-                if ($cert) {
+                if ($cert != null) {
                     $cert_info = $this->CertToArray($cert, $fields);
                     array_push($cert_list, $cert_info);
                 }
