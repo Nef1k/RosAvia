@@ -36,7 +36,9 @@ function get_certificates() {
                 "</div>"
             )
         }
+
     });
+
 }
 function fill_cert_table_with_data(list_selector, data) {
     var user = "";
@@ -61,8 +63,8 @@ function fill_cert_table_with_data(list_selector, data) {
                 "<div class='panel panel-default'>" +
                     "<div class='panel-heading'><strong>"+ user +"</strong>"+
                     "<div class='pull-right'>"+
-                        "<button class='btn btn-xs btn-default'>Выделить всё</button>" +
-                        "<button class='btn btn-xs btn-default'>Снять выделение</button>" +
+                        "<button class='btn btn-xs btn-default mark_all' data-user='"+user+"'>Выделить всё</button>" +
+                        "<button class='btn btn-xs btn-default unmark_all' data-user='"+user+"'>Снять выделение</button>" +
                     "</div>" +
                 "</div>" +
                 "<table class='table table-hover table-striped'>" +
@@ -74,7 +76,7 @@ function fill_cert_table_with_data(list_selector, data) {
                         "<th class='col-md-3'>Тип полёта</th>" +
                     "</tr>" +
                     "<tr class='certificate_row' data-id='' style='cursor:pointer;'>" +
-                        "<td><span class='glyphicon glyphicon-remove'></span></td>" +
+                        "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"'></td>"+
                         "<th>"+item.ID_Sertificate+"</th>" +
                         "<td>" + name + " " + last_name + "</td>" +
                         "<td>" + phone_number + "</td>" +
@@ -85,9 +87,9 @@ function fill_cert_table_with_data(list_selector, data) {
 
         }
         else{
-            $(list_selector + " table").append(
+            $(list_selector + " table:last").append(
                 "<tr class='certificate_row' data-id='' style='cursor:pointer;'>" +
-                "<td><span class='glyphicon glyphicon-remove'></span></td>" +
+                "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"'></td>"+
                 "<th>"+item.ID_Sertificate+"</th>" +
                 "<td>" + name + " " + last_name + "</td>" +
                 "<td>" + phone_number + "</td>" +
@@ -95,7 +97,8 @@ function fill_cert_table_with_data(list_selector, data) {
                 "</tr>"
             )
         }
-    })
+
+    });
 }
 
 $(document).ready(function (event) {
