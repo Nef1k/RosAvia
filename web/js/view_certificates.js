@@ -24,7 +24,6 @@ function get_certificates() {
     var criteria = JSON.stringify({ "ID_SertState": [cert_status]});
     var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
     jQuery.post("/certificate/select", {field_names : fields, criteria : criteria, sort : sort}, function (data) {
-        console.log(data);
         $(".cert_loader").addClass("hidden");
         if (data.length != 0){
             fill_cert_table_with_data("#cert_list",data);
@@ -112,7 +111,6 @@ function unmark_all(data) {
 }
 
 $(document).ready(function (event) {
-    console.log(get_cert_status());
     get_certificates();
 });
 
