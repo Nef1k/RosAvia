@@ -75,7 +75,7 @@ function fill_cert_table_with_data(list_selector, data) {
                         "<th class='col-md-3'>Тип полёта</th>" +
                     "</tr>" +
                     "<tr class='certificate_row' data-id='' style='cursor:pointer;' onclick='mark(this)'>" +
-                        "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"'></td>"+
+                        "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
                         "<th>"+item.ID_Sertificate+"</th>" +
                         "<td>" + name + " " + last_name + "</td>" +
                         "<td>" + phone_number + "</td>" +
@@ -88,7 +88,7 @@ function fill_cert_table_with_data(list_selector, data) {
         else{
             $(list_selector + " table:last").append(
                 "<tr class='certificate_row' data-id='' style='cursor:pointer;'  onclick='mark(this)'>" +
-                "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"'></td>"+
+                "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
                 "<th>"+item.ID_Sertificate+"</th>" +
                 "<td>" + name + " " + last_name + "</td>" +
                 "<td>" + phone_number + "</td>" +
@@ -118,6 +118,15 @@ function mark(data) {
     else{
         box.prop("checked", true)
     }
+}
+
+function ActionWithCertsBtn() {
+    var checked_certs = [];
+    var selector = $("input:checked");
+    for (var i = 0; i<selector.length; ++i){
+        checked_certs[i] = $(selector[i]).attr("data-cert_id");
+    }
+    console.log(checked_certs);
 }
 
 $(document).ready(function (event) {
