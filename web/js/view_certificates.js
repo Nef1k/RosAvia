@@ -63,8 +63,8 @@ function fill_cert_table_with_data(list_selector, data) {
                 "<div class='panel panel-default'>" +
                     "<div class='panel-heading'><strong>"+ user +"</strong>"+
                     "<div class='pull-right'>"+
-                        "<button class='btn btn-xs btn-default mark_all' data-user='"+user+"'>Выделить всё</button>" +
-                        "<button class='btn btn-xs btn-default unmark_all' data-user='"+user+"'>Снять выделение</button>" +
+                        "<button class='btn btn-xs btn-default mark_all' data-user='"+user+"' onclick='mark_all(this)'>Выделить всё</button>" +
+                        "<button class='btn btn-xs btn-default unmark_all' data-user='"+user+"' onclick='unmark_all(this)'>Снять выделение</button>" +
                     "</div>" +
                 "</div>" +
                 "<table class='table table-hover table-striped'>" +
@@ -99,6 +99,16 @@ function fill_cert_table_with_data(list_selector, data) {
         }
 
     });
+}
+
+function mark_all(data) {
+    var name = $(data).attr('data-user');
+    $(".certs_of_"+name).prop("checked",true);
+}
+
+function unmark_all(data) {
+    var name = $(data).attr('data-user');
+    $(".certs_of_"+name).prop("checked",false);
 }
 
 $(document).ready(function (event) {
