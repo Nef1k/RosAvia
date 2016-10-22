@@ -74,7 +74,7 @@ function fill_cert_table_with_data(list_selector, data) {
                         "<th class='col-md-3'>Телефон</th>" +
                         "<th class='col-md-3'>Тип полёта</th>" +
                     "</tr>" +
-                    "<tr class='certificate_row' data-id='' style='cursor:pointer;'>" +
+                    "<tr class='certificate_row' data-id='' style='cursor:pointer;' onclick='mark(this)'>" +
                         "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"'></td>"+
                         "<th>"+item.ID_Sertificate+"</th>" +
                         "<td>" + name + " " + last_name + "</td>" +
@@ -87,7 +87,7 @@ function fill_cert_table_with_data(list_selector, data) {
         }
         else{
             $(list_selector + " table:last").append(
-                "<tr class='certificate_row' data-id='' style='cursor:pointer;'>" +
+                "<tr class='certificate_row' data-id='' style='cursor:pointer;'  onclick='mark(this)'>" +
                 "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"'></td>"+
                 "<th>"+item.ID_Sertificate+"</th>" +
                 "<td>" + name + " " + last_name + "</td>" +
@@ -108,6 +108,16 @@ function mark_all(data) {
 function unmark_all(data) {
     var name = $(data).attr('data-user');
     $(".certs_of_"+name).prop("checked",false);
+}
+
+function mark(data) {
+    var box = $(data.firstChild.firstChild);
+    if (box.prop("checked")){
+        box.prop("checked",false)
+    }
+    else{
+        box.prop("checked", true)
+    }
 }
 
 $(document).ready(function (event) {
