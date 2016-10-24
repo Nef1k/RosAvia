@@ -51,6 +51,11 @@ class File implements \Serializable
     private $Category;
 
     /**
+     * @ORM\Column(name="RealCategory", type="string", nullable=true)
+     */
+    private $RealCategory;
+
+    /**
      * @ORM\ManyToOne(targetEntity="FileType")
      * @ORM\JoinColumn(name="ID_FileType", referencedColumnName="ID_FileType", nullable=false)
      */
@@ -247,6 +252,24 @@ class File implements \Serializable
     public function getCategory()
     {
         return $this->Category;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRealCategory()
+    {
+        return $this->RealCategory;
+    }
+
+    /**
+     * @param mixed $RealCategory
+     * @return $this
+     */
+    public function setRealCategory($RealCategory)
+    {
+        $this->RealCategory = $RealCategory;
+        return $this;
     }
 
     /**

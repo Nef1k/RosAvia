@@ -68,13 +68,11 @@ class FileController extends Controller
             'error_msg' => array(),
             'error_param' => array()
         );
-        $file_cat_name = substr($_FILES['userfile']['name'], stripos($_FILES['userfile']['name'],'.'));
+        $file_cat_name = substr(basename($_FILES['userfile']['name']), (stripos($_FILES['userfile']['name'],'.') !== false)?stripos($_FILES['userfile']['name'],'.'):strlen(basename($_FILES['userfile']['name'])));
         /** @var  $file_cat FileCategory*/
-        $file_cat = $this->getDoctrine()->getRepository("AppBundle:FileCategory")->findBy(array('CategoryName' => $file_cat_name));
-        $file_cat_id = $file_cat?$file_cat->getIDFileCategory():0;
         $response = new Response();
         $date = new \DateTime();
-        $response->setContent(json_encode($file_stuff->PushFile($user_id->getUserID(),$file_cat_id, $display_name, $date)));
+        $response->setContent(json_encode($file_stuff->PushFile($user_id->getUserID(),$file_cat_name, $display_name, $date)));
         $response->headers->set('Content-Type', 'application/json');
     }
 
