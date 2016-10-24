@@ -192,7 +192,7 @@ class FileStuff
                          */
                         $files = $this->em->getRepository("AppBundle:File")->findBy(array('ID_File' => $file_id, 'User' => $user));
                         if ($files) {
-                            $file = $file . '/' . $files->getFileName();
+                            $file = $file . '/' . $files->getIDFile().'.'.$files->getRealCategory();
                             if (file_exists($file)) {
                                 $this->FileForceDownload($file);
                             } else {
