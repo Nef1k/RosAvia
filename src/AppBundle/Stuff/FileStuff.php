@@ -173,6 +173,21 @@ class FileStuff
         readfile($file);
     }
 
+    public function FileDelete($file_id) {
+        /** @var  $file File*/
+        $file = $this->em->getRepository("AppBundle:File")->find($file_id);
+        if ($file) {
+            $filename = '/files/' . $file->getUser()->getIDUser() . '/' . $file_id . '.' . $file->getRealCategory();
+            if (file_exists($filename)) unlink($filename);
+            $this->em->remove($file);
+            $this->em->flush();
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
     public function GetFileFromRequest(Request $request){
         $file_id = $request->query->get('file_id');
         $user_id = $request->query->get('user_id');
