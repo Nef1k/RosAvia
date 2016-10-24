@@ -19,7 +19,7 @@ use AppBundle\Entity\ParamValue;
 use AppBundle\Entity\Sertificate;
 use AppBundle\Entity\SertState;
 use AppBundle\Form\CertGroupProcessingType;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -98,8 +98,14 @@ class AdminController extends Controller{
         $unatt_certs = [];
         if (count($errors) == 0){
             /** @var $em EntityManager */
+            /**
+             * @var $certificate_stuff CertificateStuff
+             */
+            $certificate_stuff = $this->get("app.certificate_stuff");
+            //$unatt_certs = $certificate_stuff->GetCertArray(['ID_User' => $ID_User],[],["ID_Sertificate","cert_state"]);
             $em = $this->getDoctrine()->getManager();
             /** @var $certs Sertificate[]*/
+
             $certs = $em->getRepository("AppBundle:Sertificate")->findBy(array('ID_User' => $ID_User));
             foreach($certs as $cert){
                 $cert_array_item = [];
@@ -107,6 +113,7 @@ class AdminController extends Controller{
                 $cert_array_item["CertState"] = $cert->getSertState()->getName();
                 array_push($att_certs, $cert_array_item);
             }
+            //$att_certs = $certificate_stuff->GetCertArray(['ID_SertState' => 0], ['ID_Sertificate' => 'DESC'], ["ID_Sertificate"]);
             $certs = $em->getRepository("AppBundle:Sertificate")->findBy(array('ID_SertState' => 0), array('ID_Sertificate' => 'DESC'));
             foreach($certs as $cert){
                 $cert_array_item = [];
@@ -483,8 +490,6 @@ class AdminController extends Controller{
      */
     public function ShowCertStateTableAction(Request $request)
     {
-        $user = $this->getUser();
-
         $query_sql = "SELECT
             sertificate_state.ID_SertState AS 'id_cert_state',
             sertificate_state.name AS 'cert_state_name',
@@ -499,15 +504,6 @@ class AdminController extends Controller{
                 ID_SertState
             FROM
                 sertificate
-            WHERE
-                ID_User IN (
-                    SELECT 
-                        ID_User
-                    FROM
-                        user
-                    WHERE
-                        user.ID_Mentor = :manager_id
-                )
         ) AS sertificates
         ON
             sertificates.ID_SertState = sertificate_state.ID_SertState
@@ -518,9 +514,7 @@ class AdminController extends Controller{
         ORDER BY
             sertificate_state.ID_SertState";
         $query = $this->getDoctrine()->getConnection()->prepare($query_sql);
-        $query->execute(array(
-            "manager_id" => $user->getIDUser(),
-        ));
+        $query->execute(array());
         $certificate_states = $query->fetchAll();
         $response = new Response();
         $response->setContent(json_encode($certificate_states));
