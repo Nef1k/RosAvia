@@ -75,5 +75,4 @@ class FileController extends Controller
         $response->setContent(json_encode($file_stuff->PushFile($user_id->getUserID(),$file_cat_name, $display_name, $date)));
         $response->headers->set('Content-Type', 'application/json');
     }
-
 }
