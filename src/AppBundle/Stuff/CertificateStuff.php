@@ -349,6 +349,10 @@ class CertificateStuff
                 $cert_state = $this->em->getRepository("AppBundle:SertState")->find($field_values[array_search("id_cert_state", $field_names)]);
                 $cert->setSertState($cert_state);
             }
+            if (in_array("id_cert_action", $field_names)) {
+                if ($field_values[array_search("id_cert_state", $field_names)] == "activate")
+                    $this->activateCertificate($cert);
+            }
             if (in_array("use_time", $field_names)) {
                 $cert->setUseTime(date_create(date("d-m-Y H:i:s T", $field_values[array_search("use_time", $field_names)])));
             }
