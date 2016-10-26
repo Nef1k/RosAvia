@@ -382,7 +382,7 @@ class CertificateStuff
                 $cert_info["flight_type"] = $cert->getFlightType()->getName();
             }
             if (in_array("cert_state", $fields) && ($cert->getSertState())){
-                $cert_info["cert__state"] = $cert->getSertState()->getName();
+                $cert_info["cert_state"] = $cert->getSertState()->getName();
             }
             if (in_array("use_time", $fields)){
                 $cert_info["use_time"] = $cert->getUseTime();
