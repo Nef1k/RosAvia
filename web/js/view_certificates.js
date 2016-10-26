@@ -120,14 +120,49 @@ function mark(data) {
     }
 }
 
+function YesBtn(event) {
+    var modal = event.data;
+
+    modal.close();
+}
+
 function ActionWithCertsBtn() {
     var checked_certs = [];
     var selector = $("input:checked");
+    var action = $("#actions select").val();
+    var yesNoDialog = new YesNoDialog;
+    yesNoDialog.setModalSelector("#yes-no-modal");
+    yesNoDialog.show({
+        caption: "Выполнение действия",
+
+        yes_caption: "Ок",
+        no_caption: "",
+
+
+
+        yes_handler: YesBtn
+    });
+    yesNoDialog.showLoader();
+    var msg = "Действие успешно выполнено.";
     for (var i = 0; i<selector.length; ++i){
         checked_certs[i] = $(selector[i]).attr("data-cert_id");
     }
     console.log(checked_certs);
     console.log($("#actions select").val());
+    var postparams = {
+        ids: JSON.stringify(checked_certs),
+        field_names: JSON.stringify(["id_cert_action"]),
+        field_values: JSON.stringify([action])
+    };
+    jQuery.post("/admin/edit", postparams, function (data) {
+        var errors = data.error_msg;
+        if (errors.length > 0){
+            msg = "Возникли следующие ошибки при выполнении действия: <br>" + errors.join(" <br>")+".";
+        }
+        yesNoDialog.message = msg;
+        yesNoDialog.hideLoader();
+        yesNoDialog.applyParams();
+    })
 }
 
 function fillActionList(){
