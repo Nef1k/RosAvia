@@ -438,6 +438,36 @@ class AdminController extends Controller{
         return $response;
     }
 
+    /**
+     *
+     * @Route("/admin/get_cert_action", name="get_cert_action
+     * @Method("GET")
+     * @param Request $request
+     * @return Response
+     */
+    public function GetStateActionsAction(Request $request)
+    {
+        $cert_state_id = $request->query->get("cert_state");
+        /** @var  $cert_stuff CertificateStuff*/
+        $cert_stuff = $this->get("app.certificate_stuff");
+        $cert_actions = $cert_stuff->getAvailableActions($cert_state_id);
+        $Request_output = array(
+            'error_msg' => array(),
+            'error_param' => array(),
+            'actions' => array()
+        );
+        foreach($cert_actions AS $cert_action)
+        {
+            $cert_act = array();
+            $cert_act['id_action'] = $cert_action['action_name'];
+            $cert_act['name_action'] = $cert_action['display_name'];
+            array_push($Request_output['actions'], $cert_act);
+        }
+        $response = new Response();
+        $response->setContent(json_encode($Request_output));
+        $response -> headers -> set('Content-Type', 'application/json');
+        return $response;
+    }
 
     /**
      * @param Request $request
