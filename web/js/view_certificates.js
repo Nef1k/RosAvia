@@ -127,6 +127,7 @@ function ActionWithCertsBtn() {
         checked_certs[i] = $(selector[i]).attr("data-cert_id");
     }
     console.log(checked_certs);
+    console.log($("#actions select").val());
 }
 
 function fillActionList(){
@@ -134,7 +135,7 @@ function fillActionList(){
     jQuery.get("/admin/get_cert_action?cert_state="+status, function(data){
         data.actions.forEach(function (item) {
             $("#actions select").append(
-                "<option data-action_id='"+item.id_action+"'>"+ item.name_action +"</option>"
+                "<option value='"+item.id_action+"'>"+ item.name_action +"</option>"
             )
         })
     })
