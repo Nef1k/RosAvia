@@ -145,7 +145,7 @@ function ActionWithCertsBtn() {
     yesNoDialog.showLoader();
     var msg = "Действие успешно выполнено.";
     for (var i = 0; i<selector.length; ++i){
-        checked_certs[i] = $(selector[i]).attr("data-cert_id");
+        checked_certs[i] = parseInt($(selector[i]).attr("data-cert_id"));
     }
     console.log(checked_certs);
     console.log($("#actions select").val());
@@ -154,7 +154,7 @@ function ActionWithCertsBtn() {
         field_names: JSON.stringify(["id_cert_action"]),
         field_values: JSON.stringify([action])
     };
-    jQuery.post("/admin/edit", postparams, function (data) {
+    jQuery.post("/certificate/edit", postparams, function (data) {
         var errors = data.error_msg;
         if (errors.length > 0){
             msg = "Возникли следующие ошибки при выполнении действия: <br>" + errors.join(" <br>")+".";
@@ -162,6 +162,7 @@ function ActionWithCertsBtn() {
         yesNoDialog.message = msg;
         yesNoDialog.hideLoader();
         yesNoDialog.applyParams();
+        console.log(data)
     })
 }
 
