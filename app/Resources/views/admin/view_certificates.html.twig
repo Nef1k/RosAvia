@@ -16,22 +16,17 @@
                     <h4 class="panel-title">Обработка сертификатов</h4>
                 </div>
                 <div class="panel-body">
-                    {#{{ form_start(action_form) }}#}
-                    {#{{ form_widget(action_form) }}#}
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle col-md-12" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            Выбрать действие
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                        </ul>
+                    <div id="actions">
+                        <select class="form-control">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
                     </div>
-                    <br><br><br>
+                    <br>
                     <button type="submit" class="btn btn-primary pull-right" onclick="ActionWithCertsBtn()">Выполнить</button>
-                    {#{{ form_end(action_form) }}#}
                 </div>
             </div>
         </div>

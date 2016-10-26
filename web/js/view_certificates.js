@@ -129,7 +129,19 @@ function ActionWithCertsBtn() {
     console.log(checked_certs);
 }
 
+function fillActionList(){
+    var status = get_cert_status();
+    jQuery.get("/admin/get_cert_action?cert_state="+status, function(data){
+        data.actions.forEach(function (item) {
+            $("#actions select").append(
+                "<option data-action_id='"+item.id_action+"'>"+ item.name_action +"</option>"
+            )
+        })
+    })
+}
+
 $(document).ready(function (event) {
     get_certificates();
+    fillActionList();
 });
 
