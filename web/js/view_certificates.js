@@ -133,7 +133,9 @@ function ActionWithCertsBtn() {
 function fillActionList(){
     var status = get_cert_status();
     jQuery.get("/admin/get_cert_action?cert_state="+status, function(data){
+        console.log(data);
         data.actions.forEach(function (item) {
+            console.log(item);
             $("#actions select").append(
                 "<option value='"+item.id_action+"'>"+ item.name_action +"</option>"
             )
