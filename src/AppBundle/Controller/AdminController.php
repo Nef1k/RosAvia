@@ -430,6 +430,17 @@ class AdminController extends Controller{
         return $response;
     }
 
+    /**
+     *
+     * @Route("/admin/get_cert_action", name="get_ceert_action")
+     * @Method("GET")
+     */
+    public function getCertActionAction(Request $request)
+    {
+        $cert_state_id = $request->query->get("cert_state");
+        
+    }
+
 
     /**
      * @param Request $request
