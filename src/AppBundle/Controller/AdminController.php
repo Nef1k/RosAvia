@@ -7,6 +7,7 @@
  */
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\SertAction;
 use AppBundle\Stuff\CertificateStuff;
 use AppBundle\DataClasses\CertEdition;
 use AppBundle\DataClasses\UserEdition;
@@ -440,7 +441,7 @@ class AdminController extends Controller{
 
     /**
      *
-     * @Route("/admin/get_cert_action", name="get_cert_action
+     * @Route("/admin/get_cert_action", name="get_cert_action")
      * @Method("GET")
      * @param Request $request
      * @return Response
@@ -456,13 +457,15 @@ class AdminController extends Controller{
             'error_param' => array(),
             'actions' => array()
         );
+        /** @var  $cert_action SertAction*/
         foreach($cert_actions AS $cert_action)
         {
             $cert_act = array();
-            $cert_act['id_action'] = $cert_action['action_name'];
-            $cert_act['name_action'] = $cert_action['display_name'];
+            $cert_act['id_action'] = $cert_action->getActionName();
+            $cert_act['name_action'] = $cert_action->getDisplayName();
             array_push($Request_output['actions'], $cert_act);
         }
+        dump($Request_output);
         $response = new Response();
         $response->setContent(json_encode($Request_output));
         $response -> headers -> set('Content-Type', 'application/json');
