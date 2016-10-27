@@ -266,6 +266,7 @@ class AdminController extends Controller{
                 $user_info_array["username"] = $user->getUsername();
                 $user_info_array["email"] = $user->getEmail();
                 $user_info_array["group_name"] = $user->getIDUserGroup()->getDisplayName();
+                $user_info_array["is_activated"] = $user->getIsActive();
             }
         }
         $Request_output = array(
@@ -369,8 +370,11 @@ class AdminController extends Controller{
             $user = $em->getRepository("AppBundle:User")->findBy(array('ID_User' => $user_id->getUserID()));
             $general_settings = json_decode($request->query->get('general_settings'));
             $additional_settings = json_decode($request->query->get('additional_settings'));
+            $mentor = $em->getRepository("AppBundle:User")->findBy(array('ID_User' => $general_settings['mentor_id']));
             $user_group = $em->getRepository("AppBundle:UserGroup")->find($general_settings['group_id']);
+            $user->setIsActive($general_settings['is_activated']);
             $user->setUserGroup($user_group);
+            $user->setIDMentor($mentor);
             $user->setEmail($general_settings['email']);
             $em->persist($user);
             $em->flush();
