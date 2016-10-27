@@ -43,7 +43,7 @@ class AdminController extends Controller{
      * @param $user_id
      * @param Request $request
      *
-     * @Route("/admin/user_edit/{user_id}", name="user_edition")
+     * @Route("/admin/user_edition/{user_id}", name="user_edition")
      * @return Response
      */
     public function renderUserEditAction($user_id, Request $request)

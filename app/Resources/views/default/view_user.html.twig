@@ -39,7 +39,7 @@
         <div class="col-md-3">
             <br>
             {% if auth_user_group == 3 %}
-                    <a class="btn btn-primary btn-lg" href="{{ path("user_edit") }}">Редактировать</a>
+                    <a class="btn btn-primary btn-lg" href="{{ path("user_edition", {"user_id": user.IDUser}) }}">Редактировать</a>
             {% endif %}
         </div>
     </div>
