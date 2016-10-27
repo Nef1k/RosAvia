@@ -6,6 +6,10 @@
     <div class="row">
         <div class="col-md-9">
             <h1>Информация о пользователе {{ user.getUsername }}</h1>
+            {{ auth_user_group }}
+            {% if auth_user_group == 3 %}
+                <h3><a href="{{ path("user_edit") }}">Редактировать</a></h3>
+            {% endif %}
             <div class="panel panel-default">
                 <div class="panel-heading">Общая информация</div>
                 <div class="panel-body">
