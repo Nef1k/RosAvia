@@ -39,6 +39,18 @@ class AdminController extends Controller{
         return $this->render("admin/index.html.twig");
     }
 
+    /**
+     * @param $user_id
+     * @param Request $request
+     *
+     * @Route("/admin/user_edit/{user_id}", name="user_edit")
+     * @return Response
+     */
+    public function renderUserEditAction($user_id, Request $request)
+    {
+        return $this->render("admin/user_edit.html.twig");
+    }
+
 
     /**
      * @param Request $request
@@ -217,7 +229,7 @@ class AdminController extends Controller{
      * @param Request $request
      * @return Response
      *
-     * @Route("/admin/user_edit", name = "user_edit")
+     * @Route("/admin/user_edit/{user_id}", name = "user_edit")
      *
      * @Method("GET")
      */
