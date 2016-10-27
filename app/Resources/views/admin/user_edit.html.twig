@@ -1,12 +1,84 @@
 {% extends "base.html.twig" %}
-{% form_theme edit_form "form/fields.html.twig" %}
+{#{% form_theme edit_form "form/fields.html.twig" %}#}
 
 {% block body %}
     {% include "default/navigation.html.twig" %}
 
     <div class="row">
         <div class="col-md-12">
-            <h1>Изменение пользователя {{ user.getUserName }}</h1>
+            <h1 data-ID_user="{{ user.ID_User }}">Изменение пользователя {{ user.getUserName }}</h1>
+            <div class="panel panel-default">
+                <div class="panel-heading">Общая информация</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <b>Логин:</b> {{ user.getUserName }}<br>
+                            <b>Изменить:</b>
+                            <div class="input-group">
+                                <input type="text" class="form-control" aria-label="...">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <b>Роль в системе:</b> {{ user.getUserGroup.getDisplayName }}<br>
+                            <b>Изменить:</b>
+                            <div class="input-group">
+                                <select class="form-control" id="userGroup">
+                                    <option selected value="{{ user.getUserGroup.IDUserGroup }}">{{ user.getUserGroup.getDisplayName }}</option>
+                                    {% for UserGroup in UserGroups %}
+                                        <option value="{{ UserGroup.IDUserGroup }}">{{ UserGroup.getDisplayName}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <b>E-mail:</b> {{ user.getEmail }}<br>
+                            <b>Изменить:</b>
+                            <div class="input-group">
+                                <input type="text" class="form-control" aria-label="...">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <b>Ментор:</b> {{ user.getIDMentor.username }}<br>
+                            <b>Изменить:</b>
+                            <div class="input-group">
+                                <select class="form-control">
+                                    {% for mentor in mentors %}
+                                        <option value="{{ mentor.IDUser }}">{{ mentor.username}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">Дополнительная информация</div>
+                <div class="panel-body">
+                    <div class="row loader">
+                        <div class="text-center">
+                            <img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка..." width="40" height="40">
+                        </div>
+                    </div>
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6"></div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">@</span>
+                        <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset("js/modals/YesNoDialog.js") }}" type="application/javascript"></script>
+    <script src="{{ asset("js/user_edit.js") }}" type="application/javascript"></script>
 {% endblock %}
