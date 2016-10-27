@@ -465,7 +465,6 @@ class AdminController extends Controller{
             $cert_act['name_action'] = $cert_action->getDisplayName();
             array_push($Request_output['actions'], $cert_act);
         }
-        dump($Request_output);
         $response = new Response();
         $response->setContent(json_encode($Request_output));
         $response -> headers -> set('Content-Type', 'application/json');
