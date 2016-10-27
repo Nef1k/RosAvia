@@ -34,7 +34,7 @@ function getParams() {
 }
 
 function SaveChanges() {
-    var user_id = $("h1").attr("data-ID_user");
+    var user_id = parseInt($("h1").attr("data-ID_user"));
     var mainFields ={
         username: $("#username").val(),
         email: $("#email").val(),
@@ -64,12 +64,12 @@ function SaveChanges() {
     yesNoDialog.showLoader();
     var msg = "Данные изменены.";
 
-    var postParams={
-        user_id: JSON.stringify(user_id),
+    var postParams = {
+        user_id: user_id,
         general_settings: JSON.stringify(mainFields),
         additional_settings: JSON.stringify(addFields)
     };
-
+    console.log(user_id);
     jQuery.post("/admin/user_insert", postParams, function (data) {
         console.log(data);
         var errors = data.error_msg;
@@ -86,7 +86,9 @@ function changeModalYesBtn (event) {
     var modal = event.data;
 
     modal.close();
-
+    if (modal.message == "Данные изменены."){
+        location.reload(true);
+    }
 }
 
 $(document).ready(function (event) {
