@@ -106,6 +106,8 @@ function onSaveBtnClick(event){
         yes_caption: "Ок",
         no_caption: "",
 
+
+
         yes_handler: attachModalYesBtn
     });
     yesNoDialog.showLoader();
@@ -130,23 +132,13 @@ function onSaveBtnClick(event){
 
 function attachModalYesBtn(event) {
     var modal = event.data;
-    var user_id = $(attachModalSelector).data("user_id");
-
     modal.close();
-    $(".certificate-row").remove();
-    $(".unatt_btn").remove();
-    $(".attached-certificates-loader").removeClass("hidden");
-    $(".unattached-certificates-loader").removeClass("hidden");
-    $(attachModalSelector + " input").val("");
-    jQuery.getJSON("/admin/attach?user_id="+user_id, fillAttachModalWithData);
-    jQuery.getJSON("/admin/user_table", function (data){
-        $("#unattached_certs_count").html(data.unattached_certs)
-    })
 }
 
 function onModalLoad(event){
     var user_id = $(this).data("user_id");
     var username = $(this).data("username");
+
 
     //Clearing up previous
     $(".attached-certificates-empty").addClass("hidden");
@@ -212,6 +204,9 @@ function fillAttachModalWithData(data){
 
 $(document).ready(function(event){
     $(attachModalSelector).on("show.bs.modal", onModalLoad);
+    $("#yes-no-modal").on("hide.bs.modal", function () {
+        $(attachModalSelector).modal("hide");
+    });
     $("#attach_helper_add_btn").click(onHelperAddBtnClick);
     $("#save-btn").click(onSaveBtnClick);
 });

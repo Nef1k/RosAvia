@@ -98,20 +98,23 @@ function getCertRow(cert) {
 function onYesSetTime(event){
     var modal_window = event.data;
     var date = moment(modal_window.data.date).unix();
-    var certificate_id = JSON.stringify(modal_window.data.certificate_id);
+    var certificate_id = JSON.stringify([modal_window.data.certificate_id]);
     var fieldnames = JSON.stringify(["use_time"]);
     var fieldvalues = JSON.stringify([date]);
     modal_window.showLoader();
+
+    $("#time_table" + " .day-empty").addClass("hidden");
     //TODO: Make post query to set use_time to certificate
-    jQuery.post("/certificate/edit", {id : certificate_id, field_names : fieldnames, field_values: fieldvalues}, function (data) {
-        console.log(data)
+    jQuery.post("/certificate/edit", {ids : certificate_id, field_names : fieldnames, field_values: fieldvalues}, function (data) {
+        console.log(data);
+        $("#time_table").find(".hour-row").remove();
+        $("#found_certs").find(".cert_row").remove();
+        getTimeTableData(date);
+        findCertificates();
     });
     modal_window.hideLoader();
     modal_window.close();
-    $("#time_table").find(".hour-row").remove();
-    $("#found_certs").find(".cert_row").remove();
-    getTimeTableData(date);
-    findCertificates();
+
 }
 
 function onNoSetTime(event){

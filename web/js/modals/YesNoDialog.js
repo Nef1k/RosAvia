@@ -11,11 +11,6 @@ YesNoDialog = function(){
     this.yes_caption = "";
     this.no_caption = "";
 
-    this.yes_attribute1_name = "none";
-    this.yes_attribute1_value = "none";
-    this.yes_attribute2_name = "none";
-    this.yes_attribute2_value = "none";
-
     this.data = {};
 
     this.yes_handler = function(event){};
@@ -55,9 +50,7 @@ YesNoDialog = function(){
                 .html(this.yes_caption)
                 .unbind("click")
                 .click(this, this.yes_handler)
-                .removeClass("hidden")
-                .attr(this.yes_attribute1_name, this.yes_attribute1_value)
-                .attr(this.yes_attribute2_name, this.yes_attribute2_value);
+                .removeClass("hidden");
         }
 
         if (this.no_caption == "") {
@@ -90,16 +83,6 @@ YesNoDialog = function(){
         if (param_list.no_caption){
             //console.log("param_set");
             this.no_caption = param_list.no_caption;
-        }
-
-        if (param_list.yes_attribute1_name){
-            this.yes_attribute1_name = param_list.yes_attribute1_name;
-            this.yes_attribute1_value = param_list.yes_attribute1_value;
-        }
-
-        if (param_list.yes_attribute2_name){
-            this.yes_attribute2_name = param_list.yes_attribute2_name;
-            this.yes_attribute2_value = param_list.yes_attribute2_value;
         }
 
         if (param_list.data){
