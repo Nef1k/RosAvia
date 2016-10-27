@@ -14,7 +14,7 @@
                         <div class="col-md-6 text-center">
                             <div class="input-group text-center">
                                 <span class="input-group-addon" id="basic-addon3"><b>Логин:</b></span>
-                                <input type="text" class="form-control" aria-label="..." required value="{{ user.getUserName }}">
+                                <input id="username" type="text" class="form-control" aria-label="..." required value="{{ user.getUserName }}">
                             </div>
                         </div>
                         <div class="col-md-6 text-center">
@@ -34,14 +34,30 @@
                         <div class="col-md-6 text-center">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon3"><b>E-mail:</b></span>
-                                <input type="text" class="form-control" aria-label="..." value="{{ user.getEmail }}">
+                                <input id ="email" type="text" class="form-control" aria-label="..." value="{{ user.getEmail }}">
                             </div>
                         </div>
+                        <div class="col-md-6 text-center">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon3"><b>Статус:</b></span>
+                                <select id="status" class="form-control">
+                                        {% if user.getIsActive %}
+                                            <option selected value="1">Активен</option>
+                                            <option value="0">Неактивен</option>
+                                        {% else %}
+                                            <option value="1">Активен</option>
+                                            <option selected value="0">Неактивен</option>
+                                        {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                    </div><br>
+                    <div class="row">
                         {% if user.getUserGroup.IDUserGroup != 3 %}
                             <div class="col-md-6 text-center">
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon3"><b>Ментор:</b></span>
-                                    <select class="form-control">
+                                    <select id="mentor" class="form-control">
                                         <option selected value="{{ user.getIDMentor.IDUser }}">{{ user.getIDMentor.username }}</option>
                                         {% for mentor in mentors %}
                                             <option value="{{ mentor.IDUser }}">{{ mentor.username}}</option>
