@@ -371,7 +371,7 @@ class AdminController extends Controller{
             $additional_settings = json_decode($request->query->get('additional_settings'));
             $user_group = $em->getRepository("AppBundle:UserGroup")->find($general_settings['group_id']);
             $user->setUserGroup($user_group);
-            $user->setEmail($general_settings['email']);
+            if (isset($general_settings['email'])) $user->setEmail($general_settings['email']);
             $em->persist($user);
             $em->flush();
             foreach($additional_settings as $param){
