@@ -48,7 +48,11 @@ class AdminController extends Controller{
      */
     public function renderUserEditAction($user_id, Request $request)
     {
-        return $this->render("admin/user_edit.html.twig");
+        $em = $this->getDoctrine()->getEntityManager();
+        $user = $em->getRepository("AppBundle:User")->find($user_id);
+        return $this->render("admin/user_edit.html.twig", array(
+            "user" => $user
+        ));
     }
 
 
