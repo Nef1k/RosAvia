@@ -7,6 +7,7 @@
  */
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\SertAction;
 use AppBundle\Stuff\CertificateStuff;
 use AppBundle\DataClasses\CertEdition;
 use AppBundle\DataClasses\UserEdition;
@@ -18,7 +19,8 @@ use AppBundle\Entity\GroupParam;
 use AppBundle\Entity\ParamValue;
 use AppBundle\Entity\Sertificate;
 use AppBundle\Entity\SertState;
-use Doctrine\ORM\EntityManager;
+use AppBundle\Form\CertGroupProcessingType;
+use Doctrine\ORM\EntityManager;;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -97,8 +99,14 @@ class AdminController extends Controller{
         $unatt_certs = [];
         if (count($errors) == 0){
             /** @var $em EntityManager */
+            /**
+             * @var $certificate_stuff CertificateStuff
+             */
+            $certificate_stuff = $this->get("app.certificate_stuff");
+            //$unatt_certs = $certificate_stuff->GetCertArray(['ID_User' => $ID_User],[],["ID_Sertificate","cert_state"]);
             $em = $this->getDoctrine()->getManager();
             /** @var $certs Sertificate[]*/
+
             $certs = $em->getRepository("AppBundle:Sertificate")->findBy(array('ID_User' => $ID_User));
             foreach($certs as $cert){
                 $cert_array_item = [];
@@ -106,6 +114,7 @@ class AdminController extends Controller{
                 $cert_array_item["CertState"] = $cert->getSertState()->getName();
                 array_push($att_certs, $cert_array_item);
             }
+            //$att_certs = $certificate_stuff->GetCertArray(['ID_SertState' => 0], ['ID_Sertificate' => 'DESC'], ["ID_Sertificate"]);
             $certs = $em->getRepository("AppBundle:Sertificate")->findBy(array('ID_SertState' => 0), array('ID_Sertificate' => 'DESC'));
             foreach($certs as $cert){
                 $cert_array_item = [];
@@ -430,6 +439,38 @@ class AdminController extends Controller{
         return $response;
     }
 
+    /**
+     *
+     * @Route("/admin/get_cert_action", name="get_cert_action")
+     * @Method("GET")
+     * @param Request $request
+     * @return Response
+     */
+    public function GetStateActionsAction(Request $request)
+    {
+        $cert_state_id = $request->query->get("cert_state");
+        /** @var  $cert_stuff CertificateStuff*/
+        $cert_stuff = $this->get("app.certificate_stuff");
+        $cert_actions = $cert_stuff->getAvailableActions($cert_state_id);
+        $Request_output = array(
+            'error_msg' => array(),
+            'error_param' => array(),
+            'actions' => array()
+        );
+        /** @var  $cert_action SertAction*/
+        foreach($cert_actions AS $cert_action)
+        {
+            $cert_act = array();
+            $cert_act['id_action'] = $cert_action->getActionName();
+            $cert_act['name_action'] = $cert_action->getDisplayName();
+            array_push($Request_output['actions'], $cert_act);
+        }
+        dump($Request_output);
+        $response = new Response();
+        $response->setContent(json_encode($Request_output));
+        $response -> headers -> set('Content-Type', 'application/json');
+        return $response;
+    }
 
     /**
      * @param Request $request
@@ -468,8 +509,86 @@ class AdminController extends Controller{
 
         $response = new Response();
         $response->setContent(json_encode($Request_output));
-        $response -> headers -> set('Content-Type', 'application/json');
+        $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
 
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/admin/cert_state_table_show", name="cert_state_table_show")
+     * @Method("GET")
+     */
+    public function ShowCertStateTableAction(Request $request)
+    {
+        $query_sql = "SELECT
+            sertificate_state.ID_SertState AS 'id_cert_state',
+            sertificate_state.name AS 'cert_state_name',
+            COUNT(sertificates.ID_SertState) AS `count`
+        FROM
+            sertificate_state
+        
+        LEFT OUTER JOIN
+        (
+            SELECT
+                ID_Sertificate,
+                ID_SertState
+            FROM
+                sertificate
+        ) AS sertificates
+        ON
+            sertificates.ID_SertState = sertificate_state.ID_SertState
+        WHERE
+            sertificate_state.ID_SertState != 0
+        GROUP BY
+            sertificate_state.name
+        ORDER BY
+            sertificate_state.ID_SertState";
+        $query = $this->getDoctrine()->getConnection()->prepare($query_sql);
+        $query->execute(array());
+        $certificate_states = $query->fetchAll();
+        $response = new Response();
+        $response->setContent(json_encode($certificate_states));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     *
+     * @Route("/admin/view_certificates/{state_id}", name="view_certificates")
+     */
+    public function viewCertificatesAction($state_id, Request $request)
+    {
+        //$state = $this->getDoctrine()->getRepository("AppBundle:SertState")->find($state_id);
+        /**
+         * @var $certificate_stuff CertificateStuff
+         */
+        $certificate_stuff = $this->get("app.certificate_stuff");
+        $certificates = $certificate_stuff->getCertificatesByMentor($this->getUser()->getIDUser(), $state_id);
+        $grouped_certificates = $certificate_stuff->groupCertificatesBy($certificates, function($certificate){
+            /** @var $certificate Sertificate */
+            return $certificate->getUser()->getUsername();
+        });
+
+        //Paste from sublime here
+        $action_form = $this->createForm(CertGroupProcessingType::class, array(
+            "certificates" => $certificates,
+            "state_id" => $state_id,
+        ));
+
+        $action_form->handleRequest($request);
+        if ($action_form->isSubmitted() && $action_form->isValid()){
+            $certificate_stuff->groupProcessCertificates($action_form->getData());
+            return $this->redirectToRoute("homepage");
+        }
+
+        return $this->render("admin/view_certificates.html.twig", array(
+            "dealers" => $grouped_certificates,
+            "action_form" => $action_form->createView(),
+        ));
+    }
 }
