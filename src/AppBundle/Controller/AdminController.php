@@ -360,20 +360,21 @@ class AdminController extends Controller{
      */
     public function insertUserParams(Request $request){
         $user_id = new UserIDCheck();
-        $user_id->setUserID($request->query->get('user_id'));
+        $user_id->setUserID($request->request->get('user_id'));
         $em = $this->getDoctrine()->getManager();
         /** @var  $em EntityManager */
         $validator = $this->get('validator');
         $errors = $validator->validate($user_id);
         if (count($errors) == 0){
             /** @var  $user User*/
-            $user = $em->getRepository("AppBundle:User")->findBy(array('ID_User' => $user_id->getUserID()));
-            $general_settings = json_decode($request->query->get('general_settings'));
-            $additional_settings = json_decode($request->query->get('additional_settings'));
-            $mentor = $em->getRepository("AppBundle:User")->findBy(array('ID_User' => $general_settings['mentor_id']));
+            $user = $em->getRepository("AppBundle:User")->find($user_id->getUserID());
+            $general_settings = (array)json_decode($request->request->get('general_settings'));
+            $additional_settings = (array)json_decode($request->request->get('additional_settings'));
+            $mentor = $em->getRepository("AppBundle:User")->find($general_settings['mentor_id']);
             $user_group = $em->getRepository("AppBundle:UserGroup")->find($general_settings['group_id']);
+            $buf = unpack('a', $general_settings['username']);
             $user->
-                setUsername($general_settings['username'])->
+                setUsername((string)($general_settings['username']))->
                 setIsActive($general_settings['is_activated'] == 1)->
                 setUserGroup($user_group)->
                 setIDMentor($mentor)->
@@ -382,17 +383,21 @@ class AdminController extends Controller{
             $em->flush();
             foreach($additional_settings as $param){
                 /** @var  $group_param GroupParam*/
-                $group_param = $em->getRepository("AppBundle:GroupParam")->find($param['id']);
+                $group_param = $em->getRepository("AppBundle:GroupParam")->find($param->id);
                 /** @var  $param_value ParamValue*/
-                $param_value = $em->getRepository("AppBundle:ParamValue")->findBy(array('ID_User' => $user, 'ID_GroupParam' => $group_param));
-                if(!$param_value){
-                    $param_value->setGroupParam($group_param);
-                    $param_value->setUser($user);
+                $param_values = $em->getRepository("AppBundle:ParamValue")->findBy(array('ID_User' => $user, 'ID_GroupParam' => $group_param));
+                if (!$param_values){
+                    $param_value = new ParamValue($user, $group_param);
+                    $param_value->setValue($param->value);
                 }
-                $param_value->setValue($param['value']);
+                else {
+                    foreach ($param_values AS $param_value) {
+                        $param_value->setValue($param->value);
+                    }
+                }
                 $em->persist($param_value);
-                $em->flush();
             }
+            $em->flush();
         }
         $Request_output = array(
             'error_msg' => array(),
