@@ -7,11 +7,9 @@ function getParams() {
     $("#params p").remove();
     $(".loader").removeClass("hidden");
     var userID = $("h1").attr("data-ID_user");
-    console.log(userID);
     var user_group_id = $("#userGroup").val();
     jQuery.get("/admin/user_group_edit?user_id="+userID+"&user_group_id="+user_group_id, function (data) {
         $(".loader").addClass("hidden");
-        console.log(data);
         if (data.params.length == 0){
             $("#params").append(
                 "<p class='text-center'>У пользователя с данной ролью нет дополнительной информации</p>"
