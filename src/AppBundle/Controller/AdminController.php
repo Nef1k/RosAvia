@@ -48,7 +48,24 @@ class AdminController extends Controller{
      */
     public function renderUserEditAction($user_id, Request $request)
     {
-        return $this->render("admin/user_edit.html.twig");
+        $em = $this->getDoctrine()->getEntityManager();
+        /** @var  $user User*/
+        $user = $em->getRepository("AppBundle:User")->find($user_id);
+        $req = $em->getRepository("AppBundle:UserGroup")->createQueryBuilder('a');
+        $req->
+            where('a.ID_UserGroup != :userGroup')->
+            setParameter('userGroup', $user->getUserGroup()->getIDUserGroup());
+        $UserGroups = $req->getQuery()->getResult();
+        $req = $em->getRepository("AppBundle:User")->createQueryBuilder('a');
+        $req->
+            where('a.ID_User != :userID')->
+            setParameter('userID', $user->getIDUser());
+        $mentors = $req->getQuery()->getResult();
+        return $this->render("admin/user_edit.html.twig", array(
+            "user" => $user,
+            "UserGroups" => $UserGroups,
+            "mentors" => $mentors
+        ));
     }
 
 
