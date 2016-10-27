@@ -6,6 +6,9 @@
     <div class="row">
         <div class="col-md-9">
             <h1>Информация о пользователе {{ user.getUsername }}</h1>
+            {% if user.ID_UserGroup.ID_UserGroup == 3 %}
+            <a ...>редактировать</a>
+            {% endif %}
             <div class="panel panel-default">
                 <div class="panel-heading">Общая информация</div>
                 <div class="panel-body">
@@ -33,9 +36,19 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">Файлы пользователя</div>
-                <div class="panel-body"></div>
+                <div class="panel-body">
+                    <button type="button" class="btn btn-success">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        <span>&nbsp;Добавить файлы</span>
+                        <input id="fileupload" type="file" name="files[]" multiple>
+                    </button>
+                </div>
             </div>
         </div>
         <div class="col-md-3">Тут пока пусть будет пусто</div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset("js/view_user.js") }}" type="application/javascript"></script>
 {% endblock %}
