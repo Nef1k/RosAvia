@@ -4,6 +4,7 @@
 
 function getParams() {
     $("#params .param").remove();
+    $("#params p").remove();
     $(".loader").removeClass("hidden");
     var userID = $("h1").attr("data-ID_user");
     console.log(userID);
