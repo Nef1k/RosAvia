@@ -372,9 +372,8 @@ class AdminController extends Controller{
             $additional_settings = (array)json_decode($request->request->get('additional_settings'));
             $mentor = $em->getRepository("AppBundle:User")->find($general_settings['mentor_id']);
             $user_group = $em->getRepository("AppBundle:UserGroup")->find($general_settings['group_id']);
-            $buf = unpack('a', $general_settings['username']);
             $user->
-                setUsername((string)($general_settings['username']))->
+                setUsername(($general_settings['username']))->
                 setIsActive($general_settings['is_activated'] == 1)->
                 setUserGroup($user_group)->
                 setIDMentor($mentor)->
