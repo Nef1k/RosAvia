@@ -37,11 +37,33 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Файлы пользователя</div>
                 <div class="panel-body">
-                    <button type="button" class="btn btn-success">
-                        <i class="glyphicon glyphicon-plus"></i>
-                        <span>&nbsp;Добавить файлы</span>
-                        <input id="fileupload" type="file" name="files[]" multiple>
-                    </button>
+                    <form method="post" action="file_set" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="InputFile">Добавить файл</label>
+                            <input type="file" id="InputFile" name="userfile">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Описание файла</label>
+                            <textarea id="description" class="form-control" rows="3" name="display_name"></textarea>
+                            <input type="hidden" name="user_id" value="{{ user.IDUser }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </form>
+                    {#<span class="btn btn-success fileinput-button">#}
+                        {#<i class="glyphicon glyphicon-plus"></i>#}
+                        {#<span>Добавить</span>#}
+                        {#<!-- The file input field used as target for the file upload widget -->#}
+                        {#<input id="fileupload" type="file" name="files[]" multiple>#}
+                    {#</span>#}
+                    {#<br>#}
+                    {#<br>#}
+                    {#<!-- The global progress bar -->#}
+                    {#<div id="progress" class="progress">#}
+                        {#<div class="progress-bar progress-bar-success"></div>#}
+                    {#</div>#}
+                    {#<!-- The container for the uploaded files -->#}
+                    {#<div id="files" class="files"></div>#}
+                    {#<br>#}
                 </div>
             </div>
         </div>
@@ -53,7 +75,25 @@
         </div>
     </div>
 {% endblock %}
+{% block stylesheets %}
+    {#<link rel="stylesheet" href="{{ asset("js/lib/fileUploadMaster/css/style.css") }}">#}
+    {#<link rel="stylesheet" href="{{ asset("js/lib/fileUploadMaster/css/jquery.fileupload.css") }}">#}
+{% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset("js/view_user.js") }}" type="application/javascript"></script>
+    {#<script src="{{ asset("js/lib/fileUploadMaster/js/vendor/jquery.ui.widget.js") }}" type="application/javascript"></script>#}
+    {#<!-- The Load Image plugin is included for the preview images and image resizing functionality -->#}
+    {#<script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>#}
+    {#<!-- The Canvas to Blob plugin is included for image resizing functionality -->#}
+    {#<script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>#}
+    {#<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->#}
+    {#<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>#}
+    {#<script src="{{ asset("js/lib/fileUploadMaster/js/jquery.iframe-transport.js") }}" type="application/javascript"></script>#}
+    {#<script src="{{ asset("js/lib/fileUploadMaster/js/jquery.fileupload.js") }}" type="application/javascript"></script>#}
+    {#<script src="{{ asset("js/lib/fileUploadMaster/js/jquery.fileupload-process.js") }}" type="application/javascript"></script>#}
+    {#<script src="{{ asset("js/lib/fileUploadMaster/js/jquery.fileupload-image.js") }}" type="application/javascript"></script>#}
+    {#<script src="{{ asset("js/lib/fileUploadMaster/js/jquery.fileupload-audio.js") }}" type="application/javascript"></script>#}
+    {#<script src="{{ asset("js/lib/fileUploadMaster/js/jquery.fileupload-video.js") }}" type="application/javascript"></script>#}
+    {#<script src="{{ asset("js/lib/fileUploadMaster/js/jquery.fileupload-validate.js") }}" type="application/javascript"></script>#}
 {% endblock %}
