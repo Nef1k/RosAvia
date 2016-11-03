@@ -41,14 +41,18 @@
             <!-- Certificates control panel -->
             <div class="panel panel-default">
                 <div class="panel-heading"><b>Сертификаты</b></div>
-                <div class="panel-body">
-                    <div class="pull-left">
-                        Доступно:&nbsp;<span id="unattached_certs_count" >%counter%</span>
-                    </div>
-                    <div class="pull-right">
-                        <button class="btn btn-xs btn-default" data-toggle="collapse" data-target="#create_certs_hided_menu"><b>Создать</b></button>
-                    </div>
-                </div>
+                <ul class="list-group" id="certificate_states">
+                    <li class="list-group-item">
+                        Доступно:&nbsp;&nbsp;<span id="unattached_certs_count" >%</span>
+                        <div class="pull-right">
+                            <button class="btn btn-xs btn-default" data-toggle="collapse" data-target="#create_certs_hided_menu"><b>Создать</b></button>
+                        </div>
+                    </li>
+                    <!-- Data comes from AJAX here-->
+                    <li class="list-group-item cert_list_loader text-center">
+                        <img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40">
+                    </li>
+                </ul>
 
                 <!--Certificates creating hided menu-->
                 <ul id="create_certs_hided_menu" class="collapse list-group">
