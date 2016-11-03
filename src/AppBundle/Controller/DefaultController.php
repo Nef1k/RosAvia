@@ -39,15 +39,14 @@ class DefaultController extends Controller
     {
         /** @var $user_stuff UserStuff */
         $user_stuff = $this->get("app.user_stuff");
+        /** @var  $user_auth User*/
         $user_auth = $this->getUser();
         if (!(($user_auth) && ((in_array('ROLE_ADMIN',$user_auth->getRoles())) || ((in_array('ROLE_DEALER',$user_auth->getRoles())) && ($user->getIDUser() == $user_auth->getIDUser()))))) {
             return $this->redirectToRoute("user_signin");
-        }
-        $user_params = $user_stuff->getUserParamList($user);
-
-        return $this->render("default/view_user.html.twig", array(
+        }        return $this->render("default/view_user.html.twig", array(
             "user" => $user,
             "user_params" => $user_params,
+            "auth_user_group" => $user_auth->getUserGroup()->getIDUserGroup()
         ));
     }
 }
