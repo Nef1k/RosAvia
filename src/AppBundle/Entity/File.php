@@ -24,7 +24,7 @@ class File implements \Serializable
 
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(name="FileDate", type="datetime", nullable=true)
      */
     private $FileDate;
 
