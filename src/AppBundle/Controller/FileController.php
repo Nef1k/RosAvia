@@ -53,7 +53,7 @@ class FileController extends Controller
 
     /**
      * @param Request $request
-     * Method("GET")
+     * Method("POST")
      * Route("/files/file_set", name="file_get")
      */
     public function setUserFileAction(Request $request){
