@@ -35,7 +35,7 @@
                 <div class="panel-heading">Файлы пользователя</div>
                 <div class="panel-body">
                     {% if auth_user_group == 3 %}
-                        {#<form enctype="multipart/form-data">#}
+                        <form enctype="multipart/form-data" method="post" action="/files/file_set">
                             <div class="form-group">
                                 <label for="InputFile">Добавить файл</label>
                                 <input type="file" id="InputFile" name="userfile">
@@ -47,8 +47,8 @@
                             <div class="form-group">
                                 <input type="hidden" name="user_id" value="{{ user.IDUser }}">
                             </div>
-                            <button class="btn btn-primary" onclick="AddFile()">Сохранить</button>
-                        {#</form>#}
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </form>
                     {% endif %}
                     <br>
                     <table class="table table-striped" id="user_files_table" data-user_id="{{ user.IDUser }}">
