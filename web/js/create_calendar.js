@@ -9,7 +9,7 @@ function certificateToStr(certificate){
 }
 function getHourRow(hour){
     var now= new Date();
-    var hours_change = (-((now.getTimezoneOffset())/60))+7;
+    var hours_change = (-((now.getTimezoneOffset())/60));
     var hourToShow=parseInt(hour)+hours_change;
     return  "<tr class='hour-row'>" +
             "   <td valign='middle' align='center'>" + hourToShow + ":00</td>" +
