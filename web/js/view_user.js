@@ -8,7 +8,7 @@ function AddFile() {
     var description=$("#description").val();
     var file=$("#InputFile").val();
     console.log(user_id, description, file);
-    jQuery.post("/files/file_set", { user_id: user_id, display_name: description, userile: file}, function (data) {
+    jQuery.post("/files/file_set", { user_id: user_id, display_name: description, userfile: file}, function (data) {
         console.log(data);
     })
 }
