@@ -8,6 +8,9 @@ function certificateToStr(certificate){
             "</a> ";
 }
 function getHourRow(hour){
+    var now= new Date();
+    var hours_change = -(now.getTimezoneOffset())/60;
+    hour=parseInt(hour)+hours_change;
     return  "<tr class='hour-row'>" +
             "   <td valign='middle' align='center'>" + hour + ":00</td>" +
             "   <td style='padding: 10px 20px;'>" +
@@ -32,6 +35,9 @@ function showModal(date){
 }
 function fillTimeTableWithData(table_selector, data){
     //If there is more than one busy hour
+    var now= new Date();
+    var hours_change = -(now.getTimezoneOffset())/60;
+    console.log(hours_change);
     if (Object.keys(data).length > 0) {
 
         //Iterating over the hours
@@ -128,17 +134,20 @@ function onSetUseTime(event){
     if (certificate_id == "undefined"){
         return false;
     }
-
-    var hours = $("#hours-"+certificate_id).val();
+    var now= new Date();
+    var hours_change = -(now.getTimezoneOffset())/60;
+    var hours = parseInt($("#hours-"+certificate_id).val())-hours_change;
+    var hoursToShow = $("#hours-"+certificate_id).val();
     var minutes = $("#minutes-"+certificate_id).val();
     var seconds = "00";
     var date=$(".current-date").html() + " " + [hours, minutes, seconds].join(":");
+    var dateToShow=$(".current-date").html() + " " + [hoursToShow, minutes, seconds].join(":");
     //ToDo check validate time
     var dialog = new YesNoDialog();
     dialog.setModalSelector("#yes-no-modal");
     dialog.show({
         caption: "Установка времеи",
-        message: date,
+        message: dateToShow,
 
         yes_caption: "Установить",
         no_caption: "Отмена",
