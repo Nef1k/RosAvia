@@ -23,8 +23,8 @@ class FileController extends Controller
 
     /**
      * @param Request $request
-     * Method("GET")
-     * Route("/files/select", name="file_select")
+     * @Method("GET")
+     * @Route("/files/select", name="file_select")
      * @return Response
      */
     public function getUserFilesAction(Request $request){
@@ -38,8 +38,8 @@ class FileController extends Controller
 
     /**
      * @param Request $request
-     * Method("GET")
-     * Route("/files/file_get", name="file_get")
+     * @Method("GET")
+     * @Route("/files/file_get", name="file_get")
      * @return Response
      */
     public function getUserFileAction(Request $request){
@@ -53,8 +53,8 @@ class FileController extends Controller
 
     /**
      * @param Request $request
-     * Method("POST")
-     * Route("/files/file_set", name="file_set")
+     * @Method("POST")
+     * @Route("/files/file_set", name="file_set")
      */
     public function setUserFileAction(Request $request){
         /** @var $file_stuff FileStuff */
