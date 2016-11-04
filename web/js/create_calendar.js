@@ -9,7 +9,7 @@ function certificateToStr(certificate){
 }
 function getHourRow(hour){
     var now= new Date();
-    var hours_change = -(now.getTimezoneOffset())/60+3;
+    var hours_change = (-((now.getTimezoneOffset())/60))+7;
     var hourToShow=parseInt(hour)+hours_change;
     return  "<tr class='hour-row'>" +
             "   <td valign='middle' align='center'>" + hourToShow + ":00</td>" +
@@ -132,7 +132,7 @@ function onSetUseTime(event){
         return false;
     }
     var now= new Date();
-    var hours_change = -(now.getTimezoneOffset())/60+3;
+    var hours_change = (-((now.getTimezoneOffset())/60))+7;
     var hours = parseInt($("#hours-"+certificate_id).val())-hours_change;
     var hoursToShow = $("#hours-"+certificate_id).val();
     var minutes = $("#minutes-"+certificate_id).val();
