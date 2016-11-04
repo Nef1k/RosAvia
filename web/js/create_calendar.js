@@ -10,9 +10,9 @@ function certificateToStr(certificate){
 function getHourRow(hour){
     var now= new Date();
     var hours_change = -(now.getTimezoneOffset())/60;
-    hour=parseInt(hour)+hours_change;
+    var hourToShow=parseInt(hour)+hours_change;
     return  "<tr class='hour-row'>" +
-            "   <td valign='middle' align='center'>" + hour + ":00</td>" +
+            "   <td valign='middle' align='center'>" + hourToShow + ":00</td>" +
             "   <td style='padding: 10px 20px;'>" +
             "       <div class='row certificates-in-hour-" + hour + "'></div>" +
             "   </td>" +
@@ -35,9 +35,6 @@ function showModal(date){
 }
 function fillTimeTableWithData(table_selector, data){
     //If there is more than one busy hour
-    var now= new Date();
-    var hours_change = -(now.getTimezoneOffset())/60;
-    console.log(hours_change);
     if (Object.keys(data).length > 0) {
 
         //Iterating over the hours
