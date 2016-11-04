@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping AS ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="file")
+ * @ORM\Table(name="file_type")
  */
 class FileType
 {
