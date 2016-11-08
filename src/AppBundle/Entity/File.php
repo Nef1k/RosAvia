@@ -19,6 +19,7 @@ class File
     /**
      * @ORM\Column(name="ID_File", type="integer")
      * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $ID_File;
 
