@@ -52,27 +52,27 @@ class FileStuff
         $user = $this->em->getRepository("AppBundle:User")->find($user_id);
         /** @var  $file_cat FileCategory*/
         $file_cat = $this->em->getRepository("AppBundle:FileCategory")->findBy(array("CategoryName" => $file_cat_name));
-        $file_cat_id = $file_cat?$file_cat:$this->em->getRepository("AppBundle:FileCategory")->find(0);
+        if (!$file_cat) $file_cat = $this->em->getRepository("AppBundle:FileCategory")->find(0);
+        $file_type = $this->em->getRepository("AppBundle:FileType")->find(0);
         $file = new File();
-        $upload_dir = '/files/'.$user_id.'/';
+        $upload_dir = 'files/'.$user_id.'/';
         $file->
-            setUser($user)->
-            setRealCategory($file_cat)->
-            setCategory($file_cat_id)->
+            setIDUser($user)->
+            setRealCategory($file_cat_name)->
+            setIDCategory($file_cat)->
+            setIDFileType($file_type)->
             setFileName(basename($_FILES['userfile']['name']))->
             setFileSize($_FILES['userfile']['size'])->
             setDisplayName($disp_name)->
             setFileDate($file_date);
         $this->em->persist($file);
         $this->em->flush();
-        if (!file_exists($upload_dir)) mkdir($upload_dir, true);
-        $upload_file = $upload_dir.$file->getIDFile().'.'.$file_cat_name;
-        if (move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_file)){
-            return true;
-        } else {
-            return false;
+        if (!file_exists($upload_dir)){
+            mkdir($upload_dir, 0777, true);
         }
+        $upload_file = $upload_dir.$file->getIDFile().'.'.$file_cat_name;
 
+        return move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_file);
     }
 
     /**
