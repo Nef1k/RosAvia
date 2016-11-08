@@ -65,14 +65,21 @@ class FileStuff
             setFileSize($_FILES['userfile']['size'])->
             setDisplayName($disp_name)->
             setFileDate($file_date);
-        $this->em->persist($file);
-        $this->em->flush();
         if (!file_exists($upload_dir)){
             mkdir($upload_dir, 0777, true);
         }
         $upload_file = $upload_dir.$file->getIDFile().'.'.$file_cat_name;
 
-        return move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_file);
+        if (move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_file))
+        {
+            $this->em->persist($file);
+            $this->em->flush();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /**
