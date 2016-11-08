@@ -51,7 +51,7 @@ class FileStuff
         /** @var  $user  User*/
         $user = $this->em->getRepository("AppBundle:User")->find($user_id);
         /** @var  $file_cat FileCategory*/
-        $file_cat = $this->em->getRepository("AppBundle:FileCategory")->findBy(array('CategoryName' => $file_cat_name));
+        $file_cat = $this->em->getRepository("AppBundle:FileCategory")->findBy(array("CategoryName" => $file_cat_name));
         $file_cat_id = $file_cat?$file_cat:$this->em->getRepository("AppBundle:FileCategory")->find(0);
         $file = new File();
         $upload_dir = '/files/'.$user_id.'/';

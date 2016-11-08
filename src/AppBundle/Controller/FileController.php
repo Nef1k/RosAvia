@@ -58,7 +58,7 @@ class FileController extends Controller
      */
     public function setUserFileAction(Request $request){
         /** @var $file_stuff FileStuff */
-        $file_stuff = $this->get("app.certificate_stuff");
+        $file_stuff = $this->get("app.file_stuff");
         $user_id = new UserIDCheck();
         $user_id->setUserID($request->request->get("user_id"));
         $display_name = $request->request->get("display_name");
@@ -68,7 +68,7 @@ class FileController extends Controller
             'error_msg' => array(),
             'error_param' => array()
         );
-        $file_cat_name = substr(basename($_FILES['userfile']['name']), (stripos($_FILES['userfile']['name'],'.') !== false)?stripos($_FILES['userfile']['name'],'.'):strlen(basename($_FILES['userfile']['name'])));
+        $file_cat_name = substr(basename($_FILES['userfile']['name']), (stripos($_FILES['userfile']['name'],'.') !== false)?stripos($_FILES['userfile']['name'],'.') + 1:strlen(basename($_FILES['userfile']['name'])));
         /** @var  $file_cat FileCategory*/
         $response = new Response();
         $date = new \DateTime();
