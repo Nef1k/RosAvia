@@ -191,4 +191,38 @@ class SertAction
     {
         return $this->allowed_groups;
     }
+
+    /**
+     * Add allowedState
+     *
+     * @param \AppBundle\Entity\SertState $allowedState
+     *
+     * @return SertAction
+     */
+    public function addAllowedState(\AppBundle\Entity\SertState $allowedState)
+    {
+        $this->allowed_states[] = $allowedState;
+
+        return $this;
+    }
+
+    /**
+     * Remove allowedState
+     *
+     * @param \AppBundle\Entity\SertState $allowedState
+     */
+    public function removeAllowedState(\AppBundle\Entity\SertState $allowedState)
+    {
+        $this->allowed_states->removeElement($allowedState);
+    }
+
+    /**
+     * Get allowedStates
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAllowedStates()
+    {
+        return $this->allowed_states;
+    }
 }
