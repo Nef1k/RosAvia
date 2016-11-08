@@ -14,89 +14,16 @@ use Doctrine\ORM\Mapping AS ORM;
  * @ORM\Entity
  * @ORM\Table(name="file_category")
  */
-class FileCategory implements \Serializable
+class FileCategory
 {
     /**
      * @ORM\Column(name="ID_Category", type="integer")
      * @ORM\Id
      */
-    private $ID_FileCategory;
+    private $ID_Category;
 
     /**
      * @ORM\Column(name="CategoryName", type="string")
      */
-    private $FileCategoryName;
-
-    /**
-     * String representation of object
-     * @link http://php.net/manual/en/serializable.serialize.php
-     * @return string the string representation of the object or null
-     * @since 5.1.0
-     */
-    public function serialize()
-    {
-        // TODO: Implement serialize() method.
-    }
-
-    /**
-     * Constructs the object
-     * @link http://php.net/manual/en/serializable.unserialize.php
-     * @param string $serialized <p>
-     * The string representation of the object.
-     * </p>
-     * @return void
-     * @since 5.1.0
-     */
-    public function unserialize($serialized)
-    {
-        // TODO: Implement unserialize() method.
-    }
-
-    /**
-     * Set iDFileCategory
-     *
-     * @param integer $iDFileCategory
-     *
-     * @return FileCategory
-     */
-    public function setIDFileCategory($iDFileCategory)
-    {
-        $this->ID_FileCategory = $iDFileCategory;
-
-        return $this;
-    }
-
-    /**
-     * Get iDFileCategory
-     *
-     * @return integer
-     */
-    public function getIDFileCategory()
-    {
-        return $this->ID_FileCategory;
-    }
-
-    /**
-     * Set fileCategoryName
-     *
-     * @param string $fileCategoryName
-     *
-     * @return FileCategory
-     */
-    public function setFileCategoryName($fileCategoryName)
-    {
-        $this->FileCategoryName = $fileCategoryName;
-
-        return $this;
-    }
-
-    /**
-     * Get fileCategoryName
-     *
-     * @return string
-     */
-    public function getFileCategoryName()
-    {
-        return $this->FileCategoryName;
-    }
+    private $CategoryName;
 }

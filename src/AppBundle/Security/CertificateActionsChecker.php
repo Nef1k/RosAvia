@@ -32,20 +32,20 @@ class CertificateActionsChecker
         $user_group = $user->getUserGroup();
 
         //Check whether user's group have a permission to perform action on certificate
-        if (!$currentAction->getAllowedGroups()->contains($user_group)){
-            dump("Check whether user's group have a permission to perform action on certificate");
+        if (!$currentAction || !$currentAction->getAllowedGroups()->contains($user_group)){
+            //dump("Check whether user's group have a permission to perform action on certificate");
             return false;
         }
 
         //Check whether this action is allowed with the state certificate has
         if (! $currentAction->getStates()->contains($certificate->getSertState())){
-            dump("Check whether this action is allowed with the state certificate has");
+            //dump("Check whether this action is allowed with the state certificate has");
             return false;
         }
 
         //Check whether user has ability to edit others' certificates or it's his certificate
         if ( ($certificate->getUser()->getIDUser() != $user->getIDUser()) && (!$user_group->canEditOthers()) ){
-            dump("Check whether user has ability to edit others' certificates or it's his certificate");
+            //dump("Check whether user has ability to edit others' certificates or it's his certificate");
             return false;
         }
 

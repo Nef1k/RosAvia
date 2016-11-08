@@ -8,6 +8,7 @@
 
 namespace AppBundle\Stuff;
 
+use AppBundle\Entity\FileCategory;
 use AppBundle\Entity\User;
 use AppBundle\Entity\File;
 use Doctrine\ORM\EntityManager;
@@ -40,23 +41,32 @@ class FileStuff
 
     /**
      * @param $user_id
-     * @param $id_file_category
+     * @param $file_cat_name
+     * @param $disp_name
+     * @param $file_date
      * @return bool
      */
-    public function PushFile($user_id, $id_file_category, $disp_name, $file_date)
+    public function PushFile($user_id, $file_cat_name, $disp_name, $file_date)
     {
+        /** @var  $user  User*/
         $user = $this->em->getRepository("AppBundle:User")->find($user_id);
-        $file_cat = $this->em->getRepository("AppBundle:FileCategory")->find($id_file_category);
+        /** @var  $file_cat FileCategory*/
+        $file_cat = $this->em->getRepository("AppBundle:FileCategory")->findBy(array("CategoryName" => $file_cat_name));
+        $file_cat_id = $file_cat?$file_cat:$this->em->getRepository("AppBundle:FileCategory")->find(0);
         $file = new File();
-        $upload_dir = '/files/'.$user_id;
-        $upload_file = $upload_dir.basename($_FILES['userfile']['name']);
+        $upload_dir = '/files/'.$user_id.'/';
         $file->
             setUser($user)->
-            setFileCategory($file_cat)->
+            setRealCategory($file_cat)->
+            setCategory($file_cat_id)->
             setFileName(basename($_FILES['userfile']['name']))->
             setFileSize($_FILES['userfile']['size'])->
             setDisplayName($disp_name)->
             setFileDate($file_date);
+        $this->em->persist($file);
+        $this->em->flush();
+        if (!file_exists($upload_dir)) mkdir($upload_dir, true);
+        $upload_file = $upload_dir.$file->getIDFile().'.'.$file_cat_name;
         if (move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_file)){
             return true;
         } else {
@@ -76,7 +86,7 @@ class FileStuff
             $file_info["file_name"] = $file->getFileName();
         }
         if (in_array("file_category", $fields)){
-            $file_info["file_category"] = $file->getFileCategory()->getName();
+            $file_info["file_category"] = $file->getCategory()->getFileCategoryName();
         }
         if (in_array("user_id", $fields)){
             $file_info["user_id"] = $file->getUser()->getIDUser();
@@ -143,6 +153,86 @@ class FileStuff
             $criteria["ID_User"] = $user_ids;
         }
         return $criteria;
+    }
+
+    /**
+     * @param $file
+     */
+    public function FileForceDownload($file) {
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . basename($file));
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
+    }
+
+    public function FileDelete($file_id) {
+        /** @var  $file File*/
+        $file = $this->em->getRepository("AppBundle:File")->find($file_id);
+        if ($file) {
+            $filename = '/files/' . $file->getUser()->getIDUser() . '/' . $file_id . '.' . $file->getRealCategory();
+            if (file_exists($filename)) unlink($filename);
+            $this->em->remove($file);
+            $this->em->flush();
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function GetFileFromRequest(Request $request){
+        $file_id = $request->query->get('file_id');
+        $user_id = $request->query->get('user_id');
+        $file = '/file';
+        $Request_output = array(
+            'error_msg' => array(),
+            'error_param' => array()
+        );
+        if (($user_id == $this->tokens->getToken()->getUser()->getIDUser()) || (in_array('ROLE_ADMIN', $this->tokens->getToken()->getRoles()))){
+            if (file_exists($file)){
+                $file = $file.'/'.$user_id;
+                if (file_exists($file)) {
+                    $user = $this->em->getRepository("AppBundle:User")->find($user_id);
+                    if ($user) {
+                        /**
+                         * @var $files File
+                         */
+                        $files = $this->em->getRepository("AppBundle:File")->findBy(array('ID_File' => $file_id, 'User' => $user));
+                        if ($files) {
+                            $file = $file . '/' . $files->getIDFile().'.'.$files->getRealCategory();
+                            if (file_exists($file)) {
+                                $this->FileForceDownload($file);
+                            } else {
+                                array_push($Request_output['error_msg'], 'Данный файл не существует.');
+                            }
+                        } else {
+                            array_push($Request_output['error_msg'], 'Выбранный вами файл у этого пользователя отсутствует.');
+                        }
+                    }
+                    else {
+                        array_push($Request_output['error_msg'],'Данный пользователь не сущетвует!');
+                    }
+                }
+                else{
+                    array_push($Request_output['error_msg'],'У данного пользователя нет файлов.');
+                }
+            }
+            else{
+                array_push($Request_output['error_msg'], 'На сервере нет файлов.');
+            }
+        }
+        else{
+            array_push($Request_output['error_msg'], 'Вы не можете просматривать файлы этого пользователя.');
+        }
+        return $Request_output;
     }
 
     /**

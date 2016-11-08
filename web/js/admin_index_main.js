@@ -4,7 +4,6 @@
 
 //Подгрузить пользователей в таблицу
 //Подгрузить кол-во сертификатов
-
 //Обработчик кнопки привязки сертификатов к пользователю
 
 $(document).ready(function(event){
@@ -16,4 +15,7 @@ $(document).ready(function(event){
 
         $(".attach-certificate-btn").click(attachBtnClick);
     });
+    jQuery.getJSON("/admin/cert_state_table_show", function (data) {
+        fillCertsStatesListWithData("#certificate_states", data);
+    })
 });

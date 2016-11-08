@@ -93,26 +93,52 @@ function onCertBtnClick(event){
 }
 function onSaveBtnClick(event){
     var user_id = $(attachModalSelector).data("user_id");
+    var yesNoDialog = new YesNoDialog;
 
     if (!isAJAXing){
         isAJAXing = true;
     }
-    certificateToAttach.forEach(function(cert_id, i){
-        var postParams = {
-            id: cert_id,
-            field_names: JSON.stringify(["user_id", "id_cert_state"]),
-            field_values: JSON.stringify([user_id, 1])
-        };
 
-        jQuery.post("/certificate/edit", postParams, function(data){
-            console.log(data);
-        });
+    yesNoDialog.setModalSelector("#yes-no-modal");
+    yesNoDialog.show({
+        caption: "Привязка сертификатов",
+
+        yes_caption: "Ок",
+        no_caption: "",
+
+
+
+        yes_handler: attachModalYesBtn
     });
+    yesNoDialog.showLoader();
+    var msg = "Сертификаты успешно привязаны.";
+
+    var postParams = {
+        ids: JSON.stringify(certificateToAttach), //Теперь это массив
+        field_names: JSON.stringify(["user_id", "id_cert_state"]),
+        field_values: JSON.stringify([user_id, 1])
+    };
+
+    jQuery.post("/certificate/edit", postParams, function(data){
+        var errors = data.error_msg;
+        if (errors.length > 0){
+            msg = "Возникли следующие ошибки при добавлении сертификатов: <br>" + errors.join(" <br>");
+        }
+        yesNoDialog.message = msg;
+        yesNoDialog.hideLoader();
+        yesNoDialog.applyParams();
+    })
+}
+
+function attachModalYesBtn(event) {
+    var modal = event.data;
+    modal.close();
 }
 
 function onModalLoad(event){
     var user_id = $(this).data("user_id");
     var username = $(this).data("username");
+
 
     //Clearing up previous
     $(".attached-certificates-empty").addClass("hidden");
@@ -175,9 +201,26 @@ function fillAttachModalWithData(data){
         $(".unatt_btn").click(onCertBtnClick);
     }
 }
+function fillCertsStatesListWithData(list_selector, data) {
+    $(".cert_list_loader").addClass("hidden");
+    data.forEach(function (item, i) {
+        console.log(item);
+        $(list_selector).append(
+            "<a href='/admin/view_certificates/" + item.id_cert_state + "' class='list-group-item'>" +
+            item.cert_state_name +
+            "<span class='badge'>" +
+            item.count +
+            "</span></a>"
+        );
+    });
+}
+
 
 $(document).ready(function(event){
     $(attachModalSelector).on("show.bs.modal", onModalLoad);
+    $("#yes-no-modal").on("hide.bs.modal", function () {
+        $(attachModalSelector).modal("hide");
+    });
     $("#attach_helper_add_btn").click(onHelperAddBtnClick);
     $("#save-btn").click(onSaveBtnClick);
 });

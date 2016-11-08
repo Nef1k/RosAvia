@@ -15,10 +15,13 @@ class CertEdition
 {
     /**
      * @MyAssert\CheckCertsExist()
-     * @Assert\NotBlank(message = "Значение не может быть пустым."),
-     * @Assert\Type(
-     *      message = "Значение не может быть не числом.",
-     *      type = "integer")
+     * @Assert\All({
+     *     @Assert\NotBlank(message="Значение не может быть пустым."),
+     *     @Assert\Type(
+     *          type="integer",
+     *          message="Значение не может быть не числом.")
+     * })
+     * @Assert\NotNull(message = "Значение не может быть нулевым")
      */
     private $cert_id;
     

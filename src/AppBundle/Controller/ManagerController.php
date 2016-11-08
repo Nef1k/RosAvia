@@ -73,41 +73,4 @@ class ManagerController extends Controller
             "dealer_list" => $dealer_list,
         ));
     }
-
-    /**
-     * @param Request $request
-     * @return Response
-     *
-     * @Route("/manager/view_certificates/{state_id}", name="view_certificates")
-     */
-    public function viewCertificatesAction($state_id, Request $request)
-    {
-        //$state = $this->getDoctrine()->getRepository("AppBundle:SertState")->find($state_id);
-        /**
-         * @var $certificate_stuff CertificateStuff
-         */
-        $certificate_stuff = $this->get("app.certificate_stuff");
-        $certificates = $certificate_stuff->getCertificatesByMentor($this->getUser()->getIDUser(), $state_id);
-        $grouped_certificates = $certificate_stuff->groupCertificatesBy($certificates, function($certificate){
-            /** @var $certificate Sertificate */
-            return $certificate->getUser()->getUsername();
-        });
-
-        //Paste from sublime here
-        $action_form = $this->createForm(CertGroupProcessingType::class, array(
-            "certificates" => $certificates,
-            "state_id" => $state_id,
-        ));
-
-        $action_form->handleRequest($request);
-        if ($action_form->isSubmitted() && $action_form->isValid()){
-            $certificate_stuff->groupProcessCertificates($action_form->getData());
-            return $this->redirectToRoute("homepage");
-        }
-        
-        return $this->render("manager/view_certificates.html.twig", array(
-            "dealers" => $grouped_certificates,
-            "action_form" => $action_form->createView(),
-        ));
-    }
 }
