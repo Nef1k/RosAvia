@@ -93,10 +93,13 @@ class FileStuff
             $file_info["file_name"] = $file->getFileName();
         }
         if (in_array("file_category", $fields)){
-            $file_info["file_category"] = $file->getCategory()->getFileCategoryName();
+            $file_info["file_category"] = $file->getIDCategory()->getCategoryName();
+        }
+        if (in_array("file_type", $fields)){
+            $file_info["file_type"] = $file->getIDFileType()->getTypeValue();
         }
         if (in_array("user_id", $fields)){
-            $file_info["user_id"] = $file->getUser()->getIDUser();
+            $file_info["user_id"] = $file->getIDUser()->getIDUser();
         }
         if (in_array("ID_File", $fields)){
             $file_info["ID_File"] = $file->getIDFile();
@@ -184,7 +187,7 @@ class FileStuff
         /** @var  $file File*/
         $file = $this->em->getRepository("AppBundle:File")->find($file_id);
         if ($file) {
-            $filename = '/files/' . $file->getUser()->getIDUser() . '/' . $file_id . '.' . $file->getRealCategory();
+            $filename = '/files/' . $file->getIDUser()->getIDUser() . '/' . $file_id . '.' . $file->getRealCategory();
             if (file_exists($filename)) unlink($filename);
             $this->em->remove($file);
             $this->em->flush();
