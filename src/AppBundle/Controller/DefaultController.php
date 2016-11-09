@@ -48,7 +48,9 @@ class DefaultController extends Controller
         return $this->render("default/view_user.html.twig", array(
             "user" => $user,
             "user_params" => $user_params,
-            "auth_user_group" => $user_auth->getUserGroup()->getIDUserGroup()
+            "auth_user_group" => $user_auth->getUserGroup()->getIDUserGroup(),
+            "file_msg_code" => 0,
+            "file_msg" => ""
         ));
     }
 }
