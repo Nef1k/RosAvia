@@ -50,7 +50,15 @@
                             <div class="form-group">
                                 <input id="user_id" type="hidden" name="user_id" value="{{ user.IDUser }}">
                             </div>
-                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                                {% if file_msg_code == 1 %}
+                                    <div class="alert alert-success" role="alert">{{ file_msg }}</div>
+                                {% endif %}
+                                {% if file_msg_code == 2 %}
+                                    <div class="alert alert-danger" role="alert">{{ file_msg }}</div>
+                                {% endif %}
+                            </div>
                         </form>
                     {% endif %}
                     <br>
