@@ -13,6 +13,7 @@ use AppBundle\Entity\FileCategory;
 use AppBundle\Entity\File;
 use AppBundle\Entity\User;
 use AppBundle\Stuff\FileStuff;
+use AppBundle\Stuff\UserStuff;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -49,12 +50,28 @@ class FileController extends Controller
         $file_stuff = $this->get("app.file_stuff");
         $response = new Response();
         $Request_output = $file_stuff->GetFileFromRequest($user->getIDUser(), $file->getIDFile());
+        $em = $this->getDoctrine()->getManager();
+        /** @var  $user User*/
+        $user = $em->getRepository("AppBundle:User")->find($user->getIDUser());
+        /** @var $user_stuff UserStuff */
+        $user_stuff = $this->get("app.user_stuff");
+        $user_params = $user_stuff->getUserParamList($user);
         if (count($Request_output['error_msg']) != 0) {
-            $response->setContent(json_encode($Request_output));
-            $response->headers->set('Content-Type', 'application/json');
-            return $response;
+            return $this->render("default/view_user.html.twig", array(
+                "user" => $user,
+                "user_params" => $user_params,
+                "auth_user_group" => $this->getUser()->getUserGroup()->getIDUserGroup(),
+                "file_msg_code" => 2,
+                "file_msg" => $Request_output['error_msg'][0]
+            ));
         } else {
-            return $this->redirectToRoute("user_info");
+            return $this->render("default/view_user.html.twig", array(
+                "user" => $user,
+                "user_params" => $user_params,
+                "auth_user_group" => $this->getUser()->getUserGroup()->getIDUserGroup(),
+                "file_msg_code" => 1,
+                "file_msg" => "Загрузка файла завершена успешно!"
+            ));
         }
     }
 
@@ -72,14 +89,27 @@ class FileController extends Controller
         $display_name = $request->request->get("display_name");
         $validator = $this->get('validator');
         $errors = $validator->validate($user_id);
-        $Request_output = array(
-            'error_msg' => array(),
-            'error_param' => array()
-        );
+        $em = $this->getDoctrine()->getManager();
+        /** @var  $user User*/
+        $user = $em->getRepository("AppBundle:User")->find($user_id);
+        /** @var $user_stuff UserStuff */
+        $user_stuff = $this->get("app.user_stuff");
+        $user_params = $user_stuff->getUserParamList($user);
         $file_cat_name = substr(basename($_FILES['userfile']['name']), (stripos($_FILES['userfile']['name'],'.') !== false)?stripos($_FILES['userfile']['name'],'.') + 1:strlen(basename($_FILES['userfile']['name'])));
         /** @var  $file_cat FileCategory*/
         $date = new \DateTime();
-
-        return new Response("<html><head></head><body>".json_encode($file_stuff->PushFile($user_id->getUserID(),$file_cat_name, $display_name, $date))."</body></html>");
+        if ($file_stuff->PushFile($user->getIDUser(), $file_cat_name, $display_name, $date)){
+            $file_msg_code = 1;
+            $file_msg = "Файл успешно загружен!";
+        } else {
+            $file_msg_code = 2;
+            $file_msg = "Внимание! Загрузка файла не была завершена успешна!";
+        }
+        return $this->render("default/view_user.html.twig", array(
+            "user" => $user,
+            "user_params" => $user_params,
+            "auth_user_group" => $this->getUser()->getUserGroup()->getIDUserGroup(),
+            "file_msg_code" => $file_msg_code,
+            "file_msg" => $file_msg));
     }
 }

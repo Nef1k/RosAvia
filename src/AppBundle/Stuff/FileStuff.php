@@ -209,7 +209,8 @@ class FileStuff
     }
 
     /**
-     * @param Request $request
+     * @param $user_id
+     * @param $file_id
      * @return array
      */
     public function GetFileFromRequest($user_id, $file_id){
