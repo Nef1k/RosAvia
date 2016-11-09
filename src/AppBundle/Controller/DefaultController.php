@@ -59,8 +59,6 @@ class DefaultController extends Controller
             $template_params["file_msg"] = $file_msg;
         }
 
-        dump($template_params);
-
         return $this->render("default/view_user.html.twig", $template_params);
     }
 

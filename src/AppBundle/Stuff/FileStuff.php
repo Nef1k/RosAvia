@@ -61,7 +61,6 @@ class FileStuff
         if (count($file_cat) <= 0)
         {
             $file_cat = $this->em->getRepository("AppBundle:FileCategory")->find(0);
-            dump($file_cat);
         }
 
         /** @var  $file_type FileType*/
