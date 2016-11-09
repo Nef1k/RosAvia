@@ -21,22 +21,38 @@ function GetUserFiles(){
             data.forEach(function(item){
                 $("#user_files_table").append(
                     "<tr>" +
-                    "<td><input type='checkbox' autocomplete='off' class='file' data-file_id='"+item.ID_File+"'></td>"+
+                    "<td><input style='cursor:pointer;' type='checkbox' autocomplete='off' class='file' data-file_id='"+item.ID_File+"'></td>"+
                     "<td class='col-md-3 text-center'><a href='"+ item.file_link +"'>" + item.file_name + "</a></td> " +
                     "<td class='col-md-9 text-center'>" + item.display_name + "</td>" +
                 "</tr>")
             });
             $("#user_files_table").after(
-                "<div class='text-right'><button class='btn btn-danger' onclick='DeleteFiles'><span class='glyphicon glyphicon-trash'></span>&nbsp;&nbsp;Удалить файлы</button></div>"
+                "<div class='text-right'><button class='btn btn-danger' onclick='DeleteFiles()'><span class='glyphicon glyphicon-trash'></span>&nbsp;&nbsp;Удалить файлы</button></div>"
             );
             $("#user_files_table").before(
                 "<div class='pull-right'>"+
-                "<button class='btn btn-xs btn-default mark_all' onclick='mark_all(this)'>Выделить всё</button>" +
-                "<button class='btn btn-xs btn-default unmark_all' onclick='unmark_all(this)'>Снять выделение</button>" +
+                "<button class='btn btn-xs btn-default mark_all' onclick='mark_all()'>Выделить всё</button>" +
+                "<button class='btn btn-xs btn-default unmark_all' onclick='unmark_all()'>Снять выделение</button>" +
                 "</div>"
             )
         }
     })
+}
+function mark_all() {
+    $(".file").prop("checked",true);
+}
+
+function unmark_all() {
+    $(".file").prop("checked",false);
+}
+
+function DeleteFiles() {
+    var checked_files = [];
+    var selector = $("input[type='checkbox']:checked");
+    for (var i = 0; i<selector.length; ++i){
+        checked_files[i] = parseInt($(selector[i]).attr("data-file_id"));
+    }
+    console.log(checked_files);
 }
 
 function AddFile() {
