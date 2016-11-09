@@ -44,7 +44,7 @@ class FileController extends Controller
      */
     public function getUserFileAction(Request $request){
         /** @var $file_stuff FileStuff */
-        $file_stuff = $this->get("app.certificate_stuff");
+        $file_stuff = $this->get("app.file_stuff");
         $response = new Response();
         $Request_output = $file_stuff->GetFileFromRequest($request);
         if (count($Request_output['error_msg']) != 0) {
