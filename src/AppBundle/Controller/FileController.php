@@ -51,11 +51,18 @@ class FileController extends Controller
         $response = new Response();
         $Request_output = $file_stuff->GetFileFromRequest($user->getIDUser(), $file->getIDFile());
         $em = $this->getDoctrine()->getManager();
-        /** @var  $user User*/
-        $user = $em->getRepository("AppBundle:User")->find($user->getIDUser());
         /** @var $user_stuff UserStuff */
         $user_stuff = $this->get("app.user_stuff");
         $user_params = $user_stuff->getUserParamList($user);
+
+        $file_code = (count($Request_output['error_msg']) != 0) ? 2 : 1;
+        dump($user);
+        return $this->redirectToRoute('user_info', [
+            "ID_User" => $user->getIDUser(),
+            "file_code" => $file_code,
+        ]);
+
+        /*
         if (count($Request_output['error_msg']) != 0) {
             return $this->render("default/view_user.html.twig", array(
                 "user" => $user,
@@ -72,7 +79,7 @@ class FileController extends Controller
                 "file_msg_code" => 1,
                 "file_msg" => "Загрузка файла завершена успешно!"
             ));
-        }
+        }*/
     }
 
     /**
@@ -105,11 +112,16 @@ class FileController extends Controller
             $file_msg_code = 2;
             $file_msg = "Внимание! Загрузка файла не была завершена успешна!";
         }
-        return $this->render("default/view_user.html.twig", array(
+
+        return $this->redirectToRoute("user_info", [
+            "ID_User" => $user_id->getUserID(),
+            "file_code" => $file_msg_code
+        ]);
+        /*return $this->render("default/view_user.html.twig", array(
             "user" => $user,
             "user_params" => $user_params,
             "auth_user_group" => $this->getUser()->getUserGroup()->getIDUserGroup(),
             "file_msg_code" => $file_msg_code,
-            "file_msg" => $file_msg));
+            "file_msg" => $file_msg));*/
     }
 }
