@@ -34,10 +34,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Файлы пользователя</div>
                 <div class="panel-body">
-                    {% if file_msg is defined %}
-                        <div class="bg-info">{{ file_msg }}</div>
-                    {% endif %}
                     {% if auth_user_group == 3 %}
+                        <div>
                         <form enctype="multipart/form-data" method="post" action="/files/file_set">
                             <div class="form-group">
                                 <label for="InputFile">Выбрать загружаемый файл</label>
@@ -50,12 +48,15 @@
                             <div class="form-group">
                                 <input id="user_id" type="hidden" name="user_id" value="{{ user.IDUser }}">
                             </div>
-                            <div class="col-md-12">
                                 <button type="submit" class="btn btn-primary">Сохранить</button>
-                            </div>
                         </form>
+                        </div>
                     {% endif %}
-                    <br>
+                    {% if file_msg is defined %}
+                        <div>
+                            <div class="alert alert-{% if file_msg_code == 1 %}success{% else %}danger{% endif %}" role="alert"><strong>{{ file_msg }}</strong></div>
+                        </div>
+                    {% endif %}
                     <table class="table table-striped " id="user_files_table" data-user_id="{{ user.IDUser }}" data-group=" {{ auth_user_group }}">
                         <tr class="loader">
                             <td colspan="3" class="text-center">
