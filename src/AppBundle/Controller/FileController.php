@@ -99,7 +99,7 @@ class FileController extends Controller
             $file_msg_code = 1;
             $file_msg = "Файл успешно загружен!";
         } else {
-            $file_msg_code = 2;
+            $file_msg_code = 8;
             $file_msg = "Внимание! Загрузка файла не была завершена успешна!";
         }
 
