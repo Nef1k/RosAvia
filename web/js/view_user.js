@@ -2,7 +2,7 @@ function GetUserFiles(){
     var user_id=$("#user_id").val();
     console.log(user_id);
     var field_names = JSON.stringify(["display_name", "file_type", "file_name"]);
-    var criteria = JSON.stringify({ "ID_User": user_id });
+    var criteria = JSON.stringify({ "ID_User": [user_id] });
     var sort = JSON.stringify({});
     jQuery.post("/files/select",{field_names: field_names, criteria: criteria, sort: sort}, function (data) {
         console.log(data);
