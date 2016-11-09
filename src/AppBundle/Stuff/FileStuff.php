@@ -74,16 +74,18 @@ class FileStuff
         if (!file_exists($upload_dir)){
             mkdir($upload_dir, 0777, true);
         }
+        $this->em->persist($file);
+        $this->em->flush();
         $upload_file = $upload_dir.$file->getIDFile().'.'.$file_cat_name;
 
         if (move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_file))
         {
-            $this->em->persist($file);
-            $this->em->flush();
             return true;
         }
         else
         {
+            $this->em->remove($file);
+            $this->em->flush();
             return false;
         }
     }
