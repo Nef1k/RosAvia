@@ -220,7 +220,17 @@ class FileStuff
             case 1:
                 return "Файл успешно загружен";
             case 2:
-                return "Какой-то косяк";
+                return "Вы не можете просматривать файлы этого пользователя.";
+            case 3:
+                return "На сервере нет файлов.";
+            case 4:
+                return "У данного пользователя нет файлов.";
+            case 5:
+                return "Данный пользователь не сущетвует.";
+            case 6:
+                return "Выбранный вами файл у этого пользователя отсутствует.";
+            case 7:
+                return "Данный файл не существует.";
             default:
                 return "Вообще хуёвая хуйня приключилась";
         }
@@ -254,28 +264,24 @@ class FileStuff
                             if (file_exists($file)) {
                                 $this->FileForceDownload($file, $files[0]);
                             } else {
-                                array_push($Request_output['error_msg'], 'Данный файл не существует.');
+                                return 7;
                             }
                         } else {
-                            array_push($Request_output['error_msg'], 'Выбранный вами файл у этого пользователя отсутствует.');
+                            return 6;
                         }
+                    } else {
+                        return 5;
                     }
-                    else {
-                        array_push($Request_output['error_msg'],'Данный пользователь не сущетвует!');
-                    }
+                } else{
+                    return 4;
                 }
-                else{
-                    array_push($Request_output['error_msg'],'У данного пользователя нет файлов.');
-                }
+            } else{
+                return 3;
             }
-            else{
-                array_push($Request_output['error_msg'], 'На сервере нет файлов.');
-            }
+        } else{
+            return 2;
         }
-        else{
-            array_push($Request_output['error_msg'], 'Вы не можете просматривать файлы этого пользователя.');
-        }
-        return $Request_output;
+        return 1;
     }
 
     /**

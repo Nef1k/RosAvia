@@ -48,15 +48,8 @@ class FileController extends Controller
         /** @var $file File */
         /** @var $file_stuff FileStuff */
         $file_stuff = $this->get("app.file_stuff");
-        $response = new Response();
-        $Request_output = $file_stuff->GetFileFromRequest($user->getIDUser(), $file->getIDFile());
-        $em = $this->getDoctrine()->getManager();
-        /** @var $user_stuff UserStuff */
-        $user_stuff = $this->get("app.user_stuff");
-        $user_params = $user_stuff->getUserParamList($user);
 
-        $file_code = (count($Request_output['error_msg']) != 0) ? 2 : 1;
-        dump($user);
+        $file_code = $file_stuff->GetFileFromRequest($user->getIDUser(), $file->getIDFile());
         return $this->redirectToRoute('user_info', [
             "ID_User" => $user->getIDUser(),
             "file_code" => $file_code,
@@ -99,9 +92,6 @@ class FileController extends Controller
         $em = $this->getDoctrine()->getManager();
         /** @var  $user User*/
         $user = $em->getRepository("AppBundle:User")->find($user_id->getUserID());
-        /** @var $user_stuff UserStuff */
-        $user_stuff = $this->get("app.user_stuff");
-        $user_params = $user_stuff->getUserParamList($user);
         $file_cat_name = substr(basename($_FILES['userfile']['name']), (stripos($_FILES['userfile']['name'],'.') !== false)?stripos($_FILES['userfile']['name'],'.') + 1:strlen(basename($_FILES['userfile']['name'])));
         /** @var  $file_cat FileCategory*/
         $date = new \DateTime();

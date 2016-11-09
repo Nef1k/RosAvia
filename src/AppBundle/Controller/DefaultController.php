@@ -57,6 +57,7 @@ class DefaultController extends Controller
         {
             $file_msg = $this->get("app.file_stuff")->getFileMsg($file_code);
             $template_params["file_msg"] = $file_msg;
+            $template_params["file_msg_code"] = $file_code;
         }
 
         return $this->render("default/view_user.html.twig", $template_params);
