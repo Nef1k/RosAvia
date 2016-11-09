@@ -182,13 +182,13 @@ class FileStuff
     /**
      * @param $file
      */
-    public function FileForceDownload($file) {
+    public function FileForceDownload($file, File $file_rec) {
         if (ob_get_level()) {
             ob_end_clean();
         }
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename=' . basename($file));
+        header('Content-Disposition: attachment; filename=' . $file_rec->getFileName());
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
@@ -201,7 +201,7 @@ class FileStuff
         /** @var  $file File*/
         $file = $this->em->getRepository("AppBundle:File")->find($file_id);
         if ($file) {
-            $filename = '/files/' . $file->getIDUser()->getIDUser() . '/' . $file_id . '.' . $file->getRealCategory();
+            $filename = 'files/' . $file->getIDUser()->getIDUser() . '/' . $file_id . '.' . $file->getRealCategory();
             if (file_exists($filename)) unlink($filename);
             $this->em->remove($file);
             $this->em->flush();
@@ -213,7 +213,7 @@ class FileStuff
      * @return array
      */
     public function GetFileFromRequest($user_id, $file_id){
-        $file = '/file';
+        $file = 'files';
         $Request_output = array(
             'error_msg' => array(),
             'error_param' => array()
@@ -227,13 +227,13 @@ class FileStuff
                     $user = $this->em->getRepository("AppBundle:User")->find($user_id);
                     if ($user) {
                         /**
-                         * @var $files File
+                         * @var $files File[]
                          */
-                        $files = $this->em->getRepository("AppBundle:File")->findBy(array('ID_File' => $file_id, 'User' => $user));
+                        $files = $this->em->getRepository("AppBundle:File")->findBy(array('ID_File' => $file_id, 'ID_User' => $user));
                         if ($files) {
-                            $file = $file . '/' . $files->getIDFile().'.'.$files->getRealCategory();
+                            $file = $file . '/' . $files[0]->getIDFile().'.'.$files[0]->getRealCategory();
                             if (file_exists($file)) {
-                                $this->FileForceDownload($file);
+                                $this->FileForceDownload($file, $files[0]);
                             } else {
                                 array_push($Request_output['error_msg'], 'Данный файл не существует.');
                             }
