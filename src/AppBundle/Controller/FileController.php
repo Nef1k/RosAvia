@@ -10,6 +10,8 @@ namespace AppBundle\Controller;
 
 use AppBundle\DataClasses\UserIDCheck;
 use AppBundle\Entity\FileCategory;
+use AppBundle\Entity\File;
+use AppBundle\Entity\User;
 use AppBundle\Stuff\FileStuff;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -37,16 +39,16 @@ class FileController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @Method("GET")
-     * @Route("/files/file_get", name="file_get")
+     * @Route("/files/file_get/{ID_User}/{ID_File}", name="file_get")
      * @return Response
      */
-    public function getUserFileAction(Request $request){
+    public function getUserFileAction(User $user, File $file){
+        /** @var $user User */
+        /** @var $file File */
         /** @var $file_stuff FileStuff */
         $file_stuff = $this->get("app.file_stuff");
         $response = new Response();
-        $Request_output = $file_stuff->GetFileFromRequest($request);
+        $Request_output = $file_stuff->GetFileFromRequest($user->getIDUser(), $file->getIDFile());
         if (count($Request_output['error_msg']) != 0) {
             $response->setContent(json_encode($Request_output));
             $response->headers->set('Content-Type', 'application/json');
