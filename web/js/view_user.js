@@ -15,19 +15,19 @@ function GetUserFiles(){
             $("#user_files_table").append(
                 "<tr>" +
                     "<th></th>" +
-                    "<th class='col-md-3 text-center'>Файл </th>" +
-                    "<th class='col-md-9 text-center'>Описание </th>" +
+                    "<th class='col-md-4 text-center'>Файл </th>" +
+                    "<th class='col-md-8 text-center'>Описание </th>" +
                 "</tr>"
             );
             data.forEach(function(item){
                 $("#user_files_table").append(
                     "<tr>" +
                     "<td class='file-checkbox'></td>"+
-                    "<td class='col-md-3 text-center'><a href='"+ item.file_link +"'>" + item.file_name + "</a></td> " +
-                    "<td class='col-md-9 text-center'>" + item.display_name + "</td>" +
+                    "<td class='col-md-4 text-center'><a href='"+ item.file_link +"'>" + item.file_name + "</a></td> " +
+                    "<td class='col-md-8 text-center'>" + item.display_name + "</td>" +
                 "</tr>")
                 if (watcher_group ==3){
-                        $("#user_files_table tr:last-child .file-checkbox").append(
+                        $("#user_files_table tr:last-child .file-checkbox").html(
                             "<input style='cursor:pointer;' type='checkbox' autocomplete='off' class='file' data-file_id='"+item.ID_File+"'>"
                         )
                 }
