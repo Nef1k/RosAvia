@@ -56,8 +56,14 @@ class FileStuff
         /** @var  $user  User*/
         $user = $this->em->getRepository("AppBundle:User")->find($user_id);
         /** @var  $file_cat FileCategory*/
+
         $file_cat = $this->em->getRepository("AppBundle:FileCategory")->findBy(array("CategoryName" => $file_cat_name));
-        if (!$file_cat) $file_cat = $this->em->getRepository("AppBundle:FileCategory")->find(0);
+        if (count($file_cat) <= 0)
+        {
+            $file_cat = $this->em->getRepository("AppBundle:FileCategory")->find(0);
+            dump($file_cat);
+        }
+
         /** @var  $file_type FileType*/
         $file_type = $this->em->getRepository("AppBundle:FileType")->find(0);
         $file = new File();
@@ -205,6 +211,19 @@ class FileStuff
             if (file_exists($filename)) unlink($filename);
             $this->em->remove($file);
             $this->em->flush();
+        }
+    }
+
+    public function getFileMsg($file_code)
+    {
+        switch ($file_code)
+        {
+            case 1:
+                return "Файл успешно загружен";
+            case 2:
+                return "Какой-то косяк";
+            default:
+                return "Вообще хуёвая хуйня приключилась";
         }
     }
 

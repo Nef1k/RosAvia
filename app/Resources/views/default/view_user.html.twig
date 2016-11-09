@@ -34,14 +34,17 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Файлы пользователя</div>
                 <div class="panel-body">
+                    {% if file_msg is defined %}
+                        <div class="bg-info">{{ file_msg }}</div>
+                    {% endif %}
                     {% if auth_user_group == 3 %}
                         <form enctype="multipart/form-data" method="post" action="/files/file_set">
                             <div class="form-group">
-                                <label for="InputFile">Добавить файл</label>
+                                <label for="InputFile">Выбрать загружаемый файл</label>
                                 <input type="file" id="InputFile" name="userfile">
                             </div>
                             <div class="form-group">
-                                <label for="description">Описание файла</label>
+                                <label for="description">Отображаемое имя файла</label>
                                 <textarea id="description" class="form-control" rows="3" name="display_name"></textarea>
                             </div>
                             <div class="form-group">
