@@ -91,7 +91,7 @@ class FileController extends Controller
         $errors = $validator->validate($user_id);
         $em = $this->getDoctrine()->getManager();
         /** @var  $user User*/
-        $user = $em->getRepository("AppBundle:User")->find($user_id);
+        $user = $em->getRepository("AppBundle:User")->find($user_id->getUserID());
         /** @var $user_stuff UserStuff */
         $user_stuff = $this->get("app.user_stuff");
         $user_params = $user_stuff->getUserParamList($user);
