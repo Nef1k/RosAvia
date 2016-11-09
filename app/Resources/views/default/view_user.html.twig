@@ -51,7 +51,7 @@
                         </form>
                     {% endif %}
                     <br>
-                    <table class="table table-striped " id="user_files_table" data-user_id="{{ user.IDUser }}">
+                    <table class="table table-striped " id="user_files_table" data-user_id="{{ user.IDUser }}" data-group=" {{ auth_user_group }}">
                         <tr class="loader">
                             <td colspan="3" class="text-center">
                                 <img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40">
