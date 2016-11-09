@@ -216,7 +216,9 @@ class FileStuff
             'error_msg' => array(),
             'error_param' => array()
         );
-        if (($user_id == $this->tokens->getToken()->getUser()->getIDUser()) || (in_array('ROLE_ADMIN', $this->tokens->getToken()->getRoles()))){
+        $auth_user_id = $this->tokens->getToken()->getUser()->getIDUser();
+        $auth_user_roles = $this->tokens->getToken()->getUser()->getRoles();
+        if (($user_id == $auth_user_id) || (in_array('ROLE_ADMIN', $auth_user_roles))){
             if (file_exists($file)){
                 $file = $file.'/'.$user_id;
                 if (file_exists($file)) {
