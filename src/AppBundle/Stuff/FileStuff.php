@@ -15,6 +15,7 @@ use AppBundle\Entity\File;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class FileStuff
 {
@@ -28,16 +29,19 @@ class FileStuff
      */
     private $tokens;
 
+    private $router;
+
     /**
      * FileStuff constructor.
      * @param EntityManager $em
      * @param TokenStorage $tokenStorage
      */
 
-    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage, Router $router)
     {
         $this->em = $em;
         $this->tokens = $tokenStorage;
+        $this->router = $router;
     }
 
     /**
@@ -108,6 +112,9 @@ class FileStuff
         }
         if (in_array("ID_File", $fields)){
             $file_info["ID_File"] = $file->getIDFile();
+        }
+        if (in_array("file_link", $fields)){
+            $file_info["file_link"] = $this->router->generate("file_get",["ID_User" => $file->getIDUser()->getIDUser(), "ID_File" => $file->getIDFile()]);
         }
         return $file_info;
     }
@@ -203,9 +210,7 @@ class FileStuff
      * @param Request $request
      * @return array
      */
-    public function GetFileFromRequest(Request $request){
-        $file_id = $request->query->get('file_id');
-        $user_id = $request->query->get('user_id');
+    public function GetFileFromRequest($user_id, $file_id){
         $file = '/file';
         $Request_output = array(
             'error_msg' => array(),

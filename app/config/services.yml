@@ -84,7 +84,7 @@ services:
 
      app.file_stuff:
          class: AppBundle\Stuff\FileStuff
-         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
+         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@router"]
 
      #Voters
      certificate_voter:
