@@ -23,7 +23,7 @@ class FileController extends Controller
 
     /**
      * @param Request $request
-     * @Method("GET")
+     * @Method("POST")
      * @Route("/files/select", name="file_select")
      * @return Response
      */
@@ -46,15 +46,21 @@ class FileController extends Controller
         /** @var $file_stuff FileStuff */
         $file_stuff = $this->get("app.certificate_stuff");
         $response = new Response();
-        $response->setContent(json_encode($file_stuff->GetFileFromRequest($request)));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        $Request_output = $file_stuff->GetFileFromRequest($request);
+        if (count($Request_output['error_msg']) != 0) {
+            $response->setContent(json_encode($Request_output));
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+        } else {
+            return $this->redirectToRoute("user_info");
+        }
     }
 
     /**
      * @param Request $request
      * @Method("POST")
      * @Route("/files/file_set", name="file_set")
+     * @return Response
      */
     public function setUserFileAction(Request $request){
         /** @var $file_stuff FileStuff */

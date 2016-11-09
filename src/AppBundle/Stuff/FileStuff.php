@@ -9,6 +9,7 @@
 namespace AppBundle\Stuff;
 
 use AppBundle\Entity\FileCategory;
+use AppBundle\Entity\FileType;
 use AppBundle\Entity\User;
 use AppBundle\Entity\File;
 use Doctrine\ORM\EntityManager;
@@ -53,6 +54,7 @@ class FileStuff
         /** @var  $file_cat FileCategory*/
         $file_cat = $this->em->getRepository("AppBundle:FileCategory")->findBy(array("CategoryName" => $file_cat_name));
         if (!$file_cat) $file_cat = $this->em->getRepository("AppBundle:FileCategory")->find(0);
+        /** @var  $file_type FileType*/
         $file_type = $this->em->getRepository("AppBundle:FileType")->find(0);
         $file = new File();
         $upload_dir = 'files/'.$user_id.'/';
@@ -100,6 +102,9 @@ class FileStuff
         }
         if (in_array("user_id", $fields)){
             $file_info["user_id"] = $file->getIDUser()->getIDUser();
+        }
+        if (in_array("display_name", $fields)){
+            $file_info["display_name"] = $file->getDisplayName();
         }
         if (in_array("ID_File", $fields)){
             $file_info["ID_File"] = $file->getIDFile();
