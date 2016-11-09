@@ -51,22 +51,11 @@
                         </form>
                     {% endif %}
                     <br>
-                    <table class="table table-striped" id="user_files_table" data-user_id="{{ user.IDUser }}">
-                        <tr>
-                            <td colspan="3">
-                                <img class="loader" src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40">
+                    <table class="table table-striped " id="user_files_table" data-user_id="{{ user.IDUser }}">
+                        <tr class="loader">
+                            <td colspan="3" class="text-center">
+                                <img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40">
                             </td>
-                        </tr>
-                        <tr>
-                            <th>
-
-                            </th>
-                            <th class="col-md-3 text-center">
-                                Файл
-                            </th>
-                            <th class="col-md-9 text-center">
-                                Описание
-                            </th>
                         </tr>
                     </table>
                 </div>
