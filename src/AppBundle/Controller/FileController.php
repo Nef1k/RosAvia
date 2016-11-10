@@ -79,7 +79,7 @@ class FileController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Method("POST")
-     * @Route("/files/file_delete/{ID_User}", name="file_delete")
+     * @Route("/files/file_delete", name="file_delete")
      */
     public function deleteFileAction(Request $request){
         /** @var  $file_stuff FileStuff*/
