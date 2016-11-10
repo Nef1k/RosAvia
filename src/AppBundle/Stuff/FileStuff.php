@@ -213,10 +213,19 @@ class FileStuff
         }
     }
 
+    public function DeleteFileArray($file_ids){
+        foreach($file_ids AS $file_id){
+            $this->FileDelete($file_id);
+        }
+    }
+    
+
     public function getFileMsg($file_code)
     {
         switch ($file_code)
         {
+            case 0:
+                return "Файлы успешно удалены.";
             case 1:
                 return "Файл успешно загружен.";
             case 2:
