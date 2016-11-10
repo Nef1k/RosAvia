@@ -84,7 +84,7 @@ class FileController extends Controller
     public function deleteFileAction(Request $request){
         /** @var  $file_stuff FileStuff*/
         $file_stuff = $this->get("app.file_stuff");
-        $file_ids = $request->request->get("file_ids");
+        $file_ids = json_decode($request->request->get("file_ids"));
         $user_id = $request->request->get("user_id");
         $file_stuff->DeleteFileArray($file_ids);
         return $this->redirectToRoute("user_info", [
