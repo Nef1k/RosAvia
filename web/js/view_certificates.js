@@ -149,21 +149,29 @@ function ActionWithCertsBtn() {
     }
     console.log(checked_certs);
     console.log($("#actions select").val());
-    var postparams = {
-        ids: JSON.stringify(checked_certs),
-        field_names: JSON.stringify(["id_cert_action"]),
-        field_values: JSON.stringify([action])
-    };
-    jQuery.post("/certificate/edit", postparams, function (data) {
-        var errors = data.error_msg;
-        if (errors.length > 0){
-            msg = "Возникли следующие ошибки при выполнении действия: <br>" + errors.join(" <br>")+".";
-        }
+    if (checked_certs.length == 0){
+        msg="Сертификаты не выбраны.";
         yesNoDialog.message = msg;
         yesNoDialog.hideLoader();
         yesNoDialog.applyParams();
-        console.log(data)
-    })
+    }
+    else {
+        var postparams = {
+            ids: JSON.stringify(checked_certs),
+            field_names: JSON.stringify(["id_cert_action"]),
+            field_values: JSON.stringify([action])
+        };
+        jQuery.post("/certificate/edit", postparams, function (data) {
+            var errors = data.error_msg;
+            if (errors.length > 0){
+                msg = "Возникли следующие ошибки при выполнении действия: <br>" + errors.join(" <br>")+".";
+            }
+            yesNoDialog.message = msg;
+            yesNoDialog.hideLoader();
+            yesNoDialog.applyParams();
+            console.log(data)
+        })
+    }
 }
 
 function fillActionList(){
