@@ -77,6 +77,24 @@ class FileController extends Controller
 
     /**
      * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Method("POST")
+     * @Route("/files/file_delete/{ID_User}", name="file_delete")
+     */
+    public function deleteFileAction(Request $request){
+        /** @var  $file_stuff FileStuff*/
+        $file_stuff = $this->get("app.file_stuff");
+        $file_ids = $request->request->get("file_ids");
+        $user_id = $request->request->get("user_id");
+        $file_stuff->DeleteFileArray($file_ids);
+        return $this->redirectToRoute("user_info", [
+            "ID_User" => $user_id,
+            "file_code" => 0
+        ]);
+    }
+
+    /**
+     * @param Request $request
      * @Method("POST")
      * @Route("/files/file_set", name="file_set")
      * @return Response
