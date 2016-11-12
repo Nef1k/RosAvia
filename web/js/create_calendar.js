@@ -47,6 +47,7 @@ function fillTimeTableWithData(table_selector, data){
                 //Creating new hour row in table
                 $(table_selector).append(getHourRow(parseInt(hour, 10) + currentTimeZoneOffsetInHours));
                 //Iterating over the flights in this hour and rendering them
+                console.log(certificates_in_hour);
                 certificates_in_hour.forEach(function(item, i, arr){
                     $(table_selector + " .certificates-in-hour-"+hour).append(certificateToStr(item));
                 });
