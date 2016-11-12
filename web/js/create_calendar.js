@@ -10,11 +10,11 @@ function certificateToStr(certificate){
 function getHourRow(hour){
     var now= new Date();
     var hours_change = -(now.getTimezoneOffset())/60;
-    var hourToShow=parseInt(hour)+hours_change;
+    var hourToShow=parseInt(hour);//+hours_change;
     console.log("Время при запросе:");
     console.log("Пришедшее: ", hour);
-    console.log("Смещение:", hours_change);
-    console.log("Местное:", hourToShow);
+    // console.log("Смещение:", hours_change);
+    console.log("Показываемое:", hourToShow);
     return  "<tr class='hour-row'>" +
             "   <td valign='middle' align='center'>" + hourToShow + ":00</td>" +
             "   <td style='padding: 10px 20px;'>" +
@@ -137,7 +137,7 @@ function onSetUseTime(event){
     }
     var now= new Date();
     var hours_change = -(now.getTimezoneOffset())/60;
-    var hours = parseInt($("#hours-"+certificate_id).val())-hours_change;
+    var hours = parseInt($("#hours-"+certificate_id).val());//-hours_change;
     var hoursToShow = $("#hours-"+certificate_id).val();
     var minutes = $("#minutes-"+certificate_id).val();
     var seconds = "00";
@@ -145,8 +145,8 @@ function onSetUseTime(event){
     var dateToShow=$(".current-date").html() + " " + [hoursToShow, minutes, seconds].join(":");
 
     console.log("Время при добавлении:");
-    console.log("Местное:", hoursToShow);
-    console.log("Смещение:", hours_change);
+    console.log("Показываемое:", hoursToShow);
+    // console.log("Смещение:", hours_change);
     console.log("Отправляемое: ", hours);
 
     //ToDo check validate time
