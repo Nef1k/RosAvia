@@ -65,6 +65,12 @@ services:
          arguments: ["@doctrine.orm.entity_manager"]
          tags:
              - { name: validator.constraint_validator }
+     validator.CheckFilesExistValidator:
+         class: AppBundle\Validator\Constraints\CheckFilesExistValidator
+         arguments: ["@doctrine.orm.entity_manager"]
+         tags:
+             - { name: validator.constraint_validator }
+             
      #Stuff
      app.manager_stuff:
          class: AppBundle\Stuff\ManagerStuff
