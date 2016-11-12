@@ -107,4 +107,52 @@ class ParamValue
     {
         return $this->ID_GroupParam;
     }
+
+    /**
+     * Set iDUser
+     *
+     * @param \AppBundle\Entity\User $iDUser
+     *
+     * @return ParamValue
+     */
+    public function setIDUser(\AppBundle\Entity\User $iDUser)
+    {
+        $this->ID_User = $iDUser;
+
+        return $this;
+    }
+
+    /**
+     * Get iDUser
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getIDUser()
+    {
+        return $this->ID_User;
+    }
+
+    /**
+     * Set iDGroupParam
+     *
+     * @param \AppBundle\Entity\GroupParam $iDGroupParam
+     *
+     * @return ParamValue
+     */
+    public function setIDGroupParam(\AppBundle\Entity\GroupParam $iDGroupParam)
+    {
+        $this->ID_GroupParam = $iDGroupParam;
+
+        return $this;
+    }
+
+    /**
+     * Get iDGroupParam
+     *
+     * @return \AppBundle\Entity\GroupParam
+     */
+    public function getIDGroupParam()
+    {
+        return $this->ID_GroupParam;
+    }
 }

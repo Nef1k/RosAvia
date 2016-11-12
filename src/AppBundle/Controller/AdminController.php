@@ -478,7 +478,7 @@ class AdminController extends Controller{
         return $response;
     }
 
-    /**
+     /**
      *
      * @Route("/admin/get_cert_action", name="get_cert_action")
      * @Method("GET")
