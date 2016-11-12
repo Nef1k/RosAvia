@@ -26,7 +26,7 @@ function getParams() {
 
                 $("#params .row:last").append(
                     "<div class='col-md-6 text-center'>" +
-                    "<div class='input-group' id='+ item.id+'>" +
+                    "<div class='input-group' id='"+ item.id+"'>" +
                     "<span class='input-group-addon' id='basic-addon3'><b>" + item.name + ":</b></span>" +
                     "<input data-id_field='" + item.id + "' type='text' class='addfields form-control' aria-label='...' value='" + item.value + "'>" +
                     "</div>" +
