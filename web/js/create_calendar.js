@@ -46,7 +46,7 @@ function fillTimeTableWithData(table_selector, data){
             //If there is more than one flight in that hour
             if (certificates_in_hour.length != 0) {
                 //Creating new hour row in table
-                $(table_selector).append(getHourRow(hour + currentTimeZoneOffsetInHours));
+                $(table_selector).append(getHourRow(hour));
 
                 //Iterating over the flights in this hour and rendering them
                 certificates_in_hour.forEach(function(item, i, arr){
