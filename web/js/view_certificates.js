@@ -187,8 +187,26 @@ function fillActionList(){
     })
 }
 
+function fillSelects() {
+    jQuery.getJSON("/certificate/get_sort_params", function (data) {
+        console.log(data);
+        data.dealers.forEach(function (item) {
+            $("#dealer_select").append(
+                "<option value='"+ item.id+"'>"+item.name+"</option>"
+            )
+        });
+        data.flight_type.forEach(function (item) {
+            $("#flight_type_select").append(
+                "<option value='"+item.id+"'>"+item.name+"</option>"
+            )
+        });
+        $("#loader").addClass("hidden");
+        $(".selects").removeClass("hidden");
+    })
+}
 $(document).ready(function (event) {
     get_certificates();
     fillActionList();
+    fillSelects();
 });
 
