@@ -2,6 +2,7 @@
 
 namespace AppBundle\Stuff;
 
+use AppBundle\Entity\FlightType;
 use AppBundle\Entity\SertAction;
 use AppBundle\Entity\SertState;
 use Doctrine\ORM\EntityManager;
@@ -507,5 +508,59 @@ class CertificateStuff
         if ($fields == null) $fields = [];
         $cert = $this->GetCertArray($criteria, $sort, $fields);
         return $cert;
+    }
+
+    /**
+     * @return array
+     */
+    public function GetCertUserLogins() {
+        $query = $this->em->createQuery('SELECT DISTINCT sertificate.ID_User FROM sertificate');
+        $user_ids = $query->getResult();
+        $user_list = array();
+        foreach ($user_ids AS $user_id){
+            /** @var  $user User*/
+            $user = $this->em->getRepository("AppBundle:User")->find($user_id);
+            $user_info = array();
+            $user_info["name"] = $user->getUsername();
+            $user_info["id"] = $user->getIDUser();
+            array_push($user_list, $user_info);
+        }
+        return $user_list;
+    }
+
+    /**
+     * @return array
+     */
+    public function GetCertStates() {
+        $query = $this->em->createQuery('SELECT DISTINCT sertificate.ID_SertState FROM sertificate');
+        $cert_state_ids = $query->getResult();
+        $cert_state_list = array();
+        foreach ($cert_state_ids AS $cert_state_id){
+            /** @var  $cert_state SertState*/
+            $cert_state = $this->em->getRepository("AppBundle:SertState")->find($cert_state_id);
+            $cert_state_info = array();
+            $cert_state_info["name"] = $cert_state->getName();
+            $cert_state_info["id"] = $cert_state->getIDSertState();
+            array_push($cert_state_list, $cert_state_info);
+        }
+        return $cert_state_list;
+    }
+
+    /**
+     * @return array
+     */
+    public function GetCertFlightTypes() {
+        $query = $this->em->createQuery('SELECT DISTINCT sertificate.ID_FlightType FROM sertificate');
+        $cert_flight_type_ids = $query->getResult();
+        $cert_flight_type_list = array();
+        foreach ($cert_flight_type_ids AS $cert_flight_type_id){
+            /** @var  $cert_flight_type FlightType*/
+            $cert_flight_type = $this->em->getRepository("AppBundle:SertState")->find($cert_flight_type_id);
+            $cert_flight_type_info = array();
+            $cert_flight_type_info["name"] = $cert_flight_type->getName();
+            $cert_flight_type_info["id"] = $cert_flight_type->getIDFlightType();
+            array_push($cert_flight_type_list, $cert_flight_type_info);
+        }
+        return $cert_flight_type_list;
     }
 }
