@@ -8,6 +8,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\DataClasses\FileDeletion;
 use AppBundle\DataClasses\UserIDCheck;
 use AppBundle\Entity\FileCategory;
 use AppBundle\Entity\File;
@@ -79,18 +80,30 @@ class FileController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Method("POST")
-     * @Route("/files/file_delete/{ID_User}", name="file_delete")
+     * @Route("/files/file_delete", name="file_delete")
      */
     public function deleteFileAction(Request $request){
         /** @var  $file_stuff FileStuff*/
         $file_stuff = $this->get("app.file_stuff");
-        $file_ids = $request->request->get("file_ids");
-        $user_id = $request->request->get("user_id");
-        $file_stuff->DeleteFileArray($file_ids);
-        return $this->redirectToRoute("user_info", [
-            "ID_User" => $user_id,
-            "file_code" => 0
-        ]);
+        $file_ids_checker = new FileDeletion();
+        $file_ids_checker->setFileIds(json_decode($request->request->get("file_ids")));
+        $validator = $this->get('validator');
+        $errors = $validator->validate($file_ids_checker);
+        if (count($errors) != 0) {
+            $file_stuff->DeleteFileArray($file_ids_checker->getFileIds());
+        }
+        $Request_output = array(
+            'error_msg' => array(),
+            'error_param' => array());
+        foreach ($errors AS $error)
+        {
+            array_push($Request_output['error_msg'],$error->getMessage());
+            array_push($Request_output['error_param'],$error->getInvalidValue());
+        }
+        $response = new Response();
+        $response->setContent(json_encode($Request_output));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
     /**

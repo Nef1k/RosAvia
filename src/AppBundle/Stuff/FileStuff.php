@@ -62,7 +62,9 @@ class FileStuff
         {
             $file_cat = $this->em->getRepository("AppBundle:FileCategory")->find(0);
         }
-
+        $rus=array('А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я','а','б','в','г','д','е','ё','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','ъ','ы','ь','э','ю','я',' ');
+        $lat=array('a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya','a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya',' ');
+        $file_name = str_replace($rus, $lat, $_FILES['userfile']['name']);
         /** @var  $file_type FileType*/
         $file_type = $this->em->getRepository("AppBundle:FileType")->find(0);
         $file = new File();
@@ -72,7 +74,7 @@ class FileStuff
             setRealCategory($file_cat_name)->
             setIDCategory($file_cat)->
             setIDFileType($file_type)->
-            setFileName(basename($_FILES['userfile']['name']))->
+            setFileName(basename($file_name))->
             setFileSize($_FILES['userfile']['size'])->
             setDisplayName($disp_name)->
             setFileDate($file_date);
