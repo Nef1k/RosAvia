@@ -204,6 +204,35 @@ function fillSelects() {
         $(".selects").removeClass("hidden");
     })
 }
+function FindCertsByCriteria() {
+    var phone=$("#phone_select").val();
+    var dealer=$("#dealer_select").val();
+    var flight_type= $("#flight_type_select").val();
+    console.log(phone, dealer, flight_type);
+    var cert_status = get_cert_status();
+    var criteria = {"ID_SertState": [cert_status]};
+    if (phone != ""){
+        criteria["phone_number"]=[phone]
+    }
+    if (dealer != "none"){
+        criteria["ID_User"]= [dealer]
+    }
+    if (flight_type != "none"){
+        criteria["ID_FlightType"]= [flight_type]
+    }
+    console.log(criteria);
+    var StrCriteria = JSON.stringify(criteria);
+    var field_name = JSON.stringify(["name", "last_name", "phone_number", "flight_type", "cert_link", "use_time", "ID_Sertificate"]);
+    var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
+    var params = {
+        criteria: StrCriteria,
+        field_name: field_name,
+        sort: sort
+    };
+    jQuery.post("/certificate/select", params, function (data) {
+        console.log(data)
+    })
+}
 $(document).ready(function (event) {
     get_certificates();
     fillActionList();
