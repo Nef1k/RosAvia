@@ -57,7 +57,11 @@
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon3"><b>Ментор:</b></span>
                                     <select id="mentor" class="form-control">
-                                        <option selected value="{{ user.getIDMentor.IDUser }}">{{ user.getIDMentor.username }}</option>
+                                        {% if not user.getIDMentor %}
+                                            <option selected value="null">Нет ментора</option>
+                                        {% else %}
+                                            <option selected value="{{ user.getIDMentor.IDUser }}">{{ user.getIDMentor.username }}</option>
+                                        {% endif %}
                                         {% for mentor in mentors %}
                                             <option value="{{ mentor.IDUser }}">{{ mentor.username}}</option>
                                         {% endfor %}
