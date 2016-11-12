@@ -514,8 +514,10 @@ class CertificateStuff
      * @return array
      */
     public function GetCertUserLogins() {
-        $query = $this->em->createQuery('SELECT DISTINCT sertificate.ID_User FROM sertificate');
-        $user_ids = $query->getResult();
+        $sql_query = 'SELECT DISTINCT sertificate.ID_User FROM sertificate';
+        $query = $this->em->getConnection()->prepare($sql_query);
+        $query->execute();
+        $user_ids = $query->fetchAll();
         $user_list = array();
         foreach ($user_ids AS $user_id){
             /** @var  $user User*/
@@ -550,8 +552,10 @@ class CertificateStuff
      * @return array
      */
     public function GetCertFlightTypes() {
-        $query = $this->em->createQuery('SELECT DISTINCT sertificate.ID_FlightType FROM sertificate');
-        $cert_flight_type_ids = $query->getResult();
+        $sql_query = 'SELECT DISTINCT sertificate.ID_FlightType FROM sertificate';
+        $query = $this->em->getConnection()->prepare($sql_query);
+        $query->execute();
+        $cert_flight_type_ids = $query->fetchAll();
         $cert_flight_type_list = array();
         foreach ($cert_flight_type_ids AS $cert_flight_type_id){
             /** @var  $cert_flight_type FlightType*/
