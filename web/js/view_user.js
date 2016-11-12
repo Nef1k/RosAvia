@@ -9,11 +9,11 @@ function GetUserFiles(){
         console.log(data);
         $(".loader").addClass("hidden");
         if (data.length == 0){
-            $("#user_files_table").append("<tr><th colspan='3'>У данного пользователя нет файлов</th></tr>")
+            $("#user_files_table").append("<tr class='file-row'><th colspan='3'>У данного пользователя нет файлов</th></tr>")
         }
         else{
             $("#user_files_table").append(
-                "<tr>" +
+                "<tr  class='file-row'>" +
                     "<th></th>" +
                     "<th class='col-md-4 text-left'>Файл </th>" +
                     "<th class='col-md-8 text-left'>Описание </th>" +
@@ -21,7 +21,7 @@ function GetUserFiles(){
             );
             data.forEach(function(item){
                 $("#user_files_table").append(
-                    "<tr>" +
+                    "<tr class='file-row'>" +
                     "<td class='file-checkbox'></td>"+
                     "<td class='col-md-4 text-left'><a href='"+ item.file_link +"'>" + item.file_name + "</a></td> " +
                     "<td class='col-md-8 text-left'>" + item.display_name + "</td>" +
@@ -35,10 +35,10 @@ function GetUserFiles(){
             });
             if (watcher_group == 3) {
                 $("#user_files_table").after(
-                    "<div class='text-right'><button class='btn btn-danger' onclick='DeleteFiles()'><span class='glyphicon glyphicon-trash'></span>&nbsp;&nbsp;Удалить файлы</button></div>"
+                    "<div class='text-right file-row'><button class='btn btn-danger' onclick='DeleteFiles()'><span class='glyphicon glyphicon-trash'></span>&nbsp;&nbsp;Удалить файлы</button></div>"
                 );
                 $("#user_files_table").before(
-                    "<div class='pull-right'>" +
+                    "<div class='pull-right file-row'>" +
                     "<button class='btn btn-xs btn-default mark_all' onclick='mark_all()'>Выделить всё</button>" +
                     "<button class='btn btn-xs btn-default unmark_all' onclick='unmark_all()'>Снять выделение</button>" +
                     "</div>"
@@ -62,16 +62,46 @@ function DeleteFiles() {
         checked_files[i] = parseInt($(selector[i]).attr("data-file_id"));
     }
     console.log(checked_files);
+    var yesNoDialog = new YesNoDialog;
+    yesNoDialog.setModalSelector("#yes-no-modal");
+    yesNoDialog.show({
+        caption: "Удаление файлов",
+        yes_caption: "Ок",
+        no_caption: "",
+        yes_handler: YesBtn
+    });
+    yesNoDialog.showLoader();
+    var msg = "Файлы успешно удалены";
+    if (checked_files.length == 0){
+        msg="Файлы не выбраны";
+        yesNoDialog.message = msg;
+        yesNoDialog.hideLoader();
+        yesNoDialog.applyParams();
+    }
+    else {
+        var file_ids = JSON.stringify(checked_files);
+        jQuery.post("/files/file_delete", {file_ids : file_ids}, function (data) {
+            console.log(data);
+            var errors = data.error_msg;
+            if (errors.length > 0){
+                msg = "Возникли следующие ошибки при удалении файлов: <br>" + errors.join(" <br>")+".";
+            }
+            else {
+                $(".file-row").remove();
+                $(".loader").removeClass("hidden");
+                GetUserFiles();
+            }
+            yesNoDialog.message = msg;
+            yesNoDialog.hideLoader();
+            yesNoDialog.applyParams();
+        })
+    }
+
 }
 
-function AddFile() {
-    var user_id=$("#user_files_table").attr("data-user_id");
-    var description=$("#description").val();
-    var file=$("#InputFile").val();
-    console.log(user_id, description, file);
-    jQuery.post("/files/file_set", { user_id: user_id, display_name: description, userfile: file}, function (data) {
-        console.log(data);
-    })
+function YesBtn(event) {
+    var modal = event.data;
+    modal.close();
 }
 
 $(document).ready(function (event) {
