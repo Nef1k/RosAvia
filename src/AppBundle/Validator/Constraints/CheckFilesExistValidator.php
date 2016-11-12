@@ -13,7 +13,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Doctrine\ORM\EntityManager;
 use AppBundle\Entity\File;
 
-class CheckFilesExistValidator
+class CheckFilesExistValidator extends ConstraintValidator
 {
     /**
      * @var EntityManager
