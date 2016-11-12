@@ -137,7 +137,7 @@ function onSetUseTime(event){
     }
     var now= new Date();
     var hours_change = -(now.getTimezoneOffset())/60;
-    var hours = parseInt($("#hours-"+certificate_id).val());//-hours_change;
+    var hours = parseInt($("#hours-"+certificate_id).val())+hours_change;
     var hoursToShow = $("#hours-"+certificate_id).val();
     var minutes = $("#minutes-"+certificate_id).val();
     var seconds = "00";
@@ -146,7 +146,7 @@ function onSetUseTime(event){
 
     console.log("Время при добавлении:");
     console.log("Показываемое:", hoursToShow);
-    // console.log("Смещение:", hours_change);
+    console.log("Смещение:", hours_change);
     console.log("Отправляемое: ", hours);
 
     //ToDo check validate time
