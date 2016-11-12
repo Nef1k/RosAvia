@@ -44,6 +44,8 @@ security:
         - { path: ^/dealer, roles: [ROLE_DEALER, ROLE_ADMIN]}
         - { path: ^/manager, roles: [ROLE_MANAGER, ROLE_ADMIN]}
         - { path: ^/admin, roles: [ROLE_ADMIN]}
+        - { path: ^/files, roles: [ROLE_ADMIN, ROLE_DEALER]}
+        - { path: ^/user, roles: [ROLE_ADMIN, ROLE_DEALER]}
 
     role_hierarchy:
         ROLE_DEVELOPER: [ROLE_USER, ROLE_DEALER, ROLE_MANAGER, ROLE_ADMIN]
