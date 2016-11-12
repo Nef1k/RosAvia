@@ -559,7 +559,7 @@ class CertificateStuff
         $cert_flight_type_list = array();
         foreach ($cert_flight_type_ids AS $cert_flight_type_id){
             /** @var  $cert_flight_type FlightType*/
-            $cert_flight_type = $this->em->getRepository("AppBundle:SertState")->find($cert_flight_type_id);
+            $cert_flight_type = $this->em->getRepository("AppBundle:FlightType")->find($cert_flight_type_id);
             $cert_flight_type_info = array();
             $cert_flight_type_info["name"] = $cert_flight_type->getName();
             $cert_flight_type_info["id"] = $cert_flight_type->getIDFlightType();
