@@ -60,6 +60,7 @@ class DealerController extends Controller
             "certs_available" => $certs_available,
             "first_blank" => $first_blank,
             "percent" => $percent,
+            "user_link" => $this->get("router")->generate('user_info', ['ID_User' => $user->getIDUser()])
         ));
     }
 
