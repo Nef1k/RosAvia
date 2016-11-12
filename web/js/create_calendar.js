@@ -41,12 +41,11 @@ function fillTimeTableWithData(table_selector, data){
                 continue;
             }
             var certificates_in_hour = data[hour];
-
-            //If there is more than one flight in that hour
+            var currentTimeZoneOffsetInHours = -curDate.getTimezoneOffset()/60            var curDate = new Date();
+            var currentTimeZoneOffsetInHours = -(curDate.getTimezoneOffset())/60;            //If there is more than one flight in that hour
             if (certificates_in_hour.length != 0) {
                 //Creating new hour row in table
-                $(table_selector).append(getHourRow(hour));
-
+                $(table_selector).append(getHourRow(parseInt(hour, 10) + currentTimeZoneOffsetInHours));
                 //Iterating over the flights in this hour and rendering them
                 certificates_in_hour.forEach(function(item, i, arr){
                     $(table_selector + " .certificates-in-hour-"+hour).append(certificateToStr(item));
