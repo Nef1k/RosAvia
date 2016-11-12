@@ -195,7 +195,7 @@ function fillSelects() {
                 "<option value='"+ item.id+"'>"+item.name+"</option>"
             )
         });
-        data.flight_type.forEach(function (item) {
+        data.flight_types.forEach(function (item) {
             $("#flight_type_select").append(
                 "<option value='"+item.id+"'>"+item.name+"</option>"
             )
