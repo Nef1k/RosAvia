@@ -226,7 +226,7 @@ function FindCertsByCriteria() {
     var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
     var params = {
         criteria: StrCriteria,
-        field_name: field_name,
+        field_names: field_name,
         sort: sort
     };
     jQuery.post("/certificate/select", params, function (data) {
