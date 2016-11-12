@@ -89,7 +89,7 @@ class FileController extends Controller
         $file_ids_checker->setFileIds(json_decode($request->request->get("file_ids")));
         $validator = $this->get('validator');
         $errors = $validator->validate($file_ids_checker);
-        if (count($errors) != 0) {
+        if (count($errors) == 0) {
             $file_stuff->DeleteFileArray($file_ids_checker->getFileIds());
         }
         $Request_output = array(
