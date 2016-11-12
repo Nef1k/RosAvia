@@ -251,4 +251,21 @@ class CertificateController extends Controller
             "certificate" => $certificate
         ]);
     }
+
+    /**
+     *
+     * @Method("GET")
+     * @Route("/certificate/get_sort_params", name="certificate_get_sort_params")
+     */
+    public function getCertificateParamsAction(Request $request){
+        /** @var  $cert_stuff CertificateStuff*/
+        $cert_stuff = $this->get("app.certificate_stuff");
+        $Request_output = array();
+        $response = new Response();
+        $Request_output["dealers"] = $cert_stuff->GetCertUserLogins();
+        $Request_output["flight_types"] = $cert_stuff->GetCertFlightTypes();
+        $response->setContent(json_encode($Request_output));
+        $response -> headers -> set('Content-Type', 'application/json');
+        return $response;
+    }
 }
