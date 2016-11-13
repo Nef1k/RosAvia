@@ -100,7 +100,7 @@ function fill_cert_table_with_data(list_selector, data) {
                         "<td>" + flight_type + "</td>" +
                     "</tr>" +
                 "</table>" +
-                "<div class='panel-heading user-price'><b>Общая сумма:<div class='pull-right' id='user-price-'"+item.user_id+">"+user_price+"</div></b></div> "
+                "<div class='panel-heading user-price'><b>Общая сумма:<div class='pull-right' id='user-price'>"+user_price+"</div></b></div> "
             )
 
         }
@@ -117,7 +117,8 @@ function fill_cert_table_with_data(list_selector, data) {
                 "<td>" + flight_type + "</td>" +
                 "</tr>"
             );
-            $("#user-price-"+item.user_id).html(user_price);
+            console.log($("#user-price-"+item.user_id), user_price);
+            $("#user-price").html(user_price);
         }
 
     });
