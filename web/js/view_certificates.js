@@ -188,7 +188,8 @@ function fillActionList(){
 }
 
 function fillSelects() {
-    jQuery.getJSON("/certificate/get_sort_params", function (data) {
+    var cert_status = get_cert_status();
+    jQuery.getJSON("/certificate/get_sort_params?cert_state="+cert_status, function (data) {
         console.log(data);
         data.dealers.forEach(function (item) {
             $("#dealer_select").append(
