@@ -521,12 +521,14 @@ class CertificateStuff
         $user_list = array();
         if (count($user_ids) != 0) {
             foreach ($user_ids AS $user_id) {
-                /** @var  $user User */
-                $user = $this->em->getRepository("AppBundle:User")->find($user_id);
-                $user_info = array();
-                $user_info["name"] = $user->getUsername();
-                $user_info["id"] = $user->getIDUser();
-                array_push($user_list, $user_info);
+                if ($user_id != null) {
+                    /** @var  $user User */
+                    $user = $this->em->getRepository("AppBundle:User")->find($user_id);
+                    $user_info = array();
+                    $user_info["name"] = $user->getUsername();
+                    $user_info["id"] = $user->getIDUser();
+                    array_push($user_list, $user_info);
+                }
             }
         }
         return $user_list;
@@ -562,11 +564,13 @@ class CertificateStuff
         if (count($cert_flight_type_ids) != 0) {
             foreach ($cert_flight_type_ids AS $cert_flight_type_id) {
                 /** @var  $cert_flight_type FlightType */
-                $cert_flight_type = $this->em->getRepository("AppBundle:FlightType")->find($cert_flight_type_id);
-                $cert_flight_type_info = array();
-                $cert_flight_type_info["name"] = $cert_flight_type->getName();
-                $cert_flight_type_info["id"] = $cert_flight_type->getIDFlightType();
-                array_push($cert_flight_type_list, $cert_flight_type_info);
+                if ($cert_flight_type_id['ID_FlightType'] != null) {
+                    $cert_flight_type = $this->em->getRepository("AppBundle:FlightType")->find($cert_flight_type_id['ID_FlightType']);
+                    $cert_flight_type_info = array();
+                    $cert_flight_type_info["name"] = $cert_flight_type->getName();
+                    $cert_flight_type_info["id"] = $cert_flight_type->getIDFlightType();
+                    array_push($cert_flight_type_list, $cert_flight_type_info);
+                }
             }
         }
         return $cert_flight_type_list;
