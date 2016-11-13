@@ -467,8 +467,8 @@ class CertificateStuff
             $criteria["name"] = [];
             foreach($patterns AS $pattern){
                 foreach($user_last_names AS $user_last_name){
-                    if (stripos($user_last_name, $pattern) !== false){
-                        array_push($criteria["name"], $user_last_name);
+                    if (stripos($user_last_name['name'], $pattern) !== false){
+                        array_push($criteria["name"], $user_last_name['name']);
                     }
                 }
             }
@@ -482,8 +482,8 @@ class CertificateStuff
             $criteria["last_name"] = [];
             foreach($patterns AS $pattern){
                 foreach($user_last_names AS $user_last_name){
-                    if (stripos($user_last_name, $pattern) !== false){
-                        array_push($criteria["last_name"], $user_last_name);
+                    if (stripos($user_last_name['last_name'], $pattern) !== false){
+                        array_push($criteria["last_name"], $user_last_name['last_name']);
                     }
                 }
             }
