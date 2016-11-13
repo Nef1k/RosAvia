@@ -8,9 +8,13 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\DataClasses\FileDeletion;
 use AppBundle\DataClasses\UserIDCheck;
 use AppBundle\Entity\FileCategory;
+use AppBundle\Entity\File;
+use AppBundle\Entity\User;
 use AppBundle\Stuff\FileStuff;
+use AppBundle\Stuff\UserStuff;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -23,13 +27,13 @@ class FileController extends Controller
 
     /**
      * @param Request $request
-     * @Method("GET")
+     * @Method("POST")
      * @Route("/files/select", name="file_select")
      * @return Response
      */
     public function getUserFilesAction(Request $request){
         /** @var $file_stuff FileStuff */
-        $file_stuff = $this->get("app.certificate_stuff");
+        $file_stuff = $this->get("app.file_stuff");
         $response = new Response();
         $response->setContent(json_encode($file_stuff->GetFileArrayFromRequest($request)));
         $response->headers->set('Content-Type', 'application/json');
@@ -37,16 +41,67 @@ class FileController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @Method("GET")
-     * @Route("/files/file_get", name="file_get")
+     * @Route("/files/file_get/{ID_User}/{ID_File}", name="file_get")
      * @return Response
      */
-    public function getUserFileAction(Request $request){
+    public function getUserFileAction(User $user, File $file){
+        /** @var $user User */
+        /** @var $file File */
         /** @var $file_stuff FileStuff */
-        $file_stuff = $this->get("app.certificate_stuff");
+        $file_stuff = $this->get("app.file_stuff");
+
+        $file_code = $file_stuff->GetFileFromRequest($user->getIDUser(), $file->getIDFile());
+        return $this->redirectToRoute('user_info', [
+            "ID_User" => $user->getIDUser(),
+            "file_code" => $file_code,
+        ]);
+
+        /*
+        if (count($Request_output['error_msg']) != 0) {
+            return $this->render("default/view_user.html.twig", array(
+                "user" => $user,
+                "user_params" => $user_params,
+                "auth_user_group" => $this->getUser()->getUserGroup()->getIDUserGroup(),
+                "file_msg_code" => 2,
+                "file_msg" => $Request_output['error_msg'][0]
+            ));
+        } else {
+            return $this->render("default/view_user.html.twig", array(
+                "user" => $user,
+                "user_params" => $user_params,
+                "auth_user_group" => $this->getUser()->getUserGroup()->getIDUserGroup(),
+                "file_msg_code" => 1,
+                "file_msg" => "Загрузка файла завершена успешно!"
+            ));
+        }*/
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Method("POST")
+     * @Route("/files/file_delete", name="file_delete")
+     */
+    public function deleteFileAction(Request $request){
+        /** @var  $file_stuff FileStuff*/
+        $file_stuff = $this->get("app.file_stuff");
+        $file_ids_checker = new FileDeletion();
+        $file_ids_checker->setFileIds(json_decode($request->request->get("file_ids")));
+        $validator = $this->get('validator');
+        $errors = $validator->validate($file_ids_checker);
+        if (count($errors) == 0) {
+            $file_stuff->DeleteFileArray($file_ids_checker->getFileIds());
+        }
+        $Request_output = array(
+            'error_msg' => array(),
+            'error_param' => array());
+        foreach ($errors AS $error)
+        {
+            array_push($Request_output['error_msg'],$error->getMessage());
+            array_push($Request_output['error_param'],$error->getInvalidValue());
+        }
         $response = new Response();
-        $response->setContent(json_encode($file_stuff->GetFileFromRequest($request)));
+        $response->setContent(json_encode($Request_output));
         $response->headers->set('Content-Type', 'application/json');
         return $response;
     }
@@ -55,6 +110,7 @@ class FileController extends Controller
      * @param Request $request
      * @Method("POST")
      * @Route("/files/file_set", name="file_set")
+     * @return Response
      */
     public function setUserFileAction(Request $request){
         /** @var $file_stuff FileStuff */
@@ -64,14 +120,29 @@ class FileController extends Controller
         $display_name = $request->request->get("display_name");
         $validator = $this->get('validator');
         $errors = $validator->validate($user_id);
-        $Request_output = array(
-            'error_msg' => array(),
-            'error_param' => array()
-        );
+        $em = $this->getDoctrine()->getManager();
+        /** @var  $user User*/
+        $user = $em->getRepository("AppBundle:User")->find($user_id->getUserID());
         $file_cat_name = substr(basename($_FILES['userfile']['name']), (stripos($_FILES['userfile']['name'],'.') !== false)?stripos($_FILES['userfile']['name'],'.') + 1:strlen(basename($_FILES['userfile']['name'])));
         /** @var  $file_cat FileCategory*/
         $date = new \DateTime();
+        if ($file_stuff->PushFile($user->getIDUser(), $file_cat_name, $display_name, $date)){
+            $file_msg_code = 1;
+            $file_msg = "Файл успешно загружен!";
+        } else {
+            $file_msg_code = 8;
+            $file_msg = "Внимание! Загрузка файла не была завершена успешна!";
+        }
 
-        return new Response("<html><head></head><body>".json_encode($file_stuff->PushFile($user_id->getUserID(),$file_cat_name, $display_name, $date))."</body></html>");
+        return $this->redirectToRoute("user_info", [
+            "ID_User" => $user_id->getUserID(),
+            "file_code" => $file_msg_code
+        ]);
+        /*return $this->render("default/view_user.html.twig", array(
+            "user" => $user,
+            "user_params" => $user_params,
+            "auth_user_group" => $this->getUser()->getUserGroup()->getIDUserGroup(),
+            "file_msg_code" => $file_msg_code,
+            "file_msg" => $file_msg));*/
     }
 }

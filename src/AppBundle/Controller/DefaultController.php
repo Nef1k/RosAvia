@@ -7,7 +7,7 @@ use AppBundle\Entity\User;
 use AppBundle\Stuff\UserStuff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -35,7 +35,7 @@ class DefaultController extends Controller
      *
      * @Route("/user/{ID_User}", name="user_info")
      */
-    public function userInfoAction(User $user)
+    public function userInfoAction(Request $request, User $user)
     {
         /** @var $user_stuff UserStuff */
         $user_stuff = $this->get("app.user_stuff");
@@ -45,10 +45,22 @@ class DefaultController extends Controller
             return $this->redirectToRoute("user_signin");
         }
         $user_params = $user_stuff->getUserParamList($user);
-        return $this->render("default/view_user.html.twig", array(
+
+        $template_params = [
             "user" => $user,
             "user_params" => $user_params,
             "auth_user_group" => $user_auth->getUserGroup()->getIDUserGroup()
-        ));
+        ];
+
+        $file_code = $request->query->get("file_code", -1);
+        if ($file_code != -1)
+        {
+            $file_msg = $this->get("app.file_stuff")->getFileMsg($file_code);
+            $template_params["file_msg"] = $file_msg;
+            $template_params["file_msg_code"] = $file_code;
+        }
+
+        return $this->render("default/view_user.html.twig", $template_params);
     }
+
 }
