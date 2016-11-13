@@ -35,7 +35,6 @@ class DealerController extends Controller
                                          (s.ID_User = ?1)");
         $query->setParameter(1, $user->getIDUser());
         $certificates = $certificate_stuff->getCertificatesWithActions($this->getUser());
-
         $certs_available = $em->createQuery("SELECT COUNT(s)
                                              FROM AppBundle:Sertificate s
                                              WHERE (s.ID_SertState IN ('1')) AND
@@ -61,6 +60,7 @@ class DealerController extends Controller
             "certs_available" => $certs_available,
             "first_blank" => $first_blank,
             "percent" => $percent,
+            "user_link" => $this->get("router")->generate('user_info', ['ID_User' => $user->getIDUser()])
         ));
     }
 
