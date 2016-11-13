@@ -519,13 +519,15 @@ class CertificateStuff
         $query->execute(array('id_state' => $cert_state));
         $user_ids = $query->fetchAll();
         $user_list = array();
-        foreach ($user_ids AS $user_id){
-            /** @var  $user User*/
-            $user = $this->em->getRepository("AppBundle:User")->find($user_id);
-            $user_info = array();
-            $user_info["name"] = $user->getUsername();
-            $user_info["id"] = $user->getIDUser();
-            array_push($user_list, $user_info);
+        if (count($user_ids) != 0) {
+            foreach ($user_ids AS $user_id) {
+                /** @var  $user User */
+                $user = $this->em->getRepository("AppBundle:User")->find($user_id);
+                $user_info = array();
+                $user_info["name"] = $user->getUsername();
+                $user_info["id"] = $user->getIDUser();
+                array_push($user_list, $user_info);
+            }
         }
         return $user_list;
     }
@@ -557,13 +559,15 @@ class CertificateStuff
         $query->execute(array('id_state' => $cert_state));
         $cert_flight_type_ids = $query->fetchAll();
         $cert_flight_type_list = array();
-        foreach ($cert_flight_type_ids AS $cert_flight_type_id){
-            /** @var  $cert_flight_type FlightType*/
-            $cert_flight_type = $this->em->getRepository("AppBundle:FlightType")->find($cert_flight_type_id);
-            $cert_flight_type_info = array();
-            $cert_flight_type_info["name"] = $cert_flight_type->getName();
-            $cert_flight_type_info["id"] = $cert_flight_type->getIDFlightType();
-            array_push($cert_flight_type_list, $cert_flight_type_info);
+        if (count($cert_flight_type_ids) != 0) {
+            foreach ($cert_flight_type_ids AS $cert_flight_type_id) {
+                /** @var  $cert_flight_type FlightType */
+                $cert_flight_type = $this->em->getRepository("AppBundle:FlightType")->find($cert_flight_type_id);
+                $cert_flight_type_info = array();
+                $cert_flight_type_info["name"] = $cert_flight_type->getName();
+                $cert_flight_type_info["id"] = $cert_flight_type->getIDFlightType();
+                array_push($cert_flight_type_list, $cert_flight_type_info);
+            }
         }
         return $cert_flight_type_list;
     }
