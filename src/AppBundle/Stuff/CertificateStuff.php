@@ -405,6 +405,9 @@ class CertificateStuff
                 $cert_link = $this->router->generate('certificate_view',["certificate" => $cert->getIDSertificate()]);
                 $cert_info["cert_link"] = $cert_link;
             }
+            if (in_array("price", $fields)){
+                $cert_info["price"] = ($cert->getFlightType() == null)?0:$cert->getFlightType()->getPrice();
+            }
         }
         return $cert_info;
     }
@@ -454,7 +457,7 @@ class CertificateStuff
         } elseif (in_array("ROLE_DEALER", $user_roles) and !($used)){
             array_push($user_ids, $user->getIDUser());
         }
-        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) array_push($criteria["ID_Sertificate"],$object["ID_Sertificate"]);
+        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) $criteria["ID_Sertificate"] = $object["ID_Sertificate"];
         if ((isset($object["name"])?$object["name"]:null) != null) $criteria["name"] = $object["name"];
         if ((isset($object["last_name"])?$object["last_name"]:null) != null) $criteria["last_name"] = $object["last_name"];
         if ((isset($object["phone_number"])?$object["phone_number"]:null) != null) $criteria["phone_number"] = $object["phone_number"];
