@@ -19,7 +19,7 @@ function get_cert_status() {
     return cert_status;
 }
 function get_certificates() {
-    var fields = JSON.stringify(["ID_Sertificate","user_id", "user_login", "name", "last_name", "phone_number", "flight_type"]);
+    var fields = JSON.stringify(["ID_Sertificate","user_id", "user_login", "name", "last_name", "phone_number", "cert_link", "flight_type"]);
     var cert_status = get_cert_status();
     var criteria = JSON.stringify({ "ID_SertState": [cert_status]});
     var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
@@ -44,6 +44,7 @@ function fill_cert_table_with_data(list_selector, data) {
     data.forEach(function (item,i) {
         var name = "", last_name = "", phone_number = "";
         var flight_type = "";
+        var cert_link = "#";
         if (item.name){
             name = item.name;
         }
@@ -56,17 +57,20 @@ function fill_cert_table_with_data(list_selector, data) {
         if (item.flight_type){
             flight_type = item.flight_type;
         }
+        if (item.cert_link){
+            cert_link = item.cert_link;
+        }
         if (item.user_login != user){
             user = item.user_login;
             $(list_selector).append(
-                "<div class='panel panel-default'>" +
+                "<div class='panel panel-default user-panel' >" +
                     "<div class='panel-heading'><strong>"+ user +"</strong>"+
                     "<div class='pull-right'>"+
                         "<button class='btn btn-xs btn-default mark_all' data-user='"+user+"' onclick='mark_all(this)'>Выделить всё</button>" +
                         "<button class='btn btn-xs btn-default unmark_all' data-user='"+user+"' onclick='unmark_all(this)'>Снять выделение</button>" +
                     "</div>" +
                 "</div>" +
-                "<table class='table table-hover table-striped'>" +
+                "<table class='table table-hover table-striped user-table'>" +
                     "<tr>" +
                         "<th class=''></th>" +
                         "<th class='col-md-1'>ID</th>" +
@@ -76,7 +80,7 @@ function fill_cert_table_with_data(list_selector, data) {
                     "</tr>" +
                     "<tr class='certificate_row' data-id='' style='cursor:pointer;' onclick='mark(this)'>" +
                         "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
-                        "<th>"+item.ID_Sertificate+"</th>" +
+                        "<th><a href='"+cert_link+"'>"+item.ID_Sertificate+"</a></th>" +
                         "<td>" + name + " " + last_name + "</td>" +
                         "<td>" + phone_number + "</td>" +
                         "<td>" + flight_type + "</td>" +
@@ -89,7 +93,7 @@ function fill_cert_table_with_data(list_selector, data) {
             $(list_selector + " table:last").append(
                 "<tr class='certificate_row' data-id='' style='cursor:pointer;'  onclick='mark(this)'>" +
                 "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
-                "<th>"+item.ID_Sertificate+"</th>" +
+                "<th><a href='"+cert_link+"'>"+item.ID_Sertificate+"</a></th>" +
                 "<td>" + name + " " + last_name + "</td>" +
                 "<td>" + phone_number + "</td>" +
                 "<td>" + flight_type + "</td>" +
@@ -221,18 +225,33 @@ function FindCertsByCriteria() {
     if (flight_type != "none"){
         criteria["ID_FlightType"]= [flight_type]
     }
-    console.log(criteria);
-    var StrCriteria = JSON.stringify(criteria);
-    var field_name = JSON.stringify(["name", "last_name", "phone_number", "flight_type", "cert_link", "use_time", "ID_Sertificate"]);
-    var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
-    var params = {
-        criteria: StrCriteria,
-        field_names: field_name,
-        sort: sort
-    };
-    jQuery.post("/certificate/select", params, function (data) {
-        console.log(data)
-    })
+    if ((phone != "") || (dealer != "none") || (flight_type != "none")){
+        var StrCriteria = JSON.stringify(criteria);
+        var field_name = JSON.stringify(["name", "user_login", "last_name", "phone_number", "flight_type", "cert_link", "use_time", "ID_Sertificate"]);
+        var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
+        var params = {
+            criteria: StrCriteria,
+            field_names: field_name,
+            sort: sort
+        };
+        $(".user-panel").remove();
+        $(".user-table").remove();
+        $(".cert_loader").removeClass("hidden");
+        jQuery.post("/certificate/select", params, function (data) {
+            console.log(data);
+            $(".cert_loader").addClass("hidden");
+            if (data.length != 0){
+                fill_cert_table_with_data("#cert_list",data);
+            }
+            else {
+                $("#cert_list").append(
+                    "<div class='text-center'>" +
+                    "<h3>Таких сертификатов не существует</h3>" +
+                    "</div>"
+                )
+            }
+        })
+    }
 }
 $(document).ready(function (event) {
     get_certificates();
