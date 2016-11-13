@@ -19,7 +19,7 @@ function get_cert_status() {
     return cert_status;
 }
 function get_certificates() {
-    var fields = JSON.stringify(["ID_Sertificate", "price", "user_id", "user_login", "name", "last_name", "phone_number", "cert_link", "flight_type"]);
+    var fields = JSON.stringify(["ID_Sertificate", "price", "user_login", "name", "last_name", "phone_number", "cert_link", "flight_type"]);
     var cert_status = get_cert_status();
     var criteria = JSON.stringify({ "ID_SertState": [cert_status]});
     var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
@@ -100,7 +100,7 @@ function fill_cert_table_with_data(list_selector, data) {
                         "<td>" + flight_type + "</td>" +
                     "</tr>" +
                 "</table>" +
-                "<div class='panel-heading user-price'><b>Общая сумма:<div class='pull-right' id='user-price-'"+item.user_id+">"+user_price+"</div></b></div> "
+                "<div class='panel-heading user-price'><b>Общая сумма:<div class='pull-right'>"+user_price+"</div></b></div> "
             )
 
         }
@@ -117,7 +117,7 @@ function fill_cert_table_with_data(list_selector, data) {
                 "<td>" + flight_type + "</td>" +
                 "</tr>"
             );
-            $("#user-price-"+item.user_id).html(user_price);
+            $(".user-price:last-child div").html(user_price);
         }
 
     });
@@ -259,7 +259,7 @@ function FindCertsByCriteria() {
     }
     if ((phone != "") || (dealer != "none") || (flight_type != "none") || (cert_id != "") || (name != "") || (last_name != "")){
         var StrCriteria = JSON.stringify(criteria);
-        var field_name = JSON.stringify(["name", "user_id", "price", "user_login", "last_name", "phone_number", "flight_type", "cert_link", "use_time", "ID_Sertificate"]);
+        var field_name = JSON.stringify(["name", "price", "user_login", "last_name", "phone_number", "flight_type", "cert_link", "use_time", "ID_Sertificate"]);
         var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
         var params = {
             criteria: StrCriteria,
