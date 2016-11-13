@@ -27,6 +27,7 @@ function get_certificates() {
         $(".cert_loader").addClass("hidden");
         if (data.length != 0){
             fill_cert_table_with_data("#cert_list",data);
+            console.log(data);
         }
         else {
             $("#cert_list").append(
@@ -79,8 +80,8 @@ function fill_cert_table_with_data(list_selector, data) {
                         "<th class='col-md-3'>Тип полёта</th>" +
                     "</tr>" +
                     "<tr class='certificate_row' data-id='' style='cursor:pointer;' onclick='mark(this)'>" +
-                        "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
-                        "<th><a href='"+cert_link+"'>"+item.ID_Sertificate+"</a></th>" +
+                        "<td onclick='event.cancelBubble=true;'><input style='cursor: pointer' type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
+                        "<th><a href='"+cert_link+"' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
                         "<td>" + name + " " + last_name + "</td>" +
                         "<td>" + phone_number + "</td>" +
                         "<td>" + flight_type + "</td>" +
@@ -92,8 +93,8 @@ function fill_cert_table_with_data(list_selector, data) {
         else{
             $(list_selector + " table:last").append(
                 "<tr class='certificate_row' data-id='' style='cursor:pointer;'  onclick='mark(this)'>" +
-                "<td><input type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
-                "<th><a href='"+cert_link+"'>"+item.ID_Sertificate+"</a></th>" +
+                "<td onclick='event.cancelBubble=true;'><input style='cursor: pointer' type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
+                "<th><a href='"+cert_link+"' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
                 "<td>" + name + " " + last_name + "</td>" +
                 "<td>" + phone_number + "</td>" +
                 "<td>" + flight_type + "</td>" +
