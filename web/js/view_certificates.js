@@ -286,6 +286,16 @@ function FindCertsByCriteria() {
         })
     }
 }
+
+function CleanInputs() {
+    $("#phone_select").val("");
+    $("#dealer_select").val("none");
+    $("#flight_type_select").val("none");
+    $("#id_select").val("");
+    $("#last_name_select").val("");
+    $("#name_select").val("");
+}
+
 $(document).ready(function (event) {
     get_certificates();
     fillActionList();

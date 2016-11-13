@@ -33,13 +33,12 @@
                     <h4 class="panel-title">Поиск сертификатов</h4>
                 </div>
                 <div class="panel-body">
-                    <button class="btn btn-lg btn-default col-md-12" data-toggle="collapse" data-target="#find_certs_hided_menu">Найти по критериям</button>
-                    <div class="collapse" id="find_certs_hided_menu">
+                    <div id="find_certs_hided_menu">
                         <div id="loader" class="text-center">
                             <img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40">
                         </div>
                         <div class="selects hidden">
-                            <label style="margin-top: 10px" for="id_select">ID сертификата</label>
+                            <label for="id_select">ID сертификата</label>
                             <input type="text" class="form-control" id="id_select">
                             <label style="margin-top: 10px" for="last_name_select">Фамилия</label>
                             <input type="text" class="form-control" id="last_name_select">
@@ -56,6 +55,7 @@
                             <label style="margin-top: 10px" for="phone_select">Номер телефона</label>
                             <input type="text" class="form-control" id="phone_select">
                             <br>
+                            <button class="btn btn-default" onclick="CleanInputs()">Сбросить</button>
                             <button class="btn btn-primary pull-right" onclick="FindCertsByCriteria()">Найти</button>
                         </div>
                     </div>
