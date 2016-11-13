@@ -260,10 +260,11 @@ class CertificateController extends Controller
     public function getCertificateParamsAction(Request $request){
         /** @var  $cert_stuff CertificateStuff*/
         $cert_stuff = $this->get("app.certificate_stuff");
+        $cert_state = $request->query->get("cert_state");
         $Request_output = array();
         $response = new Response();
-        $Request_output["dealers"] = $cert_stuff->GetCertUserLogins();
-        $Request_output["flight_types"] = $cert_stuff->GetCertFlightTypes();
+        $Request_output["dealers"] = $cert_stuff->GetCertUserLogins($cert_state);
+        $Request_output["flight_types"] = $cert_stuff->GetCertFlightTypes($cert_state);
         $response->setContent(json_encode($Request_output));
         $response -> headers -> set('Content-Type', 'application/json');
         return $response;
