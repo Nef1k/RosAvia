@@ -131,22 +131,8 @@ function onSaveBtnClick(event){
 }
 
 function attachModalYesBtn(event) {
-
-
     var modal = event.data;
-    var user_id = $(attachModalSelector).data("user_id");
-
     modal.close();
-    $(attachModalSelector).modal("hide");
-    // $(".certificate-row").remove();
-    // $(".unatt_btn").remove();
-    // $(".attached-certificates-loader").removeClass("hidden");
-    // $(".unattached-certificates-loader").removeClass("hidden");
-    // $(attachModalSelector + " input").val("");
-    // jQuery.getJSON("/admin/attach?user_id="+user_id, fillAttachModalWithData);
-    // jQuery.getJSON("/admin/user_table", function (data){
-    //     $("#unattached_certs_count").html(data.unattached_certs)
-    // });
 }
 
 function onModalLoad(event){
@@ -215,9 +201,26 @@ function fillAttachModalWithData(data){
         $(".unatt_btn").click(onCertBtnClick);
     }
 }
+function fillCertsStatesListWithData(list_selector, data) {
+    $(".cert_list_loader").addClass("hidden");
+    data.forEach(function (item, i) {
+        console.log(item);
+        $(list_selector).append(
+            "<a href='/admin/view_certificates/" + item.id_cert_state + "' class='list-group-item'>" +
+            item.cert_state_name +
+            "<span class='badge'>" +
+            item.count +
+            "</span></a>"
+        );
+    });
+}
+
 
 $(document).ready(function(event){
     $(attachModalSelector).on("show.bs.modal", onModalLoad);
+    $("#yes-no-modal").on("hide.bs.modal", function () {
+        $(attachModalSelector).modal("hide");
+    });
     $("#attach_helper_add_btn").click(onHelperAddBtnClick);
     $("#save-btn").click(onSaveBtnClick);
 });

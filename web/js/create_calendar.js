@@ -41,7 +41,8 @@ function fillTimeTableWithData(table_selector, data){
                 continue;
             }
             var certificates_in_hour = data[hour];
-
+            var curDate = new Date();
+            var currentTimeZoneOffsetInHours = -curDate.getTimezoneOffset()/60;
             //If there is more than one flight in that hour
             if (certificates_in_hour.length != 0) {
                 //Creating new hour row in table
