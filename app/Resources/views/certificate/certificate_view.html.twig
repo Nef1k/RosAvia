@@ -35,7 +35,7 @@
                     <td align="center" valign="middle">Тип полёта</td>
                     <td align="center" valign="middle">
                         <div class="form-group">
-                            <input class="form-control" type="text" disabled="disabled" value="{{ certificate.getFlightType.getName }}">
+                            <input class="form-control" type="text" disabled="disabled" value="{% if certificate.getFlightType %}{{ certificate.getFlightType.getName }}{% endif %}">
                         </div>
                     </td>
                 </tr>
