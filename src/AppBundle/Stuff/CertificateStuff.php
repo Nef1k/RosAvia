@@ -492,6 +492,7 @@ class CertificateStuff
         if ((isset($object["use_time"])?$object["use_time"]:null) != null) $criteria["use_time"] = strtotime($object["use_time"]);
         if ((isset($object["ID_FlightType"])?$object["ID_FlightType"]:null) != null) $criteria["ID_FlightType"] = $this->em->getRepository("AppBundle:FlightType")->findBy(array("ID_FlightType" => $object["ID_FlightType"]));
         if ((isset($object["ID_SertState"])?$object["ID_SertState"]:null) != null) $criteria["ID_SertState"] = $this->em->getRepository("AppBundle:SertState")->findBy(array("ID_SertState" => $object["ID_SertState"]));
+        if ((isset($object["ID_CertificatePack"])?$object["ID_CertificatePack"]:null) != null) $criteria["ID_CertificatePack"] = $this->em->getRepository("AppBundle:CertificatePack")->findBy(array("ID_CertificatePack" => $object["ID_CertificatePack"]));
         if ((isset($object["ID_User"])?$object["ID_User"]:null) != null) {
             $user_input = $object["ID_User"];
             $right_users = [];
