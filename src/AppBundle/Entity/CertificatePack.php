@@ -40,6 +40,12 @@ class CertificatePack
     private $Count;
 
     /**
+     * @ORM\ManyToOne(targetEntity="PaymentMethod")
+     * @ORM\JoinColumn(name="ID_PaymentMethod", referencedColumnName="ID_PaymentMethod", nullable=false)
+     */
+    private $ID_PaymentMethod;
+
+    /**
      * Get iDCertificatePack
      *
      * @return integer
@@ -119,5 +125,29 @@ class CertificatePack
     public function getIDUser()
     {
         return $this->ID_User;
+    }
+
+    /**
+     * Set iDPaymentMethod
+     *
+     * @param \AppBundle\Entity\PaymentMethod $iDPaymentMethod
+     *
+     * @return CertificatePack
+     */
+    public function setIDPaymentMethod(\AppBundle\Entity\PaymentMethod $iDPaymentMethod)
+    {
+        $this->ID_PaymentMethod = $iDPaymentMethod;
+
+        return $this;
+    }
+
+    /**
+     * Get iDPaymentMethod
+     *
+     * @return \AppBundle\Entity\PaymentMethod
+     */
+    public function getIDPaymentMethod()
+    {
+        return $this->ID_PaymentMethod;
     }
 }

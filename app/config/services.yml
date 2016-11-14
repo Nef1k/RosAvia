@@ -92,6 +92,10 @@ services:
          class: AppBundle\Stuff\FileStuff
          arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@router"]
 
+     app.certificate_pack_stuff:
+         class: AppBundle\Stuff\CertificatePackStuff
+         arguments: ["@doctrine.orm.entity_manager"]
+         
      #Voters
      certificate_voter:
          class: AppBundle\Security\CertificateVoter
