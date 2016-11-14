@@ -22,37 +22,26 @@
                         <th class="col-md-2">Цена</th>
                         <th class="col-md-3">Тип полёта</th>
                     </tr>
+                    <tr class="table-loader">
+                        <td class="text-center" colspan="6"><img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40"></td>
+                    </tr>
                 </table>
             </div>
         </div>
         <div class="col-md-3">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    Всего к оплате: <strong><span class="total-sum">0</span> рублей</strong><br>
-                    Способ оплаты: <strong><span class="payment-method">не выбран</span></strong><br>
+                    Всего к оплате: <strong><span class="total-sum">0</span> рублей</strong><br><br>
+                    <label for="payment_method">Способ оплаты:</label>
+                    <select id="payment_method" class="form-control">
+                        <option selected value="0">Карта</option>
+                        <option value="1">Наличные</option>
+                    </select>
                     <br>
-                        <div class="btn-group">
-                            <button type="submit" class="btn btn-default">Оплатить</button>
-                            <a class="btn btn-default" href="{{ path("homepage") }}">Отмена</a>
-                        </div>
-                        <div class="hidden">
-                            <input type="radio" name="payment_method" id="payment-1" value="1" title="">
-                            <input type="radio" name="payment_method" id="payment-2" value="2" title="">
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <a href="#" class="payment-toggle thumbnail" data-id="1" data-name="карта">
-                                    <img src="{{ asset("img/payment_card.png") }}" alt="Карта">
-                                    <div class="text-center">Карта</div>
-                                </a>
-                            </div>
-                            <div class="col-md-6">
-                                <a href="#" class="payment-toggle thumbnail" data-id="2" data-name="наличные">
-                                    <img src="{{ asset("img/payment_cash.png") }}" alt="Наличные">
-                                    <div class="text-center">Наличные</div>
-                                </a>
-                            </div>
-                        </div>
+                    <div>
+                        <a class="btn btn-default" href="{{ path("homepage") }}">Отмена</a>
+                        <button class="btn btn-primary pull-right" onclick="PayBtnClick()">Оплатить</button>
+                    </div>
                 </div>
             </div>
         </div>
