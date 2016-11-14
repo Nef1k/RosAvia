@@ -166,8 +166,8 @@ function PayBtnClick() {
                         "</tr>";
             });
             msg += "</table>" +
-                "<div class='alert alert-info' role='alert'>Сумма к оплате:<span class='pull-right'><b>"+total_sum+" рублей</b></span></div>" +
-                "<div class='alert alert-info' role='alert'>Способ оплаты:<span class='pull-right'><b>"+payment_show+"</b></span></div>";
+                "<div class='alert alert-info' role='alert'><b>Сумма к оплате:<span class='pull-right'>"+total_sum+" рублей</b></span></div>" +
+                "<div class='alert alert-info' role='alert'><b>Способ оплаты:<span class='pull-right'>"+payment_show+"</b></span></div>";
             yesNoDialog.message = msg;
             yesNoDialog.hideLoader();
             yesNoDialog.applyParams();
