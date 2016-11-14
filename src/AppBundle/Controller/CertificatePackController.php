@@ -29,11 +29,11 @@ class CertificatePackController extends Controller{
         $payment_method_id = $request->request->get("payment_method");
         /** @var  $certificate_pack_stuff CertificatePackStuff*/
         $certificate_pack_stuff = $this->get("app.certificate_pack_stuff");
-        $certificate_pack_stuff->createCertificatePack($current_user, $certificate_ids_in_pack, $payment_method_id);
         $Request_output = array(
             'error_msg' => array(),
             'error_param' => array()
         );
+        $Request_output['pack_id'] = $certificate_pack_stuff->createCertificatePack($current_user, $certificate_ids_in_pack, $payment_method_id);
         /**foreach($errors as $error){
             array_push($Request_output['error_msg'],$error->getMessage());
             array_push($Request_output['error_param'], $error->getInvalidValue());
