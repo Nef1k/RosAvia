@@ -23,11 +23,11 @@ function get_certificates() {
     var cert_status = get_cert_status();
     var criteria = JSON.stringify({ "ID_SertState": [cert_status]});
     var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
+    $(".user-panel").remove();
+    $(".user-table").remove();
+    $(".user_price").remove();
     jQuery.post("/certificate/select", {field_names : fields, criteria : criteria, sort : sort}, function (data) {
         $(".cert_loader").addClass("hidden");
-        $(".user-panel").remove();
-        $(".user-table").remove();
-        $(".user_price").remove();
         if (data.length != 0){
             fill_cert_table_with_data("#cert_list",data);
             console.log(data);
@@ -294,6 +294,8 @@ function CleanInputs() {
     $("#id_select").val("");
     $("#last_name_select").val("");
     $("#name_select").val("");
+    $(".cert_loader").removeClass("hidden");
+    get_certificates();
 }
 
 $(document).ready(function (event) {
