@@ -10,9 +10,10 @@ function GetCertTable(){
         percent = 0
     }
     console.log(cert_status, user_id, percent);
-    var fields = JSON.stringify(["ID_Sertificate","user_id", "user_login", "name", "last_name", "phone_number", "flight_type", "price"]);
-    var criteria = JSON.stringify({ "ID_SertState": [cert_status], "ID_User" : [user_id], "ID_Certificate_Pack":[null]});
+    var fields = JSON.stringify(["ID_Sertificate", "ID_CertificatePack","user_id", "user_login", "name", "last_name", "phone_number", "flight_type", "price"]);
+    var criteria = JSON.stringify({ "ID_SertState": [cert_status], "ID_User" : [user_id], "ID_CertificatePack":[null]});
     var sort = JSON.stringify({"ID_Sertificate":["ASC"]});
+
     jQuery.post("/certificate/select", {field_names : fields, criteria : criteria, sort : sort}, function (data) {
         console.log(data);
         if (data.length == 0){
@@ -41,8 +42,8 @@ function GetCertTable(){
                     price = parseInt(item.price) * (1 - percent / 100);
                 }
                 $("#cert_table").append(
-                    "<tr class='certificate_row' data-id='' style='cursor:pointer;'  onclick='mark(this)'>" +
-                    "<td><input type='checkbox' autocomplete='off' class='cert_checkbox' data-cert_id='" + item.ID_Sertificate + "'></td>" +
+                    "<tr class='certificate_row' data-id='' style='cursor:pointer;'  onclick='mark(this);IncreaseTotal(this.firstChild.firstChild)'>" +
+                    "<td><input style='cursor:pointer;' onclick='event.cancelBubble=true;' onchange='IncreaseTotal(this)' type='checkbox' autocomplete='off' class='cert_checkbox' data-cert_id='" + item.ID_Sertificate + "' data-price='"+price+"'></td>" +
                     "<th>" + item.ID_Sertificate + "</th>" +
                     "<td>" + name + " " + last_name + "</td>" +
                     "<td>" + phone_number + "</td>" +
@@ -52,7 +53,20 @@ function GetCertTable(){
                 )
             });
         }
+
     })
+}
+
+function IncreaseTotal(data) {
+    var total_sum = parseInt($("#total-sum").html());
+    console.log($(data).prop("checked"));
+    if ($(data).prop("checked")){
+        total_sum += parseInt($(data).attr("data-price"))
+    }
+    else {
+        total_sum -= parseInt($(data).attr("data-price"))
+    }
+    $("#total-sum").html(total_sum);
 }
 
 function mark_all() {
@@ -77,43 +91,46 @@ function PayBtnClick() {
     var checked_certs = [];
     var selector = $("input:checked");
     var payment_method = $("#payment_method").val();
+    var payment_show = payment_method==0?"Карта":"Наличные";
+    for (var i = 0; i<selector.length; ++i){
+        checked_certs[i] = parseInt($(selector[i]).attr("data-cert_id"));
+    }
+
     var yesNoDialog = new YesNoDialog;
     yesNoDialog.setModalSelector("#yes-no-modal");
     yesNoDialog.show({
         caption: "Подтвердите оплату",
-        yes_caption: "Ок",
+        yes_caption: "Оплатить",
         no_caption: "Отмена",
-        yes_handler: NoBtn,
+        data: {checked_certs : checked_certs, method: payment_method, reload: 0},
+        yes_handler: YesBtn,
         no_handler: NoBtn
     });
     yesNoDialog.showLoader();
-    var msg = "<div class='text-center'>Проверьте список оплачиваемых сертификатов:</div>";
-    for (var i = 0; i<selector.length; ++i){
-        checked_certs[i] = parseInt($(selector[i]).attr("data-cert_id"));
-    }
-    console.log(selector);
-    console.log(checked_certs);
-    console.log($("#payment_method").val());
-    $("#yes-no-modal div").removeClass("modal-sm");
-    $("#yes-no-modal div").addClass("modal-lg");
-
+    var msg = "";
     if (checked_certs.length == 0){
         msg="<div class='text-center'>Сертификаты не выбраны.</div>";
+        yesNoDialog.yes_handler = NoBtn;
         yesNoDialog.message = msg;
+        yesNoDialog.no_caption="";
+        yesNoDialog.yes_caption = "Ок";
         yesNoDialog.hideLoader();
         yesNoDialog.applyParams();
     }
     else {
+        $(yesNoDialog.modal_selector+">div").removeClass("modal-sm");
+        $(yesNoDialog.modal_selector+">div").addClass("modal-lg");
         var percent = parseInt($("#cert_table").attr("data-user-percent"));
         if (isNaN(percent)){
             percent = 0
         }
+        var total_sum = 0;
         var fields = JSON.stringify(["ID_Sertificate", "name", "last_name", "phone_number", "flight_type", "price"]);
-        var criteria = JSON.stringify({ "ID_Sertificate": [checked_certs]});
+        var criteria = JSON.stringify({ "ID_Sertificate": checked_certs});
         var sort = JSON.stringify({"ID_Sertificate":["ASC"]});
         jQuery.post("/certificate/select", {field_names : fields, criteria : criteria, sort : sort}, function (data) {
             console.log(data);
-            msg += "<table class='table table-hover table-striped'>" +
+            msg += "<table class='table table-striped'>" +
                         "<tr>"+
                             "<th>ID</th>"+
                             "<th class='col-md-4'>Клиент</th>"+
@@ -139,6 +156,7 @@ function PayBtnClick() {
                 if (item.price){
                     price= parseInt(item.price)*(1-percent/100);
                 }
+                total_sum += price;
                 msg +=  "<tr class='certificate_row' data-id='' style='cursor:pointer;'>" +
                             "<th>"+item.ID_Sertificate+"</th>" +
                             "<td>" + name + " " + last_name + "</td>" +
@@ -147,23 +165,54 @@ function PayBtnClick() {
                             "<td>" + flight_type + "</td>" +
                         "</tr>";
             });
-            msg += "</table>";
+            msg += "</table>" +
+                "<div class='alert alert-info' role='alert'>Сумма к оплате:<span class='pull-right'><b>"+total_sum+" рублей</b></span></div>" +
+                "<div class='alert alert-info' role='alert'>Способ оплаты:<span class='pull-right'><b>"+payment_show+"</b></span></div>";
             yesNoDialog.message = msg;
             yesNoDialog.hideLoader();
             yesNoDialog.applyParams();
-            yesNoDialog.yes_handler = YesBtn(checked_certs);
+
         })
     }
 }
 
-function YesBtn(event, data) {
+function YesBtn(event) {
     var modal = event.data;
-    console.log(data);
-    modal.close();
+    modal.no_caption="";
+    modal.message="";
+    modal.yes_caption = "Ок";
+    $(modal.modal_selector+">div").addClass("modal-sm");
+    $(modal.modal_selector+">div").removeClass("modal-lg");
+    modal.showLoader();
+    modal.yes_handler = NoBtn;
+    modal.applyParams();
+    var payment_method = modal.data.method;
+    var checked_certs = modal.data.checked_certs;
+    var params = {
+        payment_method: payment_method,
+        cert_ids: JSON.stringify(checked_certs)
+    };
+    jQuery.post("/certificate_pack/create", params, function (data) {
+        console.log(data);
+        var errors = data.error_msg;
+        if (errors.length > 0){
+            msg = "Возникли следующие ошибки при выполнении действия: <br>" + errors.join(" <br>")+".";
+        }
+        else{
+            msg = "Оплата пакета сертификатов с номером <b>"+data.pack_id+"</b> успешно поддтверждена.";
+            modal.data.reload = 1;
+        }
+        modal.message = msg;
+        modal.hideLoader();
+        modal.applyParams();
+    })
 }
-function NoBtn() {
+function NoBtn(event) {
     var modal = event.data;
     modal.close();
+    if (modal.data.reload){
+        location.reload(true);
+    }
 }
 $(document).ready(function (event) {
     GetCertTable();
