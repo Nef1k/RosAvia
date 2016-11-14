@@ -49,12 +49,12 @@ class CertificatePackController extends Controller
      * @Method("POST")
      * @return Response
      */
-    public function createActionWithCertificatePackAction(Request $request) {
-        $certificate_pack_id = $request->request->get("pack_id");
+    public function createActionWithCertificatePacksAction(Request $request) {
+        $certificate_pack_ids = $request->request->get("pack_id");
         $is_pack_activated = $request->request->get("is_activated");
         /** @var  $certificate_pack_stuff CertificatePackStuff*/
         $certificate_pack_stuff = $this->get("certificate_pack_stuff");
-        $certificate_pack_stuff->createActionWithCertificatePack($certificate_pack_id, $is_pack_activated);
+        $certificate_pack_stuff->createActionWithCertificatePack($certificate_pack_ids, $is_pack_activated);
         $Request_output = array(
             'error_msg' => array(),
             'error_param' => array()
