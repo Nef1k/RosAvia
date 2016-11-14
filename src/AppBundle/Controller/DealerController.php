@@ -73,7 +73,7 @@ class DealerController extends Controller
         $current_user_percent = $this->get("app.user_stuff")->getCurrentUserParam("dealer_percent");
         return $this->render("dealer/pay_select.html.twig", array(
             "user" => $current_user,
-            "percent" => 'asg'
+            "percent" => $current_user_percent
         ));
     }
 
