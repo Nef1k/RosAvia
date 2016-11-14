@@ -398,4 +398,28 @@ class Sertificate implements \Serializable
     {
         return $this->use_time;
     }
+
+    /**
+     * Set iDCertificatePack
+     *
+     * @param \AppBundle\Entity\CertificatePack $iDCertificatePack
+     *
+     * @return Sertificate
+     */
+    public function setIDCertificatePack(\AppBundle\Entity\CertificatePack $iDCertificatePack = null)
+    {
+        $this->ID_CertificatePack = $iDCertificatePack;
+
+        return $this;
+    }
+
+    /**
+     * Get iDCertificatePack
+     *
+     * @return \AppBundle\Entity\CertificatePack
+     */
+    public function getIDCertificatePack()
+    {
+        return $this->ID_CertificatePack;
+    }
 }
