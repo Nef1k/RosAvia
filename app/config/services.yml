@@ -94,7 +94,7 @@ services:
 
      app.certificate_pack_stuff:
          class: AppBundle\Stuff\CertificatePackStuff
-         arguments: ["@doctrine.orm.entity_manager"]
+         arguments: ["@doctrine.orm.entity_manager", "@certificate_stuff", "@security.token_storage"]
          
      #Voters
      certificate_voter:
