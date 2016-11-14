@@ -65,6 +65,14 @@ class DealerController extends Controller
     }
 
     /**
+     *
+     * @Route("/dealer/show_pay_select", name="dealer_show_pay_select")
+     */
+    public function showPaySelectPageAction() {
+        return $this->render("dealer/pay_select.html.twig");
+    }
+
+    /**
      * @param Request $request
      * @return Response
      *
