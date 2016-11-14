@@ -70,8 +70,10 @@ class DealerController extends Controller
      */
     public function showPaySelectPageAction() {
         $current_user = $this->getUser();
+        $percent = $this->get("app.user_stuff")->getCurrentUserParam("dealer_percent");
         return $this->render("dealer/pay_select.html.twig", array(
-            "user" => $current_user
+            "user" => $current_user,
+            "percent" => $percent
         ));
     }
 
