@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 use AppBundle\Stuff\CertificatePackStuff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class CertificatePackController extends Controller
 {
@@ -19,6 +20,7 @@ class CertificatePackController extends Controller
      * @param Request $request
      * @Route("/certificate_pack/create", name="certificate_pack_create")
      * @Method("POST")
+     * @return Response
      */
     public function createCertificatePackAction(Request $request){
         $current_user = $this->getUser();
@@ -31,10 +33,10 @@ class CertificatePackController extends Controller
             'error_msg' => array(),
             'error_param' => array()
         );
-        foreach($errors as $error){
+        /**foreach($errors as $error){
             array_push($Request_output['error_msg'],$error->getMessage());
             array_push($Request_output['error_param'], $error->getInvalidValue());
-        }
+        }**/
         $response = new Response();
         $response->setContent(json_encode($Request_output));
         $response -> headers -> set('Content-Type', 'application/json');
