@@ -71,6 +71,7 @@ class CertificatePackStuff
             $this->em->persist($certificate_in_pack);
         }
         $this->em->flush();
+        return $certificatePack->getIDCertificatePack();
     }
 
     /**
