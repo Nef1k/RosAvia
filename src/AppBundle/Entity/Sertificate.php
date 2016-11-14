@@ -55,6 +55,12 @@ class Sertificate implements \Serializable
     private $ID_User;
 
     /**
+     * @ORM\ManyToOne(targetEntity="CertificatePack")
+     * @ORM\JoinColumn(name="ID_CertificatePack", referencedColumnName="ID_CertificatePack", nullable=true)
+     */
+    private $ID_CertificatePack;
+
+    /**
      * @param mixed $ID_Sertificate
      * @return $this
      */
