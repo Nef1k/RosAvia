@@ -15,8 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
-class CertificatePackController extends Controller
-{
+class CertificatePackController extends Controller{
 
     /**
      * @param Request $request
@@ -47,7 +46,7 @@ class CertificatePackController extends Controller
 
     /**
      * @param Request $request
-     * @Route("/certificate_pack/action", name"certificate_pack_action")
+     * @Route("/certificate_pack/action", name="certificate_pack_action")
      * @Method("POST")
      * @return Response
      */
