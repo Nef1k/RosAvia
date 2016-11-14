@@ -6,24 +6,23 @@ function GetCertTable(){
     var cert_status = 4;
     var user_id= $("#cert_table").attr("data-id-user");
     var percent = parseInt($("#cert_table").attr("data-user-percent"));
-    if (isNaN(percent)){
+    if (isNaN(percent) || (percent<0) || (percent>100)){
         percent = 0
     }
-    console.log(cert_status, user_id, percent);
-    var fields = JSON.stringify(["ID_Sertificate", "ID_CertificatePack","user_id", "user_login", "name", "last_name", "phone_number", "flight_type", "price"]);
+    var fields = JSON.stringify(["ID_Sertificate", "name", "last_name", "phone_number", "flight_type", "price"]);
     var criteria = JSON.stringify({ "ID_SertState": [cert_status], "ID_User" : [user_id], "ID_CertificatePack":[null]});
     var sort = JSON.stringify({"ID_Sertificate":["ASC"]});
 
     jQuery.post("/certificate/select", {field_names : fields, criteria : criteria, sort : sort}, function (data) {
         console.log(data);
+        $(".table-loader").addClass("hidden");
         if (data.length == 0){
             $("#cert_table").append(
-                "<tr><td class='text-center certificate-row' colspan='6'><h3>Подходящих сертификатов нет</h3></td></tr>"
+                "<tr><td class='text-center certificate-row' colspan='6'><b>Подходящих сертификатов нет</b></td></tr>"
             );
         }
         else {
             data.forEach(function (item) {
-                $(".table-loader").addClass("hidden");
                 var name = "", last_name = "", phone_number = "";
                 var flight_type = "", price = 0;
                 if (item.name) {
@@ -42,7 +41,7 @@ function GetCertTable(){
                     price = parseInt(item.price) * (1 - percent / 100);
                 }
                 $("#cert_table").append(
-                    "<tr class='certificate_row' data-id='' style='cursor:pointer;'  onclick='mark(this);IncreaseTotal(this.firstChild.firstChild)'>" +
+                    "<tr class='certificate_row' style='cursor:pointer;'  onclick='mark(this);IncreaseTotal(this.firstChild.firstChild)'>" +
                     "<td><input style='cursor:pointer;' onclick='event.cancelBubble=true;' onchange='IncreaseTotal(this)' type='checkbox' autocomplete='off' class='cert_checkbox' data-cert_id='" + item.ID_Sertificate + "' data-price='"+price+"'></td>" +
                     "<th>" + item.ID_Sertificate + "</th>" +
                     "<td>" + name + " " + last_name + "</td>" +
@@ -59,7 +58,6 @@ function GetCertTable(){
 
 function IncreaseTotal(data) {
     var total_sum = parseInt($("#total-sum").html());
-    console.log($(data).prop("checked"));
     if ($(data).prop("checked")){
         total_sum += parseInt($(data).attr("data-price"))
     }
