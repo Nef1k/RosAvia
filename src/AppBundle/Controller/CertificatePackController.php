@@ -42,4 +42,30 @@ class CertificatePackController extends Controller
         $response -> headers -> set('Content-Type', 'application/json');
         return $response;
     }
+
+    /**
+     * @param Request $request
+     * @Route("/certificate_pack/action", name"certificate_pack_action")
+     * @Method("POST")
+     * @return Response
+     */
+    public function createActionWithCertificatePackAction(Request $request) {
+        $certificate_pack_id = $request->request->get("pack_id");
+        $is_pack_activated = $request->request->get("is_activated");
+        /** @var  $certificate_pack_stuff CertificatePackStuff*/
+        $certificate_pack_stuff = $this->get("certificate_pack_stuff");
+        $certificate_pack_stuff->createActionWithCertificatePack($certificate_pack_id, $is_pack_activated);
+        $Request_output = array(
+            'error_msg' => array(),
+            'error_param' => array()
+        );
+        /**foreach($errors as $error){
+        array_push($Request_output['error_msg'],$error->getMessage());
+        array_push($Request_output['error_param'], $error->getInvalidValue());
+        }**/
+        $response = new Response();
+        $response->setContent(json_encode($Request_output));
+        $response -> headers -> set('Content-Type', 'application/json');
+        return $response;
+    }
 }

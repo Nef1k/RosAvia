@@ -61,14 +61,14 @@ class CertificatePackStuff
         $this->em->flush();
     }
 
-    public function createActionWithCertificatePack($certificate_pack_id, $is_certs_activated){
+    public function createActionWithCertificatePack($certificate_pack_id, $is_pack_activated){
         /** @var  $certificates_in_pack Sertificate[]*/
         $certificates_in_pack = $this->em->getRepository("AppBundle:Sertificate")->findBy(array("ID_CertificatePack" => $certificate_pack_id));
         /** @var  $certificate_in_pack Sertificate*/
         foreach($certificates_in_pack AS $certificate_in_pack){
             $certificate_in_pack->setIDCertificatePack();
             $this->em->persist($certificate_in_pack);
-            if ($is_certs_activated) {
+            if ($is_pack_activated) {
                 $this->certificate_stuff->activateCertificates($certificates_in_pack);
             }
         }
