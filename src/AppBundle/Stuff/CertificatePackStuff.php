@@ -64,6 +64,7 @@ class CertificatePackStuff
             setCount(count($cert_ids_in_pack))->
             setCreationDate(new \DateTime());
         $this->em->persist($certificatePack);
+        $this->em->flush();
         foreach($cert_ids_in_pack AS $cert_id_in_pack){
             /** @var  $certificate_in_pack Sertificate*/
             $certificate_in_pack = $this->em->getRepository("AppBundle:Sertificate")->find($cert_id_in_pack);
