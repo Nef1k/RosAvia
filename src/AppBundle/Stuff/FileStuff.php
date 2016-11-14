@@ -65,11 +65,14 @@ class FileStuff
         $rus=array('А','Б','В','Г','Д','Е','Ё','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Ъ','Ы','Ь','Э','Ю','Я','а','б','в','г','д','е','ё','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','ъ','ы','ь','э','ю','я',' ');
         $lat=array('a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya','a','b','v','g','d','e','e','gh','z','i','y','k','l','m','n','o','p','r','s','t','u','f','h','c','ch','sh','sch','y','y','y','e','yu','ya',' ');
         $file_name = str_replace($rus, $lat, $_FILES['userfile']['name']);
-        /** @var  $file_type FileType*/
-        $file_type = $this->em->getRepository("AppBundle:FileType")->find(0);
-        $file = new File();
-        $upload_dir = 'files/'.$user_id.'/';
-        $file->
+        if ($_FILES['userfile']['size'] == 0) {
+            return 9;
+        } else {
+            /** @var  $file_type FileType */
+            $file_type = $this->em->getRepository("AppBundle:FileType")->find(0);
+            $file = new File();
+            $upload_dir = 'files/' . $user_id . '/';
+            $file->
             setIDUser($user)->
             setRealCategory($file_cat_name)->
             setIDCategory($file_cat)->
@@ -78,22 +81,20 @@ class FileStuff
             setFileSize($_FILES['userfile']['size'])->
             setDisplayName($disp_name)->
             setFileDate($file_date);
-        if (!file_exists($upload_dir)){
-            mkdir($upload_dir, 0777, true);
-        }
-        $this->em->persist($file);
-        $this->em->flush();
-        $upload_file = $upload_dir.$file->getIDFile().'.'.$file_cat_name;
-
-        if (move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_file))
-        {
-            return true;
-        }
-        else
-        {
-            $this->em->remove($file);
+            if (!file_exists($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
+            $this->em->persist($file);
             $this->em->flush();
-            return false;
+            $upload_file = $upload_dir . $file->getIDFile() . '.' . $file_cat_name;
+
+            if (move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_file)) {
+                return 1;
+            } else {
+                $this->em->remove($file);
+                $this->em->flush();
+                return 8;
+            }
         }
     }
 
@@ -224,8 +225,7 @@ class FileStuff
 
     public function getFileMsg($file_code)
     {
-        switch ($file_code)
-        {
+        switch ($file_code) {
             case 0:
                 return "Файлы успешно удалены.";
             case 1:
@@ -244,8 +244,10 @@ class FileStuff
                 return "Данный файл не существует.";
             case 8:
                 return "Внимание! Загрузка файла не была завершена успешна!";
+            case 9:
+                return "Внимание! Вы не можете загружать пустые файлы!";
             default:
-                return "Вообще хуёвая хуйня приключилась";
+                return "Неопознанная ошибка загрузки! Свяжитесь сразаработчиками!";
         }
     }
 
@@ -262,37 +264,37 @@ class FileStuff
         );
         $auth_user_id = $this->tokens->getToken()->getUser()->getIDUser();
         $auth_user_roles = $this->tokens->getToken()->getUser()->getRoles();
-        if (($user_id == $auth_user_id) || (in_array('ROLE_ADMIN', $auth_user_roles))){
-            if (file_exists($file)){
+        if (!(($user_id == $auth_user_id) || (in_array('ROLE_ADMIN', $auth_user_roles)))) {
+            return 2;
+        } else {
+            if (!file_exists($file)) {
+                return 3;
+            } else {
                 $file = $file.'/'.$user_id;
-                if (file_exists($file)) {
+                if (!file_exists($file)) {
+                    return 4;
+                } else {
                     $user = $this->em->getRepository("AppBundle:User")->find($user_id);
-                    if ($user) {
+                    if (!$user) {
+                        return 5;
+                    } else {
                         /**
                          * @var $files File[]
                          */
                         $files = $this->em->getRepository("AppBundle:File")->findBy(array('ID_File' => $file_id, 'ID_User' => $user));
-                        if ($files) {
-                            $file = $file . '/' . $files[0]->getIDFile().'.'.$files[0]->getRealCategory();
-                            if (file_exists($file)) {
-                                $this->FileForceDownload($file, $files[0]);
-                            } else {
-                                return 7;
-                            }
-                        } else {
+                        if (count($files) == 0) {
                             return 6;
+                        } else {
+                            $file = $file . '/' . $files[0]->getIDFile().'.'.$files[0]->getRealCategory();
+                            if (!file_exists($file)) {
+                                return 7;
+                            } else {
+                                $this->FileForceDownload($file, $files[0]);
+                            }
                         }
-                    } else {
-                        return 5;
                     }
-                } else{
-                    return 4;
                 }
-            } else{
-                return 3;
             }
-        } else{
-            return 2;
         }
         return 1;
     }
