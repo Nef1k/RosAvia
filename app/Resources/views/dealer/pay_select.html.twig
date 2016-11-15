@@ -51,41 +51,6 @@
 {% block javascripts %}
     <script type="application/javascript" src="{{ asset("js/modals/YesNoDialog.js") }}"></script>
     <script type="application/javascript" src="{{ asset("js/pay_select.js") }}"></script>
-    {#<script type="application/javascript">#}
-        {#var total = 0;#}
-        {#[].forEach.call($(".certificate-row"), function(cert){#}
-            {#var price = $(cert).data("price");#}
-            {#total += price;#}
-        {#});#}
-        {#$(".certificate-row").click(function(e){#}
-            {#var state = $(this).data("state");#}
-            {#var id = $(this).data("id");#}
-            {#var price = $(this).data("price");#}
-
-            {#state = !state;#}
-            {#$(this).data("state", state);#}
-            {#//if certificate checked#}
-            {#if(state){#}
-                {#total += price;#}
-            {#}#}
-            {#//if certificate unchecked#}
-            {#else{#}
-                {#total -= price;#}
-            {#}#}
-            {#$(".total-sum").html(total);#}
-
-            {#$("#certificate-" + id).prop("checked", state);#}
-            {#$("#certificate-state-" + id).toggleClass("glyphicon-remove").toggleClass("glyphicon-ok");#}
-        {#});#}
-        {#$(".payment-toggle").click(function () {#}
-            {#var id = $(this).data("id");#}
-            {#var name = $(this).data("name");#}
-
-            {#$("#payment-"+id).prop("checked", true);#}
-            {#$(".payment-method").html(name);#}
-        {#});#}
-        {#$(".total-sum").html(total);#}
-    {#</script>#}
 {% endblock %}
 
 {% block stylesheets %}
