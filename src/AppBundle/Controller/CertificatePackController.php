@@ -80,7 +80,7 @@ class CertificatePackController extends Controller{
      */
     public function getCertificatePacksAction(Request $request){
         $em = $this->getDoctrine()->getManager();
-        $fields = $request->request->get('field_names');
+        $fields = json_decode($request->request->get('field_names'));
         /** @var  $all_certificate_packs CertificatePack[]*/
         $all_certificate_packs = $em->getRepository("AppBundle:CertificatePack")->findAll();
         /** @var  $certificate_pack CertificatePack*/
