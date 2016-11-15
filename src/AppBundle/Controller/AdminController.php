@@ -636,6 +636,6 @@ class AdminController extends Controller{
      */
     public function viewCertificatePacks()
     {
-        return $this->render("admin/pscks_control.html.twig");
+        return $this->render("admin/packs_control.html.twig");
     }
 }
