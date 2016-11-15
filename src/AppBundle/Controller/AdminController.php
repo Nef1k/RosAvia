@@ -629,4 +629,13 @@ class AdminController extends Controller{
             "action_form" => $action_form->createView(),
         ));
     }
+
+    /**
+     * @return Response
+     * @Route("admin/certificate_pack" name="admin_certificate_pack")
+     */
+    public function viewCertificatePacks()
+    {
+        return $this->render("admin/pscks_control.html.twig");
+    }
 }
