@@ -173,11 +173,8 @@ class CertificatePackStuff
         } elseif (in_array("ROLE_DEALER", $user_roles) and !($used)){
             array_push($user_ids, $user->getIDUser());
         }
-        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) $criteria["ID_Sertificate"] = $object["ID_Sertificate"];
-        if ((isset($object["phone_number"])?$object["phone_number"]:null) != null) $criteria["phone_number"] = $object["phone_number"];
-        if ((isset($object["use_time"])?$object["use_time"]:null) != null) $criteria["use_time"] = strtotime($object["use_time"]);
-        if ((isset($object["ID_FlightType"])?$object["ID_FlightType"]:null) != null) $criteria["ID_FlightType"] = $this->em->getRepository("AppBundle:FlightType")->findBy(array("ID_FlightType" => $object["ID_FlightType"]));
-        if ((isset($object["ID_SertState"])?$object["ID_SertState"]:null) != null) $criteria["ID_SertState"] = $this->em->getRepository("AppBundle:SertState")->findBy(array("ID_SertState" => $object["ID_SertState"]));
+        if ((isset($object["ID_CertificatePack"])?$object["ID_CertificatePack"]:null) != null) $criteria["ID_CertificatePack"] = $object["ID_CertificatePack"];
+
         if ((isset($object["ID_User"])?$object["ID_User"]:null) != null) {
             $user_input = $object["ID_User"];
             $right_users = [];
@@ -206,13 +203,14 @@ class CertificatePackStuff
     }
 
     /**
-     * @param Request $request
+     * @param $criteria
+     * @param $fields
+     * @param $sort
      * @return array
      */
-    public function GetCertArrayFromRequest(Request $request){
-        $criteria = $this->objectConvert((array)json_decode($request->request->get('criteria')));
-        $fields = json_decode($request->request->get('field_names'));
-        $sort = $this->SortObjectConvert((array)json_decode($request->request->get('sort')));
+    public function GetCertificatePackArrayFromRequest($criteria, $fields, $sort){
+        $criteria = $this->objectConvert($criteria);
+        $sort = $this->SortObjectConvert($sort);
         if ($sort == null) $sort = [];
         if ($criteria == null) $criteria = [];
         if ($fields == null) $fields = [];
