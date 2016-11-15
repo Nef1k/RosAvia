@@ -102,7 +102,7 @@ class CertificatePackController extends Controller{
             $user_stuff = $this->get("app.user_stuff");
             /** @var  $user User*/
             $user = $em->getRepository("AppBundle:User")->find($user_id);
-            $percent = $user_stuff->getUserParam($user, "percent");
+            $percent = $user_stuff->getUserParam($user, "dealer_percent");
             $certificate_pack_info['user_login'] = $user->getUsername();
             $certificate_pack_info['percent'] = $percent;
             $certificate_pack_info['pack_id'] = $certificate_pack->getIDCertificatePack();
