@@ -87,7 +87,7 @@ class CertificatePackStuff
         foreach($certificates_in_pack AS $certificate_in_pack){
             $certificate_in_pack->setIDCertificatePack();
             $this->em->persist($certificate_in_pack);
-            if ($is_pack_activated) {
+            if ($is_pack_activated == 1) {
                 $this->certificate_stuff->activateCertificates($certificates_in_pack);
             }
         }
