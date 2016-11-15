@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\CertificatePack;
+use AppBundle\Entity\User;
 use AppBundle\Stuff\CertificatePackStuff;
 use AppBundle\Stuff\CertificateStuff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -95,7 +96,10 @@ class CertificatePackController extends Controller{
                 'ID_User' => 'ASC',
                 'ID_CertificatePack' => 'DESC'
             ), $fields);
-            $certificate_pack_info['user'] = $certificate_pack->getIDUser();
+            $user_id = $certificate_pack->getIDUser()->getIDUser();
+            /** @var  $user User*/
+            $user = $em->getRepository("AppBundle:User")->find($user_id);
+            $certificate_pack_info['user_login'] = $user->getUsername();
             $certificate_pack_info['pack_id'] = $certificate_pack->getIDCertificatePack();
             $certificate_pack_info['certificates'] = $cerificates_in_pack_list;
             array_push($Request_output, $certificate_pack_info);
