@@ -92,7 +92,7 @@ class CertificatePackController extends Controller{
             $cerificates_in_pack_list = $certificate_stuff->GetCertArray(array(
                 'ID_CertificatePack' =>$certificate_pack
             ), array(
-                'ID_USer' => 'ASC',
+                'ID_User' => 'ASC',
                 'ID_CertificatePack' => 'DESC'
             ), $fields);
             $certificate_pack_info['user'] = $certificate_pack->getIDUser();
