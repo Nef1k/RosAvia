@@ -632,7 +632,7 @@ class AdminController extends Controller{
 
     /**
      * @return Response
-     * @Route("admin/certificate_pack" name="admin_certificate_pack")
+     * @Route("admin/certificate_pack", name="admin_certificate_pack")
      */
     public function viewCertificatePacks()
     {

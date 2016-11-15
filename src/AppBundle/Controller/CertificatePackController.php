@@ -69,7 +69,12 @@ class CertificatePackController extends Controller{
         $response -> headers -> set('Content-Type', 'application/json');
         return $response;
     }
-    
+
+    /**
+     * @param Request $request
+     * @Route("/certificate_pack/action", name="certificate_select")
+     * @Method("POST")
+     */
     public function getCertificatePacksAction(Request $request){
         
     }
