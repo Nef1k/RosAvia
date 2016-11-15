@@ -83,7 +83,7 @@ class CertificatePackController extends Controller{
         $em = $this->getDoctrine()->getManager();
         $fields = json_decode($request->request->get('field_names'));
         /** @var  $all_certificate_packs CertificatePack[]*/
-        $all_certificate_packs = $em->getRepository("AppBundle:CertificatePack")->findAll();
+        $all_certificate_packs = $em->getRepository("AppBundle:CertificatePack")->findBy(array(),array("ID_User" => 'ASC'));
         /** @var  $certificate_pack CertificatePack*/
         /** @var  $certificate_stuff CertificateStuff*/
         $certificate_stuff = $this->get('app.certificate_stuff');
