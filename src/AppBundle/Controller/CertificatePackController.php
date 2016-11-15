@@ -55,7 +55,7 @@ class CertificatePackController extends Controller{
      * @return Response
      */
     public function createActionAtCertificatePacksAction(Request $request) {
-        $certificate_pack_ids = $request->request->get("pack_id");
+        $certificate_pack_ids = json_decode($request->request->get("pack_id"));
         $is_pack_activated = $request->request->get("is_activated");
         /** @var  $certificate_pack_stuff CertificatePackStuff*/
         $certificate_pack_stuff = $this->get("app.certificate_pack_stuff");
