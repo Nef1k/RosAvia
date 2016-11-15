@@ -98,6 +98,7 @@ class CertificatePackController extends Controller{
             $certificate_pack_info['user'] = $certificate_pack->getIDUser();
             $certificate_pack_info['pack_id'] = $certificate_pack->getIDCertificatePack();
             $certificate_pack_info['certificates'] = $cerificates_in_pack_list;
+            array_push($Request_output, $certificate_pack_info);
         }
         $response = new Response();
         $response->setContent(json_encode($Request_output));
