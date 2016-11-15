@@ -457,7 +457,7 @@ class CertificateStuff
         } elseif (in_array("ROLE_DEALER", $user_roles) and !($used)){
             array_push($user_ids, $user->getIDUser());
         }
-        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) $criteria["ID_Sertificate"] = $this->em->getRepository("AppBundle:Sertificate")->find($object["ID_Sertificate"]);
+        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) $criteria["ID_Sertificate"] = $this->em->getRepository("AppBundle:Sertificate")->findBy(array("ID_Sertificate" => $object["ID_Sertificate"]));
         if ((isset($object["name"])?$object["name"]:null) != null) {
             $sql_query = 'SELECT DISTINCT sertificate.name FROM sertificate';
             $query = $this->em->getConnection()->prepare($sql_query);
