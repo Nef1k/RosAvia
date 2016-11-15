@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {% include "default/navigation.html.twig" %}
+    <h1>Hello!</h1>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset("js/modals/YesNoDialog.js") }}" type="application/javascript"></script>
+    <script src="{{ asset("js/packs_control.js") }}" type="application/javascript"></script>
+{% endblock %}
