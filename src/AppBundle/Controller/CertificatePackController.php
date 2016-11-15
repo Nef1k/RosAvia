@@ -8,7 +8,11 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\CertificatePack;
+use AppBundle\Entity\User;
+use AppBundle\Stuff\UserStuff;
 use AppBundle\Stuff\CertificatePackStuff;
+use AppBundle\Stuff\CertificateStuff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,6 +68,47 @@ class CertificatePackController extends Controller{
         array_push($Request_output['error_msg'],$error->getMessage());
         array_push($Request_output['error_param'], $error->getInvalidValue());
         }**/
+        $response = new Response();
+        $response->setContent(json_encode($Request_output));
+        $response -> headers -> set('Content-Type', 'application/json');
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @Route("/certificate_pack/select", name="certificate_select")
+     * @Method("POST")
+     * @return Response
+     */
+    public function getCertificatePacksAction(Request $request){
+        $em = $this->getDoctrine()->getManager();
+        $fields = json_decode($request->request->get('field_names'));
+        /** @var  $all_certificate_packs CertificatePack[]*/
+        $all_certificate_packs = $em->getRepository("AppBundle:CertificatePack")->findBy(array(),array("ID_User" => 'ASC'));
+        /** @var  $certificate_pack CertificatePack*/
+        /** @var  $certificate_stuff CertificateStuff*/
+        $certificate_stuff = $this->get('app.certificate_stuff');
+        $Request_output = array();
+        foreach($all_certificate_packs AS $certificate_pack){
+            $certificate_pack_info = array();
+            $cerificates_in_pack_list = $certificate_stuff->GetCertArray(array(
+                'ID_CertificatePack' =>$certificate_pack
+            ), array(
+                'ID_User' => 'ASC',
+                'ID_CertificatePack' => 'DESC'
+            ), $fields);
+            $user_id = $certificate_pack->getIDUser()->getIDUser();
+            /** @var  $user_stuff UserStuff*/
+            $user_stuff = $this->get("app.user_stuff");
+            /** @var  $user User*/
+            $user = $em->getRepository("AppBundle:User")->find($user_id);
+            $percent = $user_stuff->getUserParam($user, "dealer_percent");
+            $certificate_pack_info['user_login'] = $user->getUsername();
+            $certificate_pack_info['percent'] = $percent;
+            $certificate_pack_info['pack_id'] = $certificate_pack->getIDCertificatePack();
+            $certificate_pack_info['certificates'] = $cerificates_in_pack_list;
+            array_push($Request_output, $certificate_pack_info);
+        }
         $response = new Response();
         $response->setContent(json_encode($Request_output));
         $response -> headers -> set('Content-Type', 'application/json');

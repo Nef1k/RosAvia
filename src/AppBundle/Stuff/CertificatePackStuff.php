@@ -52,6 +52,7 @@ class CertificatePackStuff
      * @param $current_user
      * @param $cert_ids_in_pack
      * @param $payment_method_id
+     * @return int
      */
     public function createCertificatePack($current_user, $cert_ids_in_pack, $payment_method_id){
         /** @var  $certificatePack CertificatePack*/
@@ -107,49 +108,24 @@ class CertificatePackStuff
 
 
     /**
-     * @param Sertificate $cert
+     * @param CertificatePack $certificate_pack
      * @param array $fields
      * @return array
      */
-    public function CertToArray(Sertificate $cert, array $fields){
-        $cert_info = [];
-        if ($cert != null){
-            if (in_array("name", $fields)){
-                $cert_info["name"] = $cert->getName();
+    public function CertificatePackToArray(CertificatePack $certificate_pack, array $fields){
+        $certificate_pack_info = [];
+        if ($certificate_pack != null){
+            if (in_array("ID_CertificatePack", $fields)){
+                $certificate_pack_info["name"] = $certificate_pack->getIDCertificatePack();
             }
-            if (in_array("last_name", $fields)){
-                $cert_info["last_name"] = $cert->getLastName();
+            if (in_array("size", $fields)){
+                $certificate_pack_info["size"] = $certificate_pack->getCount();
             }
-            if (in_array("phone_number", $fields)){
-                $cert_info["phone_number"] = $cert->getPhoneNumber();
-            }
-            if (in_array("flight_type", $fields) && ($cert->getFlightType())){
-                $cert_info["flight_type"] = $cert->getFlightType()->getName();
-            }
-            if (in_array("cert_state", $fields) && ($cert->getSertState())){
-                $cert_info["cert_state"] = $cert->getSertState()->getName();
-            }
-            if (in_array("use_time", $fields)){
-                $cert_info["use_time"] = $cert->getUseTime();
-            }
-            if (in_array("user_id", $fields) && ($cert->getUser())){
-                $cert_info["user_id"] = $cert->getUser()->getIDUser();
-            }
-            if (in_array("user_login", $fields) && ($cert->getUser())){
-                $cert_info["user_login"] = $cert->getUser()->getUsername();
-            }
-            if (in_array("ID_Sertificate", $fields)){
-                $cert_info["ID_Sertificate"] = $cert->getIDSertificate();
-            }
-            if (in_array("cert_link", $fields)){
-                $cert_link = $this->router->generate('certificate_view',["certificate" => $cert->getIDSertificate()]);
-                $cert_info["cert_link"] = $cert_link;
-            }
-            if (in_array("price", $fields)){
-                $cert_info["price"] = ($cert->getFlightType() == null)?0:$cert->getFlightType()->getPrice();
+            if (in_array("payment_method", $fields)){
+                $certificate_pack_info["payment_method"] = $certificate_pack->getIDPaymentMethod()->getPaymentMethodName();
             }
         }
-        return $cert_info;
+        return $certificate_pack_info;
     }
 
     /**
@@ -158,18 +134,18 @@ class CertificatePackStuff
      * @param array $fields
      * @return array
      */
-    public function GetCertArray(array $criteria, array $sort, array $fields){
-        $certs = $this->em->getRepository("AppBundle:Sertificate")->findBy($criteria, $sort);
-        $cert_list = [];
-        if ($certs != null){
-            foreach($certs AS $cert){
+    public function GetCertificatePackArray(array $criteria, array $sort, array $fields){
+        $certificate_packs = $this->em->getRepository("AppBundle:CertificatePack")->findBy($criteria, $sort);
+        $certificate_pack_list = [];
+        if ($certificate_packs != null){
+            foreach($certificate_packs AS $cert){
                 if ($cert != null) {
-                    $cert_info = $this->CertToArray($cert, $fields);
-                    array_push($cert_list, $cert_info);
+                    $certificate_pack_info = $this->CertificatePackToArray($cert, $fields);
+                    array_push($certificate_pack_list, $certificate_pack_info);
                 }
             }
         }
-        return $cert_list;
+        return $certificate_pack_list;
     }
 
     public function objectConvert($object){
@@ -197,11 +173,8 @@ class CertificatePackStuff
         } elseif (in_array("ROLE_DEALER", $user_roles) and !($used)){
             array_push($user_ids, $user->getIDUser());
         }
-        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) $criteria["ID_Sertificate"] = $object["ID_Sertificate"];
-        if ((isset($object["phone_number"])?$object["phone_number"]:null) != null) $criteria["phone_number"] = $object["phone_number"];
-        if ((isset($object["use_time"])?$object["use_time"]:null) != null) $criteria["use_time"] = strtotime($object["use_time"]);
-        if ((isset($object["ID_FlightType"])?$object["ID_FlightType"]:null) != null) $criteria["ID_FlightType"] = $this->em->getRepository("AppBundle:FlightType")->findBy(array("ID_FlightType" => $object["ID_FlightType"]));
-        if ((isset($object["ID_SertState"])?$object["ID_SertState"]:null) != null) $criteria["ID_SertState"] = $this->em->getRepository("AppBundle:SertState")->findBy(array("ID_SertState" => $object["ID_SertState"]));
+        if ((isset($object["ID_CertificatePack"])?$object["ID_CertificatePack"]:null) != null) $criteria["ID_CertificatePack"] = $object["ID_CertificatePack"];
+
         if ((isset($object["ID_User"])?$object["ID_User"]:null) != null) {
             $user_input = $object["ID_User"];
             $right_users = [];
@@ -230,17 +203,18 @@ class CertificatePackStuff
     }
 
     /**
-     * @param Request $request
+     * @param $criteria
+     * @param $fields
+     * @param $sort
      * @return array
      */
-    public function GetCertArrayFromRequest(Request $request){
-        $criteria = $this->objectConvert((array)json_decode($request->request->get('criteria')));
-        $fields = json_decode($request->request->get('field_names'));
-        $sort = $this->SortObjectConvert((array)json_decode($request->request->get('sort')));
+    public function GetCertificatePackArrayFromRequest($criteria, $fields, $sort){
+        $criteria = $this->objectConvert($criteria);
+        $sort = $this->SortObjectConvert($sort);
         if ($sort == null) $sort = [];
         if ($criteria == null) $criteria = [];
         if ($fields == null) $fields = [];
-        $cert = $this->GetCertArray($criteria, $sort, $fields);
+        $cert = $this->GetCertificatePackArray($criteria, $sort, $fields);
         return $cert;
     }
 

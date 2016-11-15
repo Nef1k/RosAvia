@@ -128,7 +128,7 @@ function PayBtnClick() {
         var sort = JSON.stringify({"ID_Sertificate":["ASC"]});
         jQuery.post("/certificate/select", {field_names : fields, criteria : criteria, sort : sort}, function (data) {
             console.log(data);
-            msg += "<table class='table table-striped'>" +
+            msg += "<table class='table table-striped' style='margin-bottom: 0px;'>" +
                         "<tr>"+
                             "<th>ID</th>"+
                             "<th class='col-md-4'>Клиент</th>"+
@@ -164,8 +164,8 @@ function PayBtnClick() {
                         "</tr>";
             });
             msg += "</table>" +
-                "<div class='alert alert-info' role='alert'><b>Сумма к оплате:<span class='pull-right'>"+total_sum+" рублей</b></span></div>" +
-                "<div class='alert alert-info' role='alert'><b>Способ оплаты:<span class='pull-right'>"+payment_show+"</b></span></div>";
+                "<div class='panel panel-default' style='margin-bottom: 0px;'><div class='panel-heading'><b>Сумма к оплате:<span class='pull-right'>"+total_sum+" рублей</b></span></div>" +
+                "<div class='panel-heading'><b>Способ оплаты:<span class='pull-right'>"+payment_show+"</b></span></div></div>";
             yesNoDialog.message = msg;
             yesNoDialog.hideLoader();
             yesNoDialog.applyParams();

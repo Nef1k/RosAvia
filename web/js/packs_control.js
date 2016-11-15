@@ -1,3 +1,127 @@
 /**
  * Created by 166878 on 15.11.2016.
  */
+
+function GetCertPacks() {
+    $("user_packs").remove();
+    var field_names = JSON.stringify(["ID_Sertificate","cert_link", "name", "last_name", "phone_number", "flight_type", "price"]);
+    jQuery.post("/certificate_pack/select", {field_names:field_names}, function (data) {
+        $(".pack_loader").addClass("hidden");
+        console.log(data);
+        var user = "";
+        var user_price = 0;
+        var pack_price = 0;
+        var percent = 0;
+        data.forEach(function (item) {
+            pack_price =0;
+            if (item.user_login != user){
+                user = item.user_login;
+                percent = parseInt(item.percent);
+                if (isNaN(percent) || (percent<0) || (percent>100)){
+                    percent = 0
+                }
+                user_price = 0;
+                $("#packs").append(
+                    "<div class='panel panel-default user-packs' >" +
+                        "<div class='panel-heading'><strong>"+ user +" (процент от продаж: "+percent+"%)</strong>"+
+                            "<div class='pull-right'>"+
+                                "<button class='btn btn-xs btn-default mark_all' data-user='"+user+"' onclick='mark_all(this)'>Выделить всё</button>" +
+                                "<button class='btn btn-xs btn-default unmark_all' data-user='"+user+"' onclick='unmark_all(this)'>Снять выделение</button>" +
+                            "</div>" +
+                        "</div>" +
+                        "<div class='panel-body'>" +
+                            "<div class='panel panel-default'>" +
+                                "<div class='panel-heading'>" +
+                                    "<input style='cursor: pointer' type='checkbox' autocomplete='off' class='packs_of_"+user+"' data-pack_id='"+item.pack_id+"'>" +
+                                    "<span style='cursor: pointer' class='for_click'  data-toggle='collapse' data-target='#pack_"+item.pack_id+"'>" +
+                                        "<b>  Пакет №"+item.pack_id+" <span class='glyphicon glyphicon-chevron-down'></span> </b>" +
+                                    "</span> " +
+                                    "<b><div class='pull-right'>Сумма: <span id='pack_price_"+item.pack_id+"'>0</span> р.</div></b>" +
+                                "</div>" +
+                                "<table class='table table-hover table-striped user_pack collapse' id='pack_"+item.pack_id+"'>" +
+                                    "<tr>" +
+                                        "<th>ID</th>" +
+                                        "<th class='col-md-4'>Клиент</th>" +
+                                        "<th class='col-md-3'>Телефон</th>" +
+                                        "<th class='col-md-2'>Цена</th> " +
+                                        "<th class='col-md-3'>Тип полёта</th>" +
+                                    "</tr>" +
+                                "</table>"+
+                            "</div>" +
+                        "</div>"+
+                        "<div class='panel-heading'><b>Общая сумма:<span class='pull-right'><span id='user_price_"+user+"'></span> p.</span></b></div> " +
+                    "</div>"
+                );
+            }
+            else {
+                $(".user-packs:last-child .panel-body").append(
+                    "<div class='panel panel-default'>" +
+                        "<div class='panel-heading'>" +
+                            "<input style='cursor: pointer' type='checkbox' autocomplete='off' class='packs_of_"+user+"' data-pack_id='"+item.pack_id+"'>" +
+                            "<span style='cursor: pointer' class='for_click'  data-toggle='collapse' data-target='#pack_"+item.pack_id+"'>" +
+                                "<b>  Пакет №"+item.pack_id+" <span class='glyphicon glyphicon-chevron-down'></span> </b>" +
+                            "</span> " +
+                            "<b><div class='pull-right'>Сумма: <span id='pack_price_"+item.pack_id+"'>0</span> р.</div></b>" +
+                        "</div>" +
+                        "<table class='table table-hover table-striped user_pack collapse' id='pack_"+item.pack_id+"'>" +
+                            "<tr style='width:100%'>" +
+                                "<th>ID</th>" +
+                                "<th class='col-md-4'>Клиент</th>" +
+                                "<th class='col-md-3'>Телефон</th>" +
+                                "<th class='col-md-2'>Цена</th> " +
+                                "<th class='col-md-3'>Тип полёта</th>" +
+                            "</tr>" +
+                        "</table>"+
+                    "</div>"
+                )
+            }
+            item.certificates.forEach(function (cert) {
+                var name = "", last_name = "", phone_number = "";
+                var flight_type = "", price = 0;
+                if (cert.name) {
+                    name = cert.name;
+                }
+                if (cert.last_name) {
+                    last_name = cert.last_name;
+                }
+                if (cert.phone_number) {
+                    phone_number = cert.phone_number;
+                }
+                if (cert.flight_type) {
+                    flight_type = cert.flight_type;
+                }
+                if (cert.price) {
+                    price = parseInt(cert.price) * (1 - percent / 100);
+                }
+                pack_price += price;
+                user_price += price;
+                $("#pack_"+item.pack_id).append(
+                    "<tr class='certificate_row' style='width:100%'>" +
+                        "<th><a href='"+cert.cert_link+"'>"+cert.ID_Sertificate+"</a></th>" +
+                        "<td>" + name + " " + last_name + "</td>" +
+                        "<td>" + phone_number + "</td>" +
+                        "<td><b>"+price+"</b></td>" +
+                        "<td>" + flight_type + "</td>" +
+                    "</tr>"
+                )
+            });
+            console.log(user_price, item.user_login);
+            $("#pack_price_"+item.pack_id).html(pack_price);
+            $("#user_price_"+item.user_login).html(user_price);
+        })
+    });
+}
+
+function mark_all(data) {
+    var name = $(data).attr('data-user');
+    $(".packs_of_"+name).prop("checked",true);
+}
+
+function unmark_all(data) {
+    var name = $(data).attr('data-user');
+    $(".packs_of_"+name).prop("checked",false);
+}
+
+$(document).ready(function (event) {
+    GetCertPacks();
+});
