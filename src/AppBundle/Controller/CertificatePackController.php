@@ -98,9 +98,11 @@ class CertificatePackController extends Controller{
                 'ID_CertificatePack' => 'DESC'
             ), $fields);
             $user_id = $certificate_pack->getIDUser()->getIDUser();
-            $percent = $this->get("app.user_stuff")->getCurrentUserParam("dealer_percent");
+            /** @var  $user_stuff UserStuff*/
+            $user_stuff = $this->get("app.user_stuff");
             /** @var  $user User*/
             $user = $em->getRepository("AppBundle:User")->find($user_id);
+            $percent = $user_stuff->getUserParam($user, "percent");
             $certificate_pack_info['user_login'] = $user->getUsername();
             $certificate_pack_info['percent'] = $percent;
             $certificate_pack_info['pack_id'] = $certificate_pack->getIDCertificatePack();
