@@ -3,6 +3,9 @@
  */
 
 function GetCertTable(){
+    $(".certificate_row").remove();
+    $(".table-loader").removeClass("hidden");
+    $("#total-sum").html(0);
     var cert_status = 4;
     var user_id= $("#cert_table").attr("data-id-user");
     var percent = parseInt($("#cert_table").attr("data-user-percent"));
@@ -18,7 +21,7 @@ function GetCertTable(){
         $(".table-loader").addClass("hidden");
         if (data.length == 0){
             $("#cert_table").append(
-                "<tr><td class='text-center certificate-row' colspan='6'><b>Подходящих сертификатов нет</b></td></tr>"
+                "<tr class='certificate_row'><td class='text-center certificate-row' colspan='6'><b>Подходящих сертификатов нет</b></td></tr>"
             );
         }
         else {
@@ -69,10 +72,17 @@ function IncreaseTotal(data) {
 
 function mark_all() {
     $(".cert_checkbox").prop("checked",true);
+    var selector = $(".cert_checkbox");
+    var total_sum = 0;
+    for (var i = 0; i<selector.length; ++i){
+        total_sum += parseInt($(selector[i]).attr("data-price"));
+    }
+    $("#total-sum").html(total_sum);
 }
 
 function unmark_all() {
     $(".cert_checkbox").prop("checked",false);
+    $("#total-sum").html(0);
 }
 
 function mark(data) {
@@ -128,7 +138,7 @@ function PayBtnClick() {
         var sort = JSON.stringify({"ID_Sertificate":["ASC"]});
         jQuery.post("/certificate/select", {field_names : fields, criteria : criteria, sort : sort}, function (data) {
             console.log(data);
-            msg += "<table class='table table-striped' style='margin-bottom: 0px;'>" +
+            msg += "<table class='table table-striped'>" +
                         "<tr>"+
                             "<th>ID</th>"+
                             "<th class='col-md-4'>Клиент</th>"+
@@ -164,8 +174,8 @@ function PayBtnClick() {
                         "</tr>";
             });
             msg += "</table>" +
-                "<div class='panel panel-default' style='margin-bottom: 0px;'><div class='panel-heading'><b>Сумма к оплате:<span class='pull-right'>"+total_sum+" рублей</b></span></div>" +
-                "<div class='panel-heading'><b>Способ оплаты:<span class='pull-right'>"+payment_show+"</b></span></div></div>";
+                "<div class='alert alert-info'><b>Сумма к оплате:<span class='pull-right'>"+total_sum+" рублей</span></b></div>" +
+                "<div class='alert alert-info' style='margin-bottom: 0px'><b>Способ оплаты:<span class='pull-right'>"+payment_show+"</span></b></div>";
             yesNoDialog.message = msg;
             yesNoDialog.hideLoader();
             yesNoDialog.applyParams();
@@ -209,9 +219,22 @@ function NoBtn(event) {
     var modal = event.data;
     modal.close();
     if (modal.data.reload){
-        location.reload(true);
+        GetCertTable();
     }
 }
+
+function GetPayMethods() {
+    jQuery.getJSON("/certificate_pack/get_payment_methods", function (data) {
+        console.log(data);
+        data.forEach(function (item) {
+            $("#payment_method").append(
+                "<option value=" + item.id + ">" + item.name + "</option>"
+            )
+        })
+    })
+}
+
 $(document).ready(function (event) {
     GetCertTable();
+    GetPayMethods();
 });
