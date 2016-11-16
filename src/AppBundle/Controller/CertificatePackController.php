@@ -57,7 +57,7 @@ class CertificatePackController extends Controller{
     public function selectPaymentMethodsAction(){
         $em = $this->getDoctrine()->getManager();
         /** @var  $payment_method_list PaymentMethod[]*/
-        $payment_method_list = $em->getRepository("AppBundle:PaymentMethod")->findAll();
+        $payment_method_list = $em->getRepository("AppBundle:PaymentMethod")->findBy([]);
         $payment_methods_info = array();
         /** @var  $payment_method PaymentMethod*/
         foreach($payment_method_list AS $payment_method){
@@ -130,6 +130,7 @@ class CertificatePackController extends Controller{
             $certificate_pack_info['user_login'] = $user->getUsername();
             $certificate_pack_info['percent'] = $percent;
             $certificate_pack_info['pack_id'] = $certificate_pack->getIDCertificatePack();
+            $certificate_pack_info['pack_payment_method'] = $certificate_pack->getIDPaymentMethod()->getPaymentMethodName();
             $certificate_pack_info['certificates'] = $cerificates_in_pack_list;
             array_push($Request_output, $certificate_pack_info);
         }
