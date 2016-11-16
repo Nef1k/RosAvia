@@ -69,10 +69,17 @@ function IncreaseTotal(data) {
 
 function mark_all() {
     $(".cert_checkbox").prop("checked",true);
+    var selector = $(".cert_checkbox");
+    var total_sum = 0;
+    for (var i = 0; i<selector.length; ++i){
+        total_sum += parseInt($(selector[i]).attr("data-price"));
+    }
+    $("#total-sum").html(total_sum);
 }
 
 function unmark_all() {
     $(".cert_checkbox").prop("checked",false);
+    $("#total-sum").html(0);
 }
 
 function mark(data) {
