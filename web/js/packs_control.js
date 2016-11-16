@@ -3,7 +3,8 @@
  */
 
 function GetCertPacks() {
-    $("user_packs").remove();
+    $(".user-packs").remove();
+    $(".pack_loader").removeClass("hidden");
     var field_names = JSON.stringify(["ID_Sertificate","cert_link", "name", "last_name", "phone_number", "flight_type", "price"]);
     jQuery.post("/certificate_pack/select", {field_names:field_names}, function (data) {
         $(".pack_loader").addClass("hidden");
@@ -14,7 +15,7 @@ function GetCertPacks() {
         var percent = 0;
         if (data.length == 0){
             $("#packs").append(
-                "<h3>Нет пакетов сертификатов в системе</h3>"
+                "<div class='text-center user-packs'><h3 class='user-packs'>Нет пакетов сертификатов в системе</h3></div>"
             )
         }
         else {
@@ -131,11 +132,67 @@ function unmark_all(data) {
 function SendPacks() {
     var checked_packs = [];
     var selector = $("input:checked");
+    var msg="";
     for (var i = 0; i<selector.length; ++i){
         checked_packs[i] = parseInt($(selector[i]).attr("data-pack_id"));
     }
+    var action_id = parseInt($("#pack_action").val());
+    var yesNoDialog = new YesNoDialog;
+    yesNoDialog.setModalSelector("#yes-no-modal");
+    yesNoDialog.show({
+        caption: "Подтвердите действие",
+        yes_caption: "Ок",
+        no_caption: "",
+        data: {checked_packs : checked_packs, action: action_id, reload: 0},
+        yes_handler: NoBtn,
+        no_handler: NoBtn
+    });
+    if(checked_packs.length == 0){
+        msg = "Пакеты не выбраны";
+    }
+    else {
+        yesNoDialog.no_caption="Отмена";
+        msg = "Выбранные пакеты: " + checked_packs.join(", ")+".<br>" +
+            "Выбранное действие: ";
+        msg += action_id?"Активировать":"Удалить";
+        yesNoDialog.yes_handler = YesBtn
+    }
+    yesNoDialog.message = msg;
+    yesNoDialog.applyParams();
 }
-
+function YesBtn(event) {
+    var modal = event.data;
+    var msg ="";
+    modal.no_caption="";
+    modal.message="";
+    modal.yes_caption = "Ок";
+    modal.showLoader();
+    modal.yes_handler = NoBtn;
+    modal.applyParams();
+    var packs = JSON.stringify(modal.data.checked_packs);
+    var action = modal.data.action;
+    jQuery.post("/certificate_pack/action", {pack_id : packs, is_activated: action}, function (data) {
+        console.log(data);
+        var errors = data.error_msg;
+        if (errors.length > 0){
+            msg = "Возникли следующие ошибки при выполнении действия: <br>" + errors.join(" <br>")+".";
+        }
+        else{
+            msg = "Действие успешно выполнено.";
+            modal.data.reload = 1;
+        }
+        modal.message = msg;
+        modal.hideLoader();
+        modal.applyParams();
+    })
+}
+function NoBtn(event) {
+    var modal = event.data;
+    modal.close();
+    if (modal.data.reload){
+        GetCertPacks();
+    }
+}
 $(document).ready(function (event) {
     GetCertPacks();
 });
