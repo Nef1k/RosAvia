@@ -57,7 +57,7 @@ class CertificatePackController extends Controller{
     public function selectPaymentMethodsAction(){
         $em = $this->getDoctrine()->getManager();
         /** @var  $payment_method_list PaymentMethod[]*/
-        $payment_method_list = $em->getRepository("AppBundle:PaymentMethod")->findAll();
+        $payment_method_list = $em->getRepository("AppBundle:PaymentMethod")->findBy([]);
         $payment_methods_info = array();
         /** @var  $payment_method PaymentMethod*/
         foreach($payment_method_list AS $payment_method){
