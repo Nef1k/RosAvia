@@ -130,6 +130,7 @@ class CertificatePackController extends Controller{
             $certificate_pack_info['user_login'] = $user->getUsername();
             $certificate_pack_info['percent'] = $percent;
             $certificate_pack_info['pack_id'] = $certificate_pack->getIDCertificatePack();
+            $certificate_pack_info['pack_payment_method'] = $certificate_pack->getIDPaymentMethod()->getPaymentMethodName();
             $certificate_pack_info['certificates'] = $cerificates_in_pack_list;
             array_push($Request_output, $certificate_pack_info);
         }
