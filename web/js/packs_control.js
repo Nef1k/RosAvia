@@ -41,7 +41,7 @@ function GetCertPacks() {
                         "<div class='panel-heading'>" +
                         "<input style='cursor: pointer' type='checkbox' autocomplete='off' class='packs_of_" + user + "' data-pack_id='" + item.pack_id + "'>" +
                         "<span style='cursor: pointer' class='for_click'  data-toggle='collapse' data-target='#pack_" + item.pack_id + "'>" +
-                        "<b>  Пакет №" + item.pack_id + " <span class='glyphicon glyphicon-chevron-down'></span> </b>" +
+                        "<b>  Пакет №" + item.pack_id + " <span class='glyphicon glyphicon-chevron-down'></span> (способ оплаты: "+item.pack_payment_method+")</b>" +
                         "</span> " +
                         "<b><div class='pull-right'>Сумма: <span id='pack_price_" + item.pack_id + "'>0</span> р.</div></b>" +
                         "</div>" +
@@ -66,7 +66,7 @@ function GetCertPacks() {
                         "<div class='panel-heading'>" +
                         "<input style='cursor: pointer' type='checkbox' autocomplete='off' class='packs_of_" + user + "' data-pack_id='" + item.pack_id + "'>" +
                         "<span style='cursor: pointer' class='for_click'  data-toggle='collapse' data-target='#pack_" + item.pack_id + "'>" +
-                        "<b>  Пакет №" + item.pack_id + " <span class='glyphicon glyphicon-chevron-down'></span> </b>" +
+                        "<b>  Пакет №" + item.pack_id + " <span class='glyphicon glyphicon-chevron-down'></span>  (способ оплаты: "+item.pack_payment_method+")</b>" +
                         "</span> " +
                         "<b><div class='pull-right'>Сумма: <span id='pack_price_" + item.pack_id + "'>0</span> р.</div></b>" +
                         "</div>" +
