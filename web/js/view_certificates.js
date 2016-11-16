@@ -19,10 +19,13 @@ function get_cert_status() {
     return cert_status;
 }
 function get_certificates() {
-    var fields = JSON.stringify(["ID_Sertificate","user_id", "user_login", "name", "last_name", "phone_number", "cert_link", "flight_type"]);
+    var fields = JSON.stringify(["ID_Sertificate", "price", "user_login", "name", "last_name", "phone_number", "cert_link", "flight_type"]);
     var cert_status = get_cert_status();
     var criteria = JSON.stringify({ "ID_SertState": [cert_status]});
     var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
+    $(".user-panel").remove();
+    $(".user-table").remove();
+    $(".user_price").remove();
     jQuery.post("/certificate/select", {field_names : fields, criteria : criteria, sort : sort}, function (data) {
         $(".cert_loader").addClass("hidden");
         if (data.length != 0){
@@ -31,7 +34,7 @@ function get_certificates() {
         }
         else {
             $("#cert_list").append(
-                "<div class='text-center'>" +
+                "<div class='text-center user-panel'>" +
                     "<h3>Таких сертификатов не существует</h3>" +
                 "</div>"
             )
@@ -42,10 +45,13 @@ function get_certificates() {
 }
 function fill_cert_table_with_data(list_selector, data) {
     var user = "";
+    var total_price=0;
+    var user_price=0;
     data.forEach(function (item,i) {
         var name = "", last_name = "", phone_number = "";
         var flight_type = "";
         var cert_link = "#";
+        var price = 0;
         if (item.name){
             name = item.name;
         }
@@ -61,8 +67,13 @@ function fill_cert_table_with_data(list_selector, data) {
         if (item.cert_link){
             cert_link = item.cert_link;
         }
+        if (item.price){
+            price = item.price;
+        }
         if (item.user_login != user){
             user = item.user_login;
+            total_price += price;
+            user_price = price;
             $(list_selector).append(
                 "<div class='panel panel-default user-panel' >" +
                     "<div class='panel-heading'><strong>"+ user +"</strong>"+
@@ -75,8 +86,9 @@ function fill_cert_table_with_data(list_selector, data) {
                     "<tr>" +
                         "<th class=''></th>" +
                         "<th class='col-md-1'>ID</th>" +
-                        "<th class='col-md-5'>Клиент</th>" +
+                        "<th class='col-md-3'>Клиент</th>" +
                         "<th class='col-md-3'>Телефон</th>" +
+                        "<th class='col-md-2'>Цена</th> " +
                         "<th class='col-md-3'>Тип полёта</th>" +
                     "</tr>" +
                     "<tr class='certificate_row' data-id='' style='cursor:pointer;' onclick='mark(this)'>" +
@@ -84,25 +96,32 @@ function fill_cert_table_with_data(list_selector, data) {
                         "<th><a href='"+cert_link+"' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
                         "<td>" + name + " " + last_name + "</td>" +
                         "<td>" + phone_number + "</td>" +
+                        "<td><b>"+price+"</b></td>" +
                         "<td>" + flight_type + "</td>" +
                     "</tr>" +
-                "</table>"
+                "</table>" +
+                "<div class='panel-heading user-price'><b>Общая сумма:<div class='pull-right'>"+user_price+"</div></b></div> "
             )
 
         }
         else{
+            total_price += price;
+            user_price += price;
             $(list_selector + " table:last").append(
                 "<tr class='certificate_row' data-id='' style='cursor:pointer;'  onclick='mark(this)'>" +
                 "<td onclick='event.cancelBubble=true;'><input style='cursor: pointer' type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
                 "<th><a href='"+cert_link+"' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
                 "<td>" + name + " " + last_name + "</td>" +
                 "<td>" + phone_number + "</td>" +
+                "<td><b>"+price+"</b></td>" +
                 "<td>" + flight_type + "</td>" +
                 "</tr>"
-            )
+            );
+            $(".user-price:last-child div").html(user_price);
         }
 
     });
+    $("#total-price").html(total_price);
 }
 
 function mark_all(data) {
@@ -214,6 +233,9 @@ function FindCertsByCriteria() {
     var phone=$("#phone_select").val();
     var dealer=$("#dealer_select").val();
     var flight_type= $("#flight_type_select").val();
+    var cert_id = parseInt($("#id_select").val());
+    var last_name = $("#last_name_select").val();
+    var name= $("#name_select").val();
     console.log(phone, dealer, flight_type);
     var cert_status = get_cert_status();
     var criteria = {"ID_SertState": [cert_status]};
@@ -226,9 +248,18 @@ function FindCertsByCriteria() {
     if (flight_type != "none"){
         criteria["ID_FlightType"]= [flight_type]
     }
-    if ((phone != "") || (dealer != "none") || (flight_type != "none")){
+    if (cert_id){
+        criteria["ID_Sertificate"]= [cert_id]
+    }
+    if (last_name != ""){
+        criteria["last_name"]= [last_name]
+    }
+    if (name != ""){
+        criteria["name"]= [name]
+    }
+    if ((phone != "") || (dealer != "none") || (flight_type != "none") || (cert_id != "") || (name != "") || (last_name != "")){
         var StrCriteria = JSON.stringify(criteria);
-        var field_name = JSON.stringify(["name", "user_login", "last_name", "phone_number", "flight_type", "cert_link", "use_time", "ID_Sertificate"]);
+        var field_name = JSON.stringify(["name", "price", "user_login", "last_name", "phone_number", "flight_type", "cert_link", "use_time", "ID_Sertificate"]);
         var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
         var params = {
             criteria: StrCriteria,
@@ -237,6 +268,7 @@ function FindCertsByCriteria() {
         };
         $(".user-panel").remove();
         $(".user-table").remove();
+        $(".user_price").remove();
         $(".cert_loader").removeClass("hidden");
         jQuery.post("/certificate/select", params, function (data) {
             console.log(data);
@@ -246,7 +278,7 @@ function FindCertsByCriteria() {
             }
             else {
                 $("#cert_list").append(
-                    "<div class='text-center'>" +
+                    "<div class='text-center user-panel'>" +
                     "<h3>Таких сертификатов не существует</h3>" +
                     "</div>"
                 )
@@ -254,6 +286,18 @@ function FindCertsByCriteria() {
         })
     }
 }
+
+function CleanInputs() {
+    $("#phone_select").val("");
+    $("#dealer_select").val("none");
+    $("#flight_type_select").val("none");
+    $("#id_select").val("");
+    $("#last_name_select").val("");
+    $("#name_select").val("");
+    $(".cert_loader").removeClass("hidden");
+    get_certificates();
+}
+
 $(document).ready(function (event) {
     get_certificates();
     fillActionList();

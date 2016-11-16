@@ -405,6 +405,9 @@ class CertificateStuff
                 $cert_link = $this->router->generate('certificate_view',["certificate" => $cert->getIDSertificate()]);
                 $cert_info["cert_link"] = $cert_link;
             }
+            if (in_array("price", $fields)){
+                $cert_info["price"] = ($cert->getFlightType() == null)?0:$cert->getFlightType()->getPrice();
+            }
         }
         return $cert_info;
     }
@@ -454,9 +457,37 @@ class CertificateStuff
         } elseif (in_array("ROLE_DEALER", $user_roles) and !($used)){
             array_push($user_ids, $user->getIDUser());
         }
-        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) array_push($criteria["ID_Sertificate"],$object["ID_Sertificate"]);
-        if ((isset($object["name"])?$object["name"]:null) != null) $criteria["name"] = $object["name"];
-        if ((isset($object["last_name"])?$object["last_name"]:null) != null) $criteria["last_name"] = $object["last_name"];
+        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) $criteria["ID_Sertificate"] = $object["ID_Sertificate"];
+        if ((isset($object["name"])?$object["name"]:null) != null) {
+            $sql_query = 'SELECT DISTINCT sertificate.name FROM sertificate';
+            $query = $this->em->getConnection()->prepare($sql_query);
+            $query->execute();
+            $user_last_names = $query->fetchAll();
+            $patterns = $object["name"];
+            $criteria["name"] = [];
+            foreach($patterns AS $pattern){
+                foreach($user_last_names AS $user_last_name){
+                    if (stripos($user_last_name['name'], $pattern) !== false){
+                        array_push($criteria["name"], $user_last_name['name']);
+                    }
+                }
+            }
+        }
+        if ((isset($object["last_name"])?$object["last_name"]:null) != null) {
+            $sql_query = 'SELECT DISTINCT sertificate.last_name FROM sertificate';
+            $query = $this->em->getConnection()->prepare($sql_query);
+            $query->execute();
+            $user_last_names = $query->fetchAll();
+            $patterns = $object["last_name"];
+            $criteria["last_name"] = [];
+            foreach($patterns AS $pattern){
+                foreach($user_last_names AS $user_last_name){
+                    if (stripos($user_last_name['last_name'], $pattern) !== false){
+                        array_push($criteria["last_name"], $user_last_name['last_name']);
+                    }
+                }
+            }
+        }
         if ((isset($object["phone_number"])?$object["phone_number"]:null) != null) $criteria["phone_number"] = $object["phone_number"];
         if ((isset($object["use_time"])?$object["use_time"]:null) != null) $criteria["use_time"] = strtotime($object["use_time"]);
         if ((isset($object["ID_FlightType"])?$object["ID_FlightType"]:null) != null) $criteria["ID_FlightType"] = $this->em->getRepository("AppBundle:FlightType")->findBy(array("ID_FlightType" => $object["ID_FlightType"]));
