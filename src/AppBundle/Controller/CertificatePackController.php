@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\CertificatePack;
+use AppBundle\Entity\PaymentMethod;
 use AppBundle\Entity\User;
 use AppBundle\Stuff\UserStuff;
 use AppBundle\Stuff\CertificatePackStuff;
@@ -44,6 +45,29 @@ class CertificatePackController extends Controller{
         }**/
         $response = new Response();
         $response->setContent(json_encode($Request_output));
+        $response -> headers -> set('Content-Type', 'application/json');
+        return $response;
+    }
+
+    /**
+     * @return Response
+     * @Route("/certificate_pack/get_payment_methods", name="get_payment_methods")
+     * @Method("GET")
+     */
+    public function selectPaymentMethodsAction(){
+        $em = $this->getDoctrine()->getManager();
+        /** @var  $payment_method_list PaymentMethod[]*/
+        $payment_method_list = $em->getRepository("AppBundle:PaymentMethod")->findAll();
+        $payment_methods_info = array();
+        /** @var  $payment_method PaymentMethod*/
+        foreach($payment_method_list AS $payment_method){
+            $payment_method_info = array();
+            $payment_method_info['id'] = $payment_method->getIDPaymentMethod();
+            $payment_method_info['name'] = $payment_method->getPaymentMethodName();
+            array_push($payment_methods_info, $payment_method_info);
+        }
+        $response = new Response();
+        $response->setContent(json_encode($payment_methods_info));
         $response -> headers -> set('Content-Type', 'application/json');
         return $response;
     }
