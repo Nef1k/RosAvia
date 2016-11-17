@@ -379,7 +379,11 @@ class AdminController extends Controller{
             $user = $em->getRepository("AppBundle:User")->find($user_id->getUserID());
             $general_settings = (array)json_decode($request->request->get('general_settings'));
             $additional_settings = (array)json_decode($request->request->get('additional_settings'));
-            $mentor = $em->getRepository("AppBundle:User")->find($general_settings['mentor_id']);
+            if (isset($general_settings['mentor_id'])) {
+                $mentor = $em->getRepository("AppBundle:User")->find($general_settings['mentor_id']);
+            } else {
+                $mentor = $user;
+            }
             $user_group = $em->getRepository("AppBundle:UserGroup")->find($general_settings['group_id']);
             $user->
                 setUsername(($general_settings['username']))->
