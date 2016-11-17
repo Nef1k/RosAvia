@@ -51,11 +51,15 @@ class DealerController extends Controller
         }
 
         $percent = $this->get("app.user_stuff")->getCurrentUserParam("dealer_percent");
+        $phone_number = $this->get("app.user_stuff")->getUserParam($user->getIDMentor(), "dealer_phone");
+        if ($phone_number == ""){
+            $this->get("app.user_stuff")->getUserParam($user->getIDMentor(), "admin_phone");
+        }
 
         return $this->render("dealer/index.html.twig", array(
             "user" => $user,
             "mentor_name" => $this->get("app.user_stuff")->getDisplayName($user->getIDMentor()),
-            "mentor_phone" => $this->get("app.user_stuff")->getUserParam($user->getIDMentor(), "dealer_phone"),
+            "mentor_phone" => $phone_number,
             "certificates" => $certificates,
             "certs_available" => $certs_available,
             "first_blank" => $first_blank,
