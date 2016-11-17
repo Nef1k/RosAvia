@@ -65,6 +65,19 @@ class DealerController extends Controller
     }
 
     /**
+     *
+     * @Route("/dealer/show_pay_select", name="dealer_show_pay_select")
+     */
+    public function showPaySelectPageAction() {
+        $current_user = $this->getUser();
+        $current_user_percent = $this->get("app.user_stuff")->getCurrentUserParam("dealer_percent");
+        return $this->render("dealer/pay_select.html.twig", array(
+            "user" => $current_user,
+            "percent" => $current_user_percent
+        ));
+    }
+
+    /**
      * @param Request $request
      * @return Response
      *

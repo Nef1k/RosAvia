@@ -37,7 +37,8 @@ function get_certificates() {
                 "<div class='text-center user-panel'>" +
                     "<h3>Таких сертификатов не существует</h3>" +
                 "</div>"
-            )
+            );
+            $("#total-price").html(0);
         }
 
     });
@@ -281,7 +282,8 @@ function FindCertsByCriteria() {
                     "<div class='text-center user-panel'>" +
                     "<h3>Таких сертификатов не существует</h3>" +
                     "</div>"
-                )
+                );
+                $("#total-price").html(0);
             }
         })
     }
