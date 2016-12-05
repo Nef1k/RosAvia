@@ -50,8 +50,12 @@ class UserStuff
 
     function getDisplayName(User $user)
     {
-        $name = $this->getUserParam($user, "name");
-        $last_name = $this->getUserParam($user, "lastname");
+        $name = $this->getUserParam($user, "dealer_name");
+        $last_name = $this->getUserParam($user, "dealer_lastname");
+        if (($name == "") && ($last_name == "")){
+            $name = $this->getUserParam($user, "admin_name");
+            $last_name = $this->getUserParam($user, "admin_lastname");
+        }
         return $name." ".$last_name;
     }
     
