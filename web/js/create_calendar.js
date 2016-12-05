@@ -2,7 +2,7 @@
  * Created by 166878 on 20.09.2016.
  */
 function certificateToStr(certificate){
-    return  "<a href='#' class='btn btn-primary' style='margin-bottom: 5px;'>" +
+    return  "<a href='/certificate/view/"+ certificate.id +"' class='btn btn-primary' style='margin-bottom: 5px;'>" +
             "   <span class='badge'>" + certificate.id + "</span>" +
             "   " + certificate.flight_type +
             "</a> ";
