@@ -8,82 +8,38 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <strong>Выбор сертификатов</strong>
-                </div>
-                <table class="table table-hover">
-                    <form action="{{ path("dealer_pay_notify") }}" method="POST">
-                        <tr>
-                            <th></th>
-                            <th>#</th>
-                            <th>Клиент</th>
-                            <th>Телефон</th>
-                            <th>Полёт</th>
-                            <th>Статус</th>
-                        </tr>
-                        {% for certificate in certificates %}
-                            {% set current_unpaid = certificate.getFlightType.getPrice * (1 - percent/100) %}
-                            <tr class="certificate-row" data-id="{{ certificate.getIDSertificate }}" data-state="true" data-price="{{ current_unpaid }}">
-                                <td>
-                                    <span id="certificate-state-{{ certificate.getIDSertificate }}" class="glyphicon glyphicon-ok"></span>
-                                </td>
-                                <th>{{ certificate.getIDSertificate }}</th>
-                                <td>{{ certificate.getName }} {{ certificate.getLastName }}</td>
-                                <td>{{ certificate.getPhoneNumber }}</td>
-                                <td>
-                                    <a target="_blank" href="{{ certificate.getFlightType.getDescriptionLink }}">{{ certificate.getFlightType.getName }}</a>
-                                    ({{ certificate.getFlightType.getPrice }}р.)
-                                </td>
-                                <td>
-                                    {{ certificate.getSertState.getName }}
-                                    {% if certificate.getSertState.getIDSertState == 4 %}
-                                        ({{ current_unpaid }}р.)
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </form>
-                </table>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <strong>Выбор способа оплаты</strong>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <a href="#" class="payment-toggle thumbnail" data-id="1" data-name="карта">
-                                <img src="{{ asset("img/payment_card.png") }}" alt="Карта">
-                                <div class="text-center">Карта</div>
-                            </a>
-                        </div>
-                        <div class="col-md-2">
-                            <a href="#" class="payment-toggle thumbnail" data-id="2" data-name="наличные">
-                                <img src="{{ asset("img/payment_cash.png") }}" alt="Наличные">
-                                <div class="text-center">Наличные</div>
-                            </a>
-                        </div>
+                    <div class='pull-right'>
+                        <button class='btn btn-xs btn-default mark_all' onclick='mark_all()'>Выделить всё</button>
+                        <button class='btn btn-xs btn-default unmark_all' onclick='unmark_all()'>Снять выделение</button>
                     </div>
                 </div>
+                <table class="table table-hover table-striped" id="cert_table"  data-id-user="{{ user.IDUser }}" data-user-percent="{{ percent }}">
+                    <tr>
+                        <th></th>
+                        <th>ID</th>
+                        <th class="col-md-4">Клиент</th>
+                        <th class="col-md-3">Телефон</th>
+                        <th class="col-md-2">Цена</th>
+                        <th class="col-md-3">Тип полёта</th>
+                    </tr>
+                    <tr class="table-loader">
+                        <td class="text-center" colspan="6"><img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40"></td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div class="col-md-3">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    Всего к оплате: <strong><span class="total-sum">0</span> рублей</strong><br>
-                    Способ оплаты: <strong><span class="payment-method">не выбран</span></strong><br>
+                    Всего к оплате: <strong><span id="total-sum">0</span> рублей</strong><br><br>
+                    <label for="payment_method">Способ оплаты:</label>
+                    <select id="payment_method" class="form-control">
+                    </select>
                     <br>
-                    <form action="{{ path("dealer_pay_notify") }}" method="POST">
-                        <div class="btn-group">
-                            <button type="submit" class="btn btn-default">Оплатить</button>
-                            <a class="btn btn-default" href="{{ path("homepage") }}">Отмена</a>
-                        </div>
-                        <div class="hidden">
-                            {% for certificate in certificates %}
-                                <input checked type="checkbox" name="certificates[]" id="certificate-{{ certificate.getIDSertificate }}" title="" value="{{ certificate.getIDSertificate }}">
-                            {% endfor %}
-                            <input type="radio" name="payment_method" id="payment-1" value="1" title="">
-                            <input type="radio" name="payment_method" id="payment-2" value="2" title="">
-                        </div>
-                    </form>
+                    <div>
+                        <a class="btn btn-default" href="{{ path("homepage") }}">Отмена</a>
+                        <button class="btn btn-primary pull-right" onclick="PayBtnClick()">Оплатить</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,41 +47,8 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script type="application/javascript">
-        var total = 0;
-        [].forEach.call($(".certificate-row"), function(cert){
-            var price = $(cert).data("price");
-            total += price;
-        });
-        $(".certificate-row").click(function(e){
-            var state = $(this).data("state");
-            var id = $(this).data("id");
-            var price = $(this).data("price");
-
-            state = !state;
-            $(this).data("state", state);
-            //if certificate checked
-            if(state){
-                total += price;
-            }
-            //if certificate unchecked
-            else{
-                total -= price;
-            }
-            $(".total-sum").html(total);
-
-            $("#certificate-" + id).prop("checked", state);
-            $("#certificate-state-" + id).toggleClass("glyphicon-remove").toggleClass("glyphicon-ok");
-        });
-        $(".payment-toggle").click(function () {
-            var id = $(this).data("id");
-            var name = $(this).data("name");
-
-            $("#payment-"+id).prop("checked", true);
-            $(".payment-method").html(name);
-        });
-        $(".total-sum").html(total);
-    </script>
+    <script type="application/javascript" src="{{ asset("js/modals/YesNoDialog.js") }}"></script>
+    <script type="application/javascript" src="{{ asset("js/pay_select.js") }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
