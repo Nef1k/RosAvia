@@ -7,6 +7,7 @@
  */
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\CertificateActionsHistory;
 use AppBundle\Entity\SertAction;
 use AppBundle\Stuff\CertificateStuff;
 use AppBundle\DataClasses\CertEdition;
@@ -197,6 +198,16 @@ class AdminController extends Controller{
                 $cert = $em->getRepository("AppBundle:Sertificate")->find($cert_id);
                 $cert->setIDUser($userAttachTo)->setIDSertState($certState);
                 $em->persist($cert);
+                $cert_action_event = new CertificateActionsHistory();
+                $date = new \DateTime();
+                /** @var  $cert_action_id SertAction*/
+                $cert_action_id = $this->getDoctrine()->getRepository("AppBundle:SertAction")->find("attach");
+                $cert_action_event
+                    ->setIDSertificate($cert)
+                    ->setIDUser($this->getUser())
+                    ->setIDSertAction($cert_action_id)
+                    ->setEventTime($date);
+                $em->persist($cert_action_event);
             }
             $em->flush();
             array_push($Request_output, 'success');
@@ -238,6 +249,16 @@ class AdminController extends Controller{
                     setIDSertState($cert_state)->
                     setIDUser($user);
                 $em->persist($cert);
+                $cert_action_event = new CertificateActionsHistory();
+                $date = new \DateTime();
+                /** @var  $cert_action_id SertAction*/
+                $cert_action_id = $this->getDoctrine()->getRepository("AppBundle:SertAction")->find("create");
+                $cert_action_event
+                    ->setIDSertificate($cert)
+                    ->setIDUser($user)
+                    ->setIDSertAction($cert_action_id)
+                    ->setEventTime($date);
+                $em->persist($cert_action_event);
             }
             $em->flush();
             array_push($Request_output, 'success');

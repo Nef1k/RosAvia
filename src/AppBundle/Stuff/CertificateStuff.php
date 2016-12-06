@@ -5,6 +5,7 @@ namespace AppBundle\Stuff;
 use AppBundle\Entity\FlightType;
 use AppBundle\Entity\SertAction;
 use AppBundle\Entity\SertState;
+use AppBundle\Entity\CertificateActionsHistory;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Internal\Hydration\HydrationException;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -352,11 +353,33 @@ class CertificateStuff
             }
             if (in_array("id_cert_action", $field_names)) {
                 if ($field_values[array_search("id_cert_state", $field_names)] == "activate")
+                {
                     $this->activateCertificate($cert);
+                    $cert_action_event = new CertificateActionsHistory();
+                    $date = new \DateTime();
+                    /** @var  $cert_action_id SertAction*/
+                    $cert_action_id = $this->em->getRepository("AppBundle:SertAction")->find("activate");
+                    $cert_action_event
+                        ->setIDSertificate($cert)
+                        ->setIDUser($this->tokens->getToken()->getUser())
+                        ->setIDSertAction($cert_action_id)
+                        ->setEventTime($date);
+                    $this->em->persist($cert_action_event);
+                }
                 if ($field_values[array_search("id_cert_state", $field_names)] == "close")
                 {
                     $cert_state = $this->em->getRepository("AppBundle:SertState")->find(6);
                     $cert->setSertState($cert_state);
+                    $cert_action_event = new CertificateActionsHistory();
+                    $date = new \DateTime();
+                    /** @var  $cert_action_id SertAction*/
+                    $cert_action_id = $this->em->getRepository("AppBundle:SertAction")->find("close");
+                    $cert_action_event
+                        ->setIDSertificate($cert)
+                        ->setIDUser($this->tokens->getToken()->getUser())
+                        ->setIDSertAction($cert_action_id)
+                        ->setEventTime($date);
+                    $this->em->persist($cert_action_event);
                 }
             }
             if (in_array("use_time", $field_names)) {
