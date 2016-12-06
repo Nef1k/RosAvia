@@ -663,4 +663,30 @@ class AdminController extends Controller{
     {
         return $this->render("admin/packs_control.html.twig");
     }
+
+    /**
+     * @param Request $request
+     * @Route("admin/certificate_history_events", name="admin_certificate_history_events")
+     * @Method("GET")
+     * @return Response
+     */
+    public function getHistoryEventsOnCertificate(Request $request)
+    {
+        $cur_cert_id = $request->query->get("cert_id");
+        $history_events_list = array();
+        $history_events = $this->getDoctrine()->getRepository("AppBundle:CertificateActionsHistory")->findBy(array("ID_Sertificate" => $cur_cert_id));
+        /** @var  $history_event CertificateActionsHistory*/
+        foreach ($history_events AS $history_event)
+        {
+            $history_event_info = array();
+            $history_event_info['user_name'] = $history_event->getIDUser()->getUsername();
+            $history_event_info['time'] = $history_event->getEventTime();
+            $history_event_info['action'] = $history_event->getIDSertAction()->getActionName();
+            array_push($history_events_list, $history_event_info);
+        }
+        $response = new Response();
+        $response->setContent(json_encode($history_events_list));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
 }
