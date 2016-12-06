@@ -12,6 +12,8 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use AppBundle\Stuff;
 use AppBundle\Entity\Sertificate;
 use AppBundle\Entity\ParamValue;
+use AppBundle\Entity\CertificateActionsHistory;
+use AppBundle\Entity\SertAction;
 use AppBundle\Form\CertificateEditType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,6 +73,16 @@ class CertificateController extends Controller
 
             //Persist info into database
             $em->persist($certificate);
+            $cert_action_event = new CertificateActionsHistory();
+            $date = new \DateTime();
+            /** @var  $cert_action_id SertAction*/
+            $cert_action_id = $this->getDoctrine()->getRepository("AppBundle:SertAction")->find("edition");
+            $cert_action_event
+                ->setIDSertificate($certificate)
+                ->setIDUser($this->getUser())
+                ->setIDSertAction($cert_action_id)
+                ->setEventTime($date);
+            $em->persist($cert_action_event);
             $em->flush();
 
             //Going back to homepage
@@ -225,6 +237,16 @@ class CertificateController extends Controller
             $cert = $cert_stuff->CertEdition($ids->getCertId(), $field_names, $field_values);
             for($i = 0; $i < count($cert); $i++) {
                 $em->persist($cert[$i]);
+                $cert_action_event = new CertificateActionsHistory();
+                $date = new \DateTime();
+                /** @var  $cert_action_id SertAction*/
+                $cert_action_id = $this->getDoctrine()->getRepository("AppBundle:SertAction")->find("edition");
+                $cert_action_event
+                    ->setIDSertificate($cert[$i])
+                    ->setIDUser($this->getUser())
+                    ->setIDSertAction($cert_action_id)
+                    ->setEventTime($date);
+                $em->persist($cert_action_event);
             }
             array_push($Request_output, 'success');
         }
