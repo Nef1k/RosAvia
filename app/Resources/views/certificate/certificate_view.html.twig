@@ -5,7 +5,7 @@
 
 
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-5 text-center">
             <h3>Сертификат №{{ certificate.getIDSertificate }}</h3>
             <table class="table table-bordered">
                 <tr>
@@ -50,13 +50,18 @@
                 </tr>
             </table>
         </div>
-        <div class="col-md-7">
+        <div class="col-md-7 text-center">
             <h3>История изменений</h3>
-            <table class="table table-bordered">
+            <table class="table table-bordered table-striped text-center" data-cert_id="{{ certificate.getIDSertificate }}" id="history_table">
                 <tr>
-                    <td class="col-md-3">Дата</td>
-                    <td class="col-md-5">Изменение</td>
-                    <td class="col-md-4">Пользователь</td>
+                    <td class="col-md-3">Дата и время</td>
+                    <td class="col-md-6">Статус сертификата</td>
+                    <td class="col-md-3">Пользователь</td>
+                </tr>
+                <tr id="loader">
+                    <td colspan="3">
+                        <img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40">
+                    </td>
                 </tr>
             </table>
         </div>
