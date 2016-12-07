@@ -41,10 +41,10 @@ class CertificateActionsHistory
     private $ID_Sertificate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="SertAction")
-     * @ORM\JoinColumn(name="ID_SertAction", referencedColumnName="ID_ActionName", nullable=false)
+     * @ORM\ManyToOne(targetEntity="SertState")
+     * @ORM\JoinColumn(name="ID_SertState", referencedColumnName="ID_SertState", nullable=false)
      */
-    private $ID_SertAction;
+    private $ID_SertState;
 
     /**
      * Get iDHistoryEvent
@@ -129,26 +129,26 @@ class CertificateActionsHistory
     }
 
     /**
-     * Set iDSertAction
+     * Set iDSertState
      *
-     * @param \AppBundle\Entity\SertAction $iDSertAction
+     * @param \AppBundle\Entity\SertState $iDSertState
      *
      * @return CertificateActionsHistory
      */
-    public function setIDSertAction(\AppBundle\Entity\SertAction $iDSertAction)
+    public function setIDSertState(\AppBundle\Entity\SertState $iDSertState)
     {
-        $this->ID_SertAction = $iDSertAction;
+        $this->ID_SertState = $iDSertState;
 
         return $this;
     }
 
     /**
-     * Get iDSertAction
+     * Get iDSertState
      *
-     * @return \AppBundle\Entity\SertAction
+     * @return \AppBundle\Entity\SertState
      */
-    public function getIDSertAction()
+    public function getIDSertState()
     {
-        return $this->ID_SertAction;
+        return $this->ID_SertState;
     }
 }

@@ -200,12 +200,10 @@ class AdminController extends Controller{
                 $em->persist($cert);
                 $cert_action_event = new CertificateActionsHistory();
                 $date = new \DateTime();
-                /** @var  $cert_action_id SertAction*/
-                $cert_action_id = $this->getDoctrine()->getRepository("AppBundle:SertAction")->find("attach");
                 $cert_action_event
                     ->setIDSertificate($cert)
-                    ->setIDUser($this->getUser())
-                    ->setIDSertAction($cert_action_id)
+                    ->setIDUser($user)
+                    ->setIDSertState($cert->getSertState())
                     ->setEventTime($date);
                 $em->persist($cert_action_event);
             }
@@ -251,12 +249,10 @@ class AdminController extends Controller{
                 $em->persist($cert);
                 $cert_action_event = new CertificateActionsHistory();
                 $date = new \DateTime();
-                /** @var  $cert_action_id SertAction*/
-                $cert_action_id = $this->getDoctrine()->getRepository("AppBundle:SertAction")->find("create");
                 $cert_action_event
                     ->setIDSertificate($cert)
                     ->setIDUser($user)
-                    ->setIDSertAction($cert_action_id)
+                    ->setIDSertState($cert->getSertState())
                     ->setEventTime($date);
                 $em->persist($cert_action_event);
             }
@@ -681,7 +677,7 @@ class AdminController extends Controller{
             $history_event_info = array();
             $history_event_info['user_name'] = $history_event->getIDUser()->getUsername();
             $history_event_info['time'] = $history_event->getEventTime();
-            $history_event_info['action'] = $history_event->getIDSertAction()->getActionName();
+            $history_event_info['action'] = $history_event->getIDSertState()->getName();
             array_push($history_events_list, $history_event_info);
         }
         $response = new Response();

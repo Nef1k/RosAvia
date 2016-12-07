@@ -348,8 +348,17 @@ class CertificateStuff
                 $cert->setFlightType($flight_type);
             }
             if (in_array("id_cert_state", $field_names)) {
+                /** @var  $cert_state SertState*/
                 $cert_state = $this->em->getRepository("AppBundle:SertState")->find($field_values[array_search("id_cert_state", $field_names)]);
                 $cert->setSertState($cert_state);
+                $cert_action_event = new CertificateActionsHistory();
+                $date = new \DateTime();
+                $cert_action_event
+                    ->setIDSertificate($cert)
+                    ->setIDUser($this->tokens->getToken()->getUser())
+                    ->setIDSertState($cert_state)
+                    ->setEventTime($date);
+                $this->em->persist($cert_action_event);
             }
             if (in_array("id_cert_action", $field_names)) {
                 if ($field_values[array_search("id_cert_state", $field_names)] == "activate")
@@ -357,12 +366,10 @@ class CertificateStuff
                     $this->activateCertificate($cert);
                     $cert_action_event = new CertificateActionsHistory();
                     $date = new \DateTime();
-                    /** @var  $cert_action_id SertAction*/
-                    $cert_action_id = $this->em->getRepository("AppBundle:SertAction")->find("activate");
                     $cert_action_event
                         ->setIDSertificate($cert)
                         ->setIDUser($this->tokens->getToken()->getUser())
-                        ->setIDSertAction($cert_action_id)
+                        ->setIDSertState($cert->getSertState())
                         ->setEventTime($date);
                     $this->em->persist($cert_action_event);
                 }
@@ -372,12 +379,10 @@ class CertificateStuff
                     $cert->setSertState($cert_state);
                     $cert_action_event = new CertificateActionsHistory();
                     $date = new \DateTime();
-                    /** @var  $cert_action_id SertAction*/
-                    $cert_action_id = $this->em->getRepository("AppBundle:SertAction")->find("close");
                     $cert_action_event
                         ->setIDSertificate($cert)
                         ->setIDUser($this->tokens->getToken()->getUser())
-                        ->setIDSertAction($cert_action_id)
+                        ->setIDSertState($cert->getIDSertState())
                         ->setEventTime($date);
                     $this->em->persist($cert_action_event);
                 }
