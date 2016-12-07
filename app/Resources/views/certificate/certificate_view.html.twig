@@ -3,9 +3,10 @@
 {% block body %}
     {% include "default/navigation.html.twig" %}
 
-    <h3>Сертификат №{{ certificate.getIDSertificate }}</h3>
+
     <div class="row">
         <div class="col-md-5">
+            <h3>Сертификат №{{ certificate.getIDSertificate }}</h3>
             <table class="table table-bordered">
                 <tr>
                     <td class="col-md-5" align="center" valign="middle">Имя клиента</td>
@@ -49,5 +50,19 @@
                 </tr>
             </table>
         </div>
+        <div class="col-md-7">
+            <h3>История изменений</h3>
+            <table class="table table-bordered">
+                <tr>
+                    <td class="col-md-3">Дата</td>
+                    <td class="col-md-5">Изменение</td>
+                    <td class="col-md-4">Пользователь</td>
+                </tr>
+            </table>
+        </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset("js/cert_history.js") }}" type="application/javascript"></script>
 {% endblock %}
