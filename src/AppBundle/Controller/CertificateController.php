@@ -255,14 +255,6 @@ class CertificateController extends Controller
             $cert = $cert_stuff->CertEdition($ids->getCertId(), $field_names, $field_values);
             for($i = 0; $i < count($cert); $i++) {
                 $em->persist($cert[$i]);
-                $cert_action_event = new CertificateActionsHistory();
-                $date = new \DateTime();
-                $cert_action_event
-                    ->setIDSertificate($cert[$i])
-                    ->setIDUser($this->getUser())
-                    ->setIDSertState($cert[$i]->getIDSertState())
-                    ->setEventTime($date);
-                $em->persist($cert_action_event);
             }
             array_push($Request_output, 'success');
         }
