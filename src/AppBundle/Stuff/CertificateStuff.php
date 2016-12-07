@@ -211,6 +211,14 @@ class CertificateStuff
         $certificate->setIDSertState($activ_state);
 
         $this->em->persist($certificate);
+        $cert_action_event = new CertificateActionsHistory();
+        $date = new \DateTime();
+        $cert_action_event
+            ->setIDSertificate($certificate)
+            ->setIDUser($this->tokens->getToken()->getUser())
+            ->setIDSertState($activ_state)
+            ->setEventTime($date);
+        $this->em->persist($cert_action_event);
         $this->em->flush();
 
         $sms_text = "Ваш сертификат №".$certificate->getIDSertificate()." активирован! До встречи в небе =]";
@@ -364,14 +372,6 @@ class CertificateStuff
                 if ($field_values[array_search("id_cert_state", $field_names)] == "activate")
                 {
                     $this->activateCertificate($cert);
-                    $cert_action_event = new CertificateActionsHistory();
-                    $date = new \DateTime();
-                    $cert_action_event
-                        ->setIDSertificate($cert)
-                        ->setIDUser($this->tokens->getToken()->getUser())
-                        ->setIDSertState($cert->getSertState())
-                        ->setEventTime($date);
-                    $this->em->persist($cert_action_event);
                 }
                 if ($field_values[array_search("id_cert_state", $field_names)] == "close")
                 {
