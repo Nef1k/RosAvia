@@ -14,7 +14,7 @@ function getCertHistory() {
                     "<tr>" +
                         "<td>" + item.time.date.split('.')[0] + "</td>" +
                         "<td>" + item.action + "</td>" +
-                        "<td>" + item.user_name + "</td>" +
+                        "<td><a href='" + item.user_link + "' >" + item.user_name + "</a></td>" +
                     "</tr>"
                 )
             })
