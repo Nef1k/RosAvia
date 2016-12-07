@@ -2,6 +2,7 @@
 
 namespace AppBundle\Stuff;
 
+use AppBundle\Entity\FlightType;
 use AppBundle\Entity\SertAction;
 use AppBundle\Entity\SertState;
 use Doctrine\ORM\EntityManager;
@@ -404,6 +405,9 @@ class CertificateStuff
                 $cert_link = $this->router->generate('certificate_view',["certificate" => $cert->getIDSertificate()]);
                 $cert_info["cert_link"] = $cert_link;
             }
+            if (in_array("price", $fields)){
+                $cert_info["price"] = ($cert->getFlightType() == null)?0:$cert->getFlightType()->getPrice();
+            }
         }
         return $cert_info;
     }
@@ -453,13 +457,54 @@ class CertificateStuff
         } elseif (in_array("ROLE_DEALER", $user_roles) and !($used)){
             array_push($user_ids, $user->getIDUser());
         }
-        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) array_push($criteria["ID_Sertificate"],$object["ID_Sertificate"]);
-        if ((isset($object["name"])?$object["name"]:null) != null) $criteria["name"] = $object["name"];
-        if ((isset($object["last_name"])?$object["last_name"]:null) != null) $criteria["last_name"] = $object["last_name"];
+        if ((isset($object["ID_Sertificate"])?$object["ID_Sertificate"]:null) != null) $criteria["ID_Sertificate"] = $this->em->getRepository("AppBundle:Sertificate")->findBy(array("ID_Sertificate" => $object["ID_Sertificate"]));
+        if ((isset($object["name"])?$object["name"]:null) != null) {
+            $sql_query = 'SELECT DISTINCT sertificate.name FROM sertificate';
+            $query = $this->em->getConnection()->prepare($sql_query);
+            $query->execute();
+            $user_last_names = $query->fetchAll();
+            $patterns = $object["name"];
+            $criteria["name"] = [];
+            foreach($patterns AS $pattern){
+                foreach($user_last_names AS $user_last_name){
+                    if (stripos($user_last_name['name'], $pattern) !== false){
+                        array_push($criteria["name"], $user_last_name['name']);
+                    }
+                }
+            }
+        }
+        if ((isset($object["last_name"])?$object["last_name"]:null) != null) {
+            $sql_query = 'SELECT DISTINCT sertificate.last_name FROM sertificate';
+            $query = $this->em->getConnection()->prepare($sql_query);
+            $query->execute();
+            $user_last_names = $query->fetchAll();
+            $patterns = $object["last_name"];
+            $criteria["last_name"] = [];
+            foreach($patterns AS $pattern){
+                foreach($user_last_names AS $user_last_name){
+                    if (stripos($user_last_name['last_name'], $pattern) !== false){
+                        array_push($criteria["last_name"], $user_last_name['last_name']);
+                    }
+                }
+            }
+        }
         if ((isset($object["phone_number"])?$object["phone_number"]:null) != null) $criteria["phone_number"] = $object["phone_number"];
         if ((isset($object["use_time"])?$object["use_time"]:null) != null) $criteria["use_time"] = strtotime($object["use_time"]);
         if ((isset($object["ID_FlightType"])?$object["ID_FlightType"]:null) != null) $criteria["ID_FlightType"] = $this->em->getRepository("AppBundle:FlightType")->findBy(array("ID_FlightType" => $object["ID_FlightType"]));
         if ((isset($object["ID_SertState"])?$object["ID_SertState"]:null) != null) $criteria["ID_SertState"] = $this->em->getRepository("AppBundle:SertState")->findBy(array("ID_SertState" => $object["ID_SertState"]));
+        if ((isset($object["ID_CertificatePack"])?$object["ID_CertificatePack"]:null) != null) {
+            $criteria["ID_CertificatePack"] = array();
+            foreach($object["ID_CertificatePack"] AS $id_certificate_pack) {
+                $certificate_packs = $this->em->getRepository("AppBundle:CertificatePack")->findBy(array("ID_CertificatePack" => $id_certificate_pack));
+                if (count($certificate_packs) != 0)
+                {
+                    array_push($criteria["ID_CertificatePack"], $certificate_packs);
+                }
+                if ($id_certificate_pack == null) {
+                    array_push($criteria["ID_CertificatePack"], null);
+                }
+            }
+        }
         if ((isset($object["ID_User"])?$object["ID_User"]:null) != null) {
             $user_input = $object["ID_User"];
             $right_users = [];
@@ -507,5 +552,71 @@ class CertificateStuff
         if ($fields == null) $fields = [];
         $cert = $this->GetCertArray($criteria, $sort, $fields);
         return $cert;
+    }
+
+    /**
+     * @return array
+     */
+    public function GetCertUserLogins($cert_state) {
+        $sql_query = 'SELECT DISTINCT sertificate.ID_User FROM sertificate WHERE sertificate.ID_SertState = :id_state';
+        $query = $this->em->getConnection()->prepare($sql_query);
+        $query->execute(array('id_state' => $cert_state));
+        $user_ids = $query->fetchAll();
+        $user_list = array();
+        if (count($user_ids) != 0) {
+            foreach ($user_ids AS $user_id) {
+                if ($user_id != null) {
+                    /** @var  $user User */
+                    $user = $this->em->getRepository("AppBundle:User")->find($user_id);
+                    $user_info = array();
+                    $user_info["name"] = $user->getUsername();
+                    $user_info["id"] = $user->getIDUser();
+                    array_push($user_list, $user_info);
+                }
+            }
+        }
+        return $user_list;
+    }
+
+    /**
+     * @return array
+     */
+    public function GetCertStates() {
+        $query = $this->em->createQuery('SELECT DISTINCT sertificate.ID_SertState FROM sertificate');
+        $cert_state_ids = $query->getResult();
+        $cert_state_list = array();
+        foreach ($cert_state_ids AS $cert_state_id){
+            /** @var  $cert_state SertState*/
+            $cert_state = $this->em->getRepository("AppBundle:SertState")->find($cert_state_id);
+            $cert_state_info = array();
+            $cert_state_info["name"] = $cert_state->getName();
+            $cert_state_info["id"] = $cert_state->getIDSertState();
+            array_push($cert_state_list, $cert_state_info);
+        }
+        return $cert_state_list;
+    }
+
+    /**
+     * @return array
+     */
+    public function GetCertFlightTypes($cert_state) {
+        $sql_query = 'SELECT DISTINCT sertificate.ID_FlightType FROM sertificate WHERE sertificate.ID_SertState = :id_state';
+        $query = $this->em->getConnection()->prepare($sql_query);
+        $query->execute(array('id_state' => $cert_state));
+        $cert_flight_type_ids = $query->fetchAll();
+        $cert_flight_type_list = array();
+        if (count($cert_flight_type_ids) != 0) {
+            foreach ($cert_flight_type_ids AS $cert_flight_type_id) {
+                /** @var  $cert_flight_type FlightType */
+                if ($cert_flight_type_id['ID_FlightType'] != null) {
+                    $cert_flight_type = $this->em->getRepository("AppBundle:FlightType")->find($cert_flight_type_id['ID_FlightType']);
+                    $cert_flight_type_info = array();
+                    $cert_flight_type_info["name"] = $cert_flight_type->getName();
+                    $cert_flight_type_info["id"] = $cert_flight_type->getIDFlightType();
+                    array_push($cert_flight_type_list, $cert_flight_type_info);
+                }
+            }
+        }
+        return $cert_flight_type_list;
     }
 }

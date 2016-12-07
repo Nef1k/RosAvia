@@ -126,13 +126,7 @@ class FileController extends Controller
         $file_cat_name = substr(basename($_FILES['userfile']['name']), (stripos($_FILES['userfile']['name'],'.') !== false)?stripos($_FILES['userfile']['name'],'.') + 1:strlen(basename($_FILES['userfile']['name'])));
         /** @var  $file_cat FileCategory*/
         $date = new \DateTime();
-        if ($file_stuff->PushFile($user->getIDUser(), $file_cat_name, $display_name, $date)){
-            $file_msg_code = 1;
-            $file_msg = "Файл успешно загружен!";
-        } else {
-            $file_msg_code = 8;
-            $file_msg = "Внимание! Загрузка файла не была завершена успешна!";
-        }
+        $file_msg_code = $file_stuff->PushFile($user->getIDUser(), $file_cat_name, $display_name, $date);
 
         return $this->redirectToRoute("user_info", [
             "ID_User" => $user_id->getUserID(),
