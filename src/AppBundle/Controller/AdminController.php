@@ -202,7 +202,7 @@ class AdminController extends Controller{
                 $date = new \DateTime();
                 $cert_action_event
                     ->setIDSertificate($cert)
-                    ->setIDUser($user)
+                    ->setIDUser($this->getUser())
                     ->setIDSertState($cert->getSertState())
                     ->setEventTime($date);
                 $em->persist($cert_action_event);
