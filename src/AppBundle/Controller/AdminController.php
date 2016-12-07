@@ -676,6 +676,7 @@ class AdminController extends Controller{
         {
             $history_event_info = array();
             $history_event_info['user_name'] = $history_event->getIDUser()->getUsername();
+            $history_event_info['user_link'] = $this->get('router')->generate('user_info', ['ID_User' => $history_event->getIDUser()->getIDUser()]);
             $history_event_info['time'] = $history_event->getEventTime();
             $history_event_info['action'] = $history_event->getIDSertState()->getName();
             array_push($history_events_list, $history_event_info);
