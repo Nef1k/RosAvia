@@ -11,10 +11,6 @@ function getHourRow(hour){
     var now= new Date();
     var hours_change = -(now.getTimezoneOffset())/60;
     var hourToShow=parseInt(hour);//+hours_change;
-    console.log("Время при запросе:");
-    console.log("Пришедшее: ", hour);
-    // console.log("Смещение:", hours_change);
-    console.log("Показываемое:", hourToShow);
     return  "<tr class='hour-row'>" +
             "   <td valign='middle' align='center'>" + hourToShow + ":00</td>" +
             "   <td style='padding: 10px 20px;'>" +
@@ -96,7 +92,7 @@ function getCertRow(cert) {
         "               <span class='input-group-addon'><b>:</b></span>" +
         "               <input type='text' class='form-control' placeholder='Минуты' id='minutes-"+cert.ID_Sertificate+"'>" +
         "               <span class='input-group-btn'>"+
-        "                   <button class='btn btn-default set-use-time-btn' type='button' data-certificate-id='"+ cert.ID_Sertificate +"'>Ok</button>" +
+        "                   <button class='btn btn-default set-use-time-btn' type='button' onclick='onSetUseTime(this)' data-certificate-id='"+ cert.ID_Sertificate +"'>Ok</button>" +
         "               </span>" +
         "           </div>" +
         "   </td>" +
@@ -129,10 +125,9 @@ function onNoSetTime(event){
 
 }
 
-function onSetUseTime(event){
-    var btn = $(this);
+function onSetUseTime(btn){
 
-    var certificate_id = $(this).data("certificate-id");
+    var certificate_id = $(btn).data("certificate-id");
     if (certificate_id == "undefined"){
         return false;
     }
@@ -144,11 +139,6 @@ function onSetUseTime(event){
     var seconds = "00";
     var date=$(".current-date").html() + " " + [hours, minutes, seconds].join(":");
     var dateToShow=$(".current-date").html() + " " + [hoursToShow, minutes, seconds].join(":");
-
-    console.log("Время при добавлении:");
-    console.log("Показываемое:", hoursToShow);
-    console.log("Смещение:", hours_change);
-    console.log("Отправляемое: ", hours);
 
     //ToDo check validate time
     var dialog = new YesNoDialog();
@@ -176,7 +166,6 @@ function fillCertsListWithData(table_selector,data){
     data.forEach(function(item) {
        $(table_selector).append(getCertRow(item))
     });
-    $(".set-use-time-btn").click(onSetUseTime);
     $("#find_cert").click(data, findByIDCertificate);
     $("#clear_filter").click(data, clearSearchFilter);
 }
