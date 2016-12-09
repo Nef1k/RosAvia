@@ -5,6 +5,7 @@ namespace AppBundle\Stuff;
 use AppBundle\Entity\FlightType;
 use AppBundle\Entity\SertAction;
 use AppBundle\Entity\SertState;
+use AppBundle\Entity\CertificateActionsHistory;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Internal\Hydration\HydrationException;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -210,6 +211,14 @@ class CertificateStuff
         $certificate->setIDSertState($activ_state);
 
         $this->em->persist($certificate);
+        $cert_action_event = new CertificateActionsHistory();
+        $date = new \DateTime();
+        $cert_action_event
+            ->setIDSertificate($certificate)
+            ->setIDUser($this->tokens->getToken()->getUser())
+            ->setIDSertState($activ_state)
+            ->setEventTime($date);
+        $this->em->persist($cert_action_event);
         $this->em->flush();
 
         $sms_text = "Ваш сертификат №".$certificate->getIDSertificate()." активирован! До встречи в небе =]";
@@ -347,12 +356,36 @@ class CertificateStuff
                 $cert->setFlightType($flight_type);
             }
             if (in_array("id_cert_state", $field_names)) {
+                /** @var  $cert_state SertState*/
                 $cert_state = $this->em->getRepository("AppBundle:SertState")->find($field_values[array_search("id_cert_state", $field_names)]);
                 $cert->setSertState($cert_state);
+                $cert_action_event = new CertificateActionsHistory();
+                $date = new \DateTime();
+                $cert_action_event
+                    ->setIDSertificate($cert)
+                    ->setIDUser($this->tokens->getToken()->getUser())
+                    ->setIDSertState($cert_state)
+                    ->setEventTime($date);
+                $this->em->persist($cert_action_event);
             }
             if (in_array("id_cert_action", $field_names)) {
                 if ($field_values[array_search("id_cert_state", $field_names)] == "activate")
+                {
                     $this->activateCertificate($cert);
+                }
+                if ($field_values[array_search("id_cert_state", $field_names)] == "close")
+                {
+                    $cert_state = $this->em->getRepository("AppBundle:SertState")->find(6);
+                    $cert->setSertState($cert_state);
+                    $cert_action_event = new CertificateActionsHistory();
+                    $date = new \DateTime();
+                    $cert_action_event
+                        ->setIDSertificate($cert)
+                        ->setIDUser($this->tokens->getToken()->getUser())
+                        ->setIDSertState($cert->getIDSertState())
+                        ->setEventTime($date);
+                    $this->em->persist($cert_action_event);
+                }
             }
             if (in_array("use_time", $field_names)) {
                 $cert->setUseTime(date_create(date("d-m-Y H:i:s T", $field_values[array_search("use_time", $field_names)])));

@@ -7,6 +7,7 @@
  */
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\CertificateActionsHistory;
 use AppBundle\Entity\SertAction;
 use AppBundle\Stuff\CertificateStuff;
 use AppBundle\DataClasses\CertEdition;
@@ -197,6 +198,14 @@ class AdminController extends Controller{
                 $cert = $em->getRepository("AppBundle:Sertificate")->find($cert_id);
                 $cert->setIDUser($userAttachTo)->setIDSertState($certState);
                 $em->persist($cert);
+                $cert_action_event = new CertificateActionsHistory();
+                $date = new \DateTime();
+                $cert_action_event
+                    ->setIDSertificate($cert)
+                    ->setIDUser($this->getUser())
+                    ->setIDSertState($cert->getSertState())
+                    ->setEventTime($date);
+                $em->persist($cert_action_event);
             }
             $em->flush();
             array_push($Request_output, 'success');
@@ -238,6 +247,14 @@ class AdminController extends Controller{
                     setIDSertState($cert_state)->
                     setIDUser($user);
                 $em->persist($cert);
+                $cert_action_event = new CertificateActionsHistory();
+                $date = new \DateTime();
+                $cert_action_event
+                    ->setIDSertificate($cert)
+                    ->setIDUser($user)
+                    ->setIDSertState($cert->getSertState())
+                    ->setEventTime($date);
+                $em->persist($cert_action_event);
             }
             $em->flush();
             array_push($Request_output, 'success');
@@ -641,5 +658,32 @@ class AdminController extends Controller{
     public function viewCertificatePacks()
     {
         return $this->render("admin/packs_control.html.twig");
+    }
+
+    /**
+     * @param Request $request
+     * @Route("admin/certificate_history_events", name="admin_certificate_history_events")
+     * @Method("GET")
+     * @return Response
+     */
+    public function getHistoryEventsOnCertificate(Request $request)
+    {
+        $cur_cert_id = $request->query->get("cert_id");
+        $history_events_list = array();
+        $history_events = $this->getDoctrine()->getRepository("AppBundle:CertificateActionsHistory")->findBy(array("ID_Sertificate" => $cur_cert_id));
+        /** @var  $history_event CertificateActionsHistory*/
+        foreach ($history_events AS $history_event)
+        {
+            $history_event_info = array();
+            $history_event_info['user_name'] = $history_event->getIDUser()->getUsername();
+            $history_event_info['user_link'] = $this->get('router')->generate('user_info', ['ID_User' => $history_event->getIDUser()->getIDUser()]);
+            $history_event_info['time'] = $history_event->getEventTime();
+            $history_event_info['action'] = $history_event->getIDSertState()->getName();
+            array_push($history_events_list, $history_event_info);
+        }
+        $response = new Response();
+        $response->setContent(json_encode($history_events_list));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 }
