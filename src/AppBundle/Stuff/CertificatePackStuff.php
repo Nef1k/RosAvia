@@ -37,19 +37,31 @@ class CertificatePackStuff
     private $tokens;
 
     /**
+     * @var SmsStuff
+     */
+    private $sms_stuff;
+
+    /**
+     * @var UserStuff
+     */
+    private $user_stuff;
+
+    /**
      * CertificatePackStuff constructor.
      * @param EntityManager $em
      * @param CertificateStuff $certificateStuff
      */
-    public function __construct(EntityManager $em, CertificateStuff $certificateStuff, TokenStorage $tokenStorage)
+    public function __construct(EntityManager $em, CertificateStuff $certificateStuff, TokenStorage $tokenStorage, SmsStuff $sms_stuff, UserStuff $user_stuff)
     {
         $this->em = $em;
         $this->certificate_stuff = $certificateStuff;
         $this->tokens = $tokenStorage;
+        $this->sms_stuff = $sms_stuff;
+        $this->user_stuff = $user_stuff;
     }
 
     /**
-     * @param $current_user
+     * @param User $current_user
      * @param $cert_ids_in_pack
      * @param $payment_method_id
      * @return int
@@ -71,6 +83,15 @@ class CertificatePackStuff
             $certificate_in_pack = $this->em->getRepository("AppBundle:Sertificate")->find($cert_id_in_pack);
             $certificate_in_pack->setIDCertificatePack($certificatePack);
             $this->em->persist($certificate_in_pack);
+        }
+        $phone_number = $this->user_stuff->getUserParam($current_user->getIDMentor(), 'dealer_phone');
+        if ($phone_number == "")
+        {
+            $phone_number = $this->user_stuff->getUserParam($current_user->getIDMentor(), 'admin_phone');
+        }
+        if ($phone_number != "")
+        {
+            $this->sms_stuff->sendSms($phone_number, "Появились сертификаты, ожидающие оплаты!");
         }
         $this->em->flush();
         return $certificatePack->getIDCertificatePack();
