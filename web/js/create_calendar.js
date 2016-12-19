@@ -2,7 +2,7 @@
  * Created by 166878 on 20.09.2016.
  */
 function certificateToStr(certificate){
-    return  "<a href='#' class='btn btn-primary' style='margin-bottom: 5px;'>" +
+    return  "<a href='/certificate/view/"+ certificate.id +"' class='btn btn-primary' style='margin-bottom: 5px;'>" +
             "   <span class='badge'>" + certificate.id + "</span>" +
             "   " + certificate.flight_type +
             "</a> ";
@@ -44,7 +44,8 @@ function fillTimeTableWithData(table_selector, data){
                 continue;
             }
             var certificates_in_hour = data[hour];
-
+            var curDate = new Date();
+            var currentTimeZoneOffsetInHours = -curDate.getTimezoneOffset()/60;
             //If there is more than one flight in that hour
             if (certificates_in_hour.length != 0) {
                 //Creating new hour row in table

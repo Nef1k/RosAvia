@@ -36,21 +36,11 @@ class UserStuff
 
     function getUserParam(User $user, $param_name)
     {
-        $query = $this->em->createQuery("
-            SELECT
-              val.value
-            FROM
-              AppBundle:ParamValue val
-            WHERE
-              (val.ID_GroupParam = :param_name) AND
-              (val.ID_User = :user_id)
-        ");
-        $query->setParameters(array(
-            "param_name" => $param_name,
-            "user_id" => $user->getIDUser(),
-        ));
-
-        return $query->getSingleScalarResult();
+        $param_id = $this->em->getRepository("AppBundle:GroupParam")->find($param_name);
+        /** @var  $param ParamValue[]*/
+        $param = $this->em->getRepository("AppBundle:ParamValue")->findBy(array("ID_User" => $user, "ID_GroupParam" => $param_id));
+        $value = (count($param) == 0)?"":$param[0]->getValue();
+        return $value;
     }
 
     function getCurrentUserParam($param_name)
@@ -60,8 +50,12 @@ class UserStuff
 
     function getDisplayName(User $user)
     {
-        $name = $this->getUserParam($user, "name");
-        $last_name = $this->getUserParam($user, "lastname");
+        $name = $this->getUserParam($user, "dealer_name");
+        $last_name = $this->getUserParam($user, "dealer_lastname");
+        if (($name == "") && ($last_name == "")){
+            $name = $this->getUserParam($user, "admin_name");
+            $last_name = $this->getUserParam($user, "admin_lastname");
+        }
         return $name." ".$last_name;
     }
     

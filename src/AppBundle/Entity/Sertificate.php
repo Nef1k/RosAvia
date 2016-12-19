@@ -55,6 +55,12 @@ class Sertificate implements \Serializable
     private $ID_User;
 
     /**
+     * @ORM\ManyToOne(targetEntity="CertificatePack")
+     * @ORM\JoinColumn(name="ID_CertificatePack", referencedColumnName="ID_CertificatePack", nullable=true)
+     */
+    private $ID_CertificatePack;
+
+    /**
      * @param mixed $ID_Sertificate
      * @return $this
      */
@@ -391,5 +397,29 @@ class Sertificate implements \Serializable
     public function getUseTime()
     {
         return $this->use_time;
+    }
+
+    /**
+     * Set iDCertificatePack
+     *
+     * @param \AppBundle\Entity\CertificatePack $iDCertificatePack
+     *
+     * @return Sertificate
+     */
+    public function setIDCertificatePack(\AppBundle\Entity\CertificatePack $iDCertificatePack = null)
+    {
+        $this->ID_CertificatePack = $iDCertificatePack;
+
+        return $this;
+    }
+
+    /**
+     * Get iDCertificatePack
+     *
+     * @return \AppBundle\Entity\CertificatePack
+     */
+    public function getIDCertificatePack()
+    {
+        return $this->ID_CertificatePack;
     }
 }
