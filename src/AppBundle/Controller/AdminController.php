@@ -21,6 +21,7 @@ use AppBundle\Entity\ParamValue;
 use AppBundle\Entity\Sertificate;
 use AppBundle\Entity\SertState;
 use AppBundle\Form\CertGroupProcessingType;
+use AppBundle\Stuff\UserStuff;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -85,13 +86,15 @@ class AdminController extends Controller{
         $em = $this -> getDoctrine() -> getManager();
         /** @var $users User[] */
         $users = $em->getRepository("AppBundle:User")->findBy([],['username'=>'ASC']);
+        /** @var  $user_stuff UserStuff*/
+        $user_stuff = $this->get("app.user_stuff");
 
         $users_array = [];
         foreach($users as $user){
             $user_array_item = [];
             $user_array_item["userInfoLink"] = $this->get('router')->generate('user_info', ['ID_User' => $user->getIDUser()]);
             $user_array_item["ID_User"] = $user->getIDUser();
-            $user_array_item["username"] = $user->getUsername();
+            $user_array_item["username"] = $user_stuff->getDisplayName($user) == ""?$user->getUsername():$user_stuff->getDisplayName($user);
             $user_array_item["email"] = $user->getEmail();
             $user_array_item["role"] = $user->getIDUserGroup()->getDisplayName();
 
