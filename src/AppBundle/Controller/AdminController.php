@@ -97,7 +97,7 @@ class AdminController extends Controller{
             $user_array_item["username"] = $user_stuff->getDisplayName($user) == ""?$user->getUsername():$user_stuff->getDisplayName($user);
             $user_array_item["email"] = $user->getEmail();
             $user_array_item["role"] = $user->getIDUserGroup()->getDisplayName();
-
+            $user_array_item["certificate_number"] = count($em->getRepository("AppBundle:Sertificate")->findBy(array('ID_SertState' => [0, 1, 2, 3, 4], 'ID_User' => $user)));
             array_push($users_array, $user_array_item);
         }
         $unattached_certs = count($em->getRepository("AppBundle:Sertificate")->findBy(array('ID_SertState' => 0)));
