@@ -12,6 +12,8 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use AppBundle\Stuff;
 use AppBundle\Entity\Sertificate;
 use AppBundle\Entity\ParamValue;
+use AppBundle\Entity\CertificateActionsHistory;
+use AppBundle\Entity\SertAction;
 use AppBundle\Form\CertificateEditType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,12 +67,21 @@ class CertificateController extends Controller
         //If form was posted here and it is valid
         if ($form->isSubmitted() && $form->isValid()){
             //Update certificate state
+            /** @var  $certificate  Sertificate*/
             $new_state_id = $this->calcCertificateState($certificate);
             $new_state = $this->getDoctrine()->getRepository("AppBundle:SertState")->find($new_state_id);
             $certificate->setSertState($new_state);
 
             //Persist info into database
             $em->persist($certificate);
+            $cert_action_event = new CertificateActionsHistory();
+            $date = new \DateTime();
+            $cert_action_event
+                ->setIDSertificate($certificate)
+                ->setIDUser($this->getUser())
+                ->setIDSertState($certificate->getIDSertState())
+                ->setEventTime($date);
+            $em->persist($cert_action_event);
             $em->flush();
 
             //Going back to homepage
@@ -99,6 +110,7 @@ class CertificateController extends Controller
         $user = $this->getUser();
 
         //Fetching certificate
+        /** @var  $certificate Sertificate*/
         $certificate = $repo->find($cert_id);
         if (!$certificate){
             $this->createNotFoundException("Invalid certificate ID \"".$cert_id."\"");
@@ -109,9 +121,17 @@ class CertificateController extends Controller
         //Setting up new fields
         $new_state = $this->getDoctrine()->getRepository("AppBundle:SertState")->find(4);
         $certificate->setSertState($new_state);
-
+        
         //Applying changes
         $em->persist($certificate);
+        $cert_action_event = new CertificateActionsHistory();
+        $date = new \DateTime();
+        $cert_action_event
+            ->setIDSertificate($certificate)
+            ->setIDUser($this->getUser())
+            ->setIDSertState($certificate->getIDSertState())
+            ->setEventTime($date);
+        $em->persist($cert_action_event);
         $em->flush();
 
         //$sms = new SMSAero();
@@ -139,6 +159,7 @@ class CertificateController extends Controller
         $user = $this->getUser();
 
         //Fetching certificate
+        /** @var  $certificate Sertificate*/
         $certificate = $repo->find($cert_id);
         if (!$certificate){
             $this->createNotFoundException("Invalid certificate ID \"".$cert_id."\"");
@@ -158,6 +179,14 @@ class CertificateController extends Controller
 
         //Applying changes
         $em->persist($certificate);
+        $cert_action_event = new CertificateActionsHistory();
+        $date = new \DateTime();
+        $cert_action_event
+            ->setIDSertificate($certificate)
+            ->setIDUser($this->getUser())
+            ->setIDSertState($certificate->getIDSertState())
+            ->setEventTime($date);
+        $em->persist($cert_action_event);
         $em->flush();
 
         return $this->redirectToRoute("homepage");
@@ -222,6 +251,7 @@ class CertificateController extends Controller
         );
         if (count($errors) == 0) {
             $cert_stuff = $this->get("app.certificate_stuff");
+            /** @var  $cert Sertificate[]*/
             $cert = $cert_stuff->CertEdition($ids->getCertId(), $field_names, $field_values);
             for($i = 0; $i < count($cert); $i++) {
                 $em->persist($cert[$i]);
