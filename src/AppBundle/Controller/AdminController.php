@@ -85,7 +85,7 @@ class AdminController extends Controller{
         /** @var $em EntityManager */
         $em = $this -> getDoctrine() -> getManager();
         /** @var $users User[] */
-        $users = $em->getRepository("AppBundle:User")->findBy([],['username'=>'ASC']);
+        $users = $em->getRepository("AppBundle:User")->findBy([],['ID_UserGroup'=>'ASC']);
         /** @var  $user_stuff UserStuff*/
         $user_stuff = $this->get("app.user_stuff");
 
