@@ -388,6 +388,7 @@ class CertificateStuff
                         }
                         $cert->setIDCertificatePack();
                     }
+                    $this->em->flush();
                 }
                 if ($field_values[array_search("id_cert_state", $field_names)] == "close")
                 {
