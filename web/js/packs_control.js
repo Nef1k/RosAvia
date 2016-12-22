@@ -104,7 +104,7 @@ function GetCertPacks() {
                     user_price += price;
                     $("#pack_" + item.pack_id).append(
                         "<tr class='certificate_row' style='width:100%'>" +
-                        "<th><a href='" + cert.cert_link + "'>" + cert.ID_Sertificate + "</a></th>" +
+                        "<th><a href='" + cert.cert_link + "' target='_blank'>" + cert.ID_Sertificate + "</a></th>" +
                         "<td>" + name + " " + last_name + "</td>" +
                         "<td>" + phone_number + "</td>" +
                         "<td><b>" + price + "</b></td>" +
