@@ -154,7 +154,7 @@ function onSetUseTime(event){
     var dialog = new YesNoDialog();
     dialog.setModalSelector("#yes-no-modal");
     dialog.show({
-        caption: "Установка времеи",
+        caption: "Установка времени",
         message: dateToShow,
 
         yes_caption: "Установить",
