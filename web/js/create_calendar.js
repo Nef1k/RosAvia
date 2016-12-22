@@ -78,7 +78,7 @@ function getTimeTableData(date){
 function getCertRow(cert) {
     return "<tr class='cert_row'>" +
         "   <td>" +
-        "       <a href='" + cert.cert_link + "'>"+cert.ID_Sertificate+"</a>" +
+        "       <a href='" + cert.cert_link + "' target='_blank'>"+cert.ID_Sertificate+"</a>" +
         "   </td>" +
         "   <td>"+
                 cert.name + " " + cert.last_name + "" +
