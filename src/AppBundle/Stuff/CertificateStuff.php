@@ -366,10 +366,9 @@ class CertificateStuff
                     ->setIDUser($this->tokens->getToken()->getUser())
                     ->setIDSertState($cert_state)
                     ->setEventTime($date);
-                $this->em->persist($cert_action_event);
-            }
+                $this->em->persist($cert_action_event);            }
             if (in_array("id_cert_action", $field_names)) {
-                if ($field_values[array_search("id_cert_state", $field_names)] == "activate")
+                if (($field_values[array_search("id_cert_state", $field_names)] == "activate") && ($cert->getIDSertState()->getIDSertState() == 4))
                 {
                     $this->activateCertificate($cert);
                 }
