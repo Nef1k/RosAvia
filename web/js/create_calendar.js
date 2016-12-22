@@ -2,7 +2,7 @@
  * Created by 166878 on 20.09.2016.
  */
 function certificateToStr(certificate){
-    return  "<a href='/certificate/view/"+ certificate.id +"' class='btn btn-primary' style='margin-bottom: 5px;'>" +
+    return  "<a href='/certificate/view/"+ certificate.id +"' target='_blank' class='btn btn-primary' style='margin-bottom: 5px;'>" +
             "   <span class='badge'>" + certificate.id + "</span>" +
             "   " + certificate.flight_type +
             "</a> ";
@@ -74,7 +74,7 @@ function getTimeTableData(date){
 function getCertRow(cert) {
     return "<tr class='cert_row'>" +
         "   <td>" +
-        "       <a href='" + cert.cert_link + "'>"+cert.ID_Sertificate+"</a>" +
+        "       <a href='" + cert.cert_link + "' target='_blank'>"+cert.ID_Sertificate+"</a>" +
         "   </td>" +
         "   <td>"+
                 cert.name + " " + cert.last_name + "" +
@@ -144,7 +144,7 @@ function onSetUseTime(btn){
     var dialog = new YesNoDialog();
     dialog.setModalSelector("#yes-no-modal");
     dialog.show({
-        caption: "Установка времеи",
+        caption: "Установка времени",
         message: dateToShow,
 
         yes_caption: "Установить",
