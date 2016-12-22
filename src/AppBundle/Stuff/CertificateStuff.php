@@ -2,6 +2,7 @@
 
 namespace AppBundle\Stuff;
 
+use AppBundle\Entity\CertificatePack;
 use AppBundle\Entity\FlightType;
 use AppBundle\Entity\SertAction;
 use AppBundle\Entity\SertState;
@@ -372,11 +373,41 @@ class CertificateStuff
                 if ($field_values[array_search("id_cert_state", $field_names)] == "activate")
                 {
                     $this->activateCertificate($cert);
+                    if ($cert->getIDCertificatePack() != null)
+                    {
+                        /** @var  $certificate_pack CertificatePack*/
+                        $certificate_pack = $this->em->getRepository("AppBundle:CertificatePack")->find($cert->getIDCertificatePack());
+                        $certificate_pack->setCount($certificate_pack->getCount() - 1);
+                        if ($certificate_pack->getCount() == 0)
+                        {
+                            $this->em->remove($certificate_pack);
+                        }
+                        else
+                        {
+                            $this->em->persist($certificate_pack);
+                        }
+                        $cert->setIDCertificatePack();
+                    }
                 }
                 if ($field_values[array_search("id_cert_state", $field_names)] == "close")
                 {
                     $cert_state = $this->em->getRepository("AppBundle:SertState")->find(6);
                     $cert->setSertState($cert_state);
+                    if ($cert->getIDCertificatePack() != null)
+                    {
+                        /** @var  $certificate_pack CertificatePack*/
+                        $certificate_pack = $this->em->getRepository("AppBundle:CertificatePack")->find($cert->getIDCertificatePack());
+                        $certificate_pack->setCount($certificate_pack->getCount() - 1);
+                        if ($certificate_pack->getCount() == 0)
+                        {
+                            $this->em->remove($certificate_pack);
+                        }
+                        else
+                        {
+                            $this->em->persist($certificate_pack);
+                        }
+                        $cert->setIDCertificatePack();
+                    }
                     $cert_action_event = new CertificateActionsHistory();
                     $date = new \DateTime();
                     $cert_action_event
