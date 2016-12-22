@@ -66,7 +66,7 @@ class CertificateVoter extends Voter
 
         switch($attribute){
             case self::EDIT:
-                return $this->checker->canPerform($user, $certificate, "edit");
+                return $this->checker->canPerform($user, $certificate, "edition");
             case self::ACTIVATION_REQUEST:
                 return $this->checker->canPerform($user, $certificate, "activ_request");
             case self::CLEAR:

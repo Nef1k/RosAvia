@@ -65,6 +65,12 @@ services:
          arguments: ["@doctrine.orm.entity_manager"]
          tags:
              - { name: validator.constraint_validator }
+     validator.CheckFilesExistValidator:
+         class: AppBundle\Validator\Constraints\CheckFilesExistValidator
+         arguments: ["@doctrine.orm.entity_manager"]
+         tags:
+             - { name: validator.constraint_validator }
+             
      #Stuff
      app.manager_stuff:
          class: AppBundle\Stuff\ManagerStuff
@@ -77,10 +83,19 @@ services:
      app.certificate_stuff:
          class: AppBundle\Stuff\CertificateStuff
          arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms_stuff", "@router"]
+
      app.sms_stuff:
          class: AppBundle\Stuff\SmsStuff
          arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms"]
 
+     app.file_stuff:
+         class: AppBundle\Stuff\FileStuff
+         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@router"]
+
+     app.certificate_pack_stuff:
+         class: AppBundle\Stuff\CertificatePackStuff
+         arguments: ["@doctrine.orm.entity_manager", "@app.certificate_stuff", "@security.token_storage", "@app.sms_stuff", "@app.user_stuff"]
+         
      #Voters
      certificate_voter:
          class: AppBundle\Security\CertificateVoter

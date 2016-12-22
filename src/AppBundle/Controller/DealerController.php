@@ -35,7 +35,6 @@ class DealerController extends Controller
                                          (s.ID_User = ?1)");
         $query->setParameter(1, $user->getIDUser());
         $certificates = $certificate_stuff->getCertificatesWithActions($this->getUser());
-
         $certs_available = $em->createQuery("SELECT COUNT(s)
                                              FROM AppBundle:Sertificate s
                                              WHERE (s.ID_SertState IN ('1')) AND
@@ -52,15 +51,33 @@ class DealerController extends Controller
         }
 
         $percent = $this->get("app.user_stuff")->getCurrentUserParam("dealer_percent");
+        $phone_number = $this->get("app.user_stuff")->getUserParam($user->getIDMentor(), "dealer_phone");
+        if ($phone_number == ""){
+            $phone_number = $this->get("app.user_stuff")->getUserParam($user->getIDMentor(), "admin_phone");
+        }
 
         return $this->render("dealer/index.html.twig", array(
             "user" => $user,
             "mentor_name" => $this->get("app.user_stuff")->getDisplayName($user->getIDMentor()),
-            "mentor_phone" => $this->get("app.user_stuff")->getUserParam($user->getIDMentor(), "dealer_phone"),
+            "mentor_phone" => $phone_number,
             "certificates" => $certificates,
             "certs_available" => $certs_available,
             "first_blank" => $first_blank,
             "percent" => $percent,
+            "user_link" => $this->get("router")->generate('user_info', ['ID_User' => $user->getIDUser()])
+        ));
+    }
+
+    /**
+     *
+     * @Route("/dealer/show_pay_select", name="dealer_show_pay_select")
+     */
+    public function showPaySelectPageAction() {
+        $current_user = $this->getUser();
+        $current_user_percent = $this->get("app.user_stuff")->getCurrentUserParam("dealer_percent");
+        return $this->render("dealer/pay_select.html.twig", array(
+            "user" => $current_user,
+            "percent" => $current_user_percent
         ));
     }
 

@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    {% include "default/navigation.html.twig" %}
+    <div class="col-md-12"><h1>Управление пакетами сертификатов</h1></div>
+    <div class="row">
+        <div class="col-md-9" id="packs">
+            <div class="text-center pack_loader">
+                <img src="{{ asset("img/ring-alt.gif") }}" alt="Загрузка" width="40" height="40">
+            </div>
+        </div>
+        <div class="col-md-3" id="control_panel">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b>Действия</b>
+                </div>
+                <div class="panel-body">
+                    <select class="form-control" id="pack_action">
+                        <option value="0">Удалить</option>
+                        <option selected value="1">Активировать</option>
+                    </select>
+                    <br>
+                    <button class="btn btn-primary pull-right" onclick="SendPacks()">Выполнить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset("js/modals/YesNoDialog.js") }}" type="application/javascript"></script>
+    <script src="{{ asset("js/packs_control.js") }}" type="application/javascript"></script>
+{% endblock %}
