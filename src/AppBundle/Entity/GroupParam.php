@@ -85,4 +85,42 @@ class GroupParam
     {
         return $this->ID_UserGroup;
     }
+
+    /**
+     * Set iDGroupParam
+     *
+     * @param string $iDGroupParam
+     *
+     * @return GroupParam
+     */
+    public function setIDGroupParam($iDGroupParam)
+    {
+        $this->ID_GroupParam = $iDGroupParam;
+
+        return $this;
+    }
+
+    /**
+     * Set iDUserGroup
+     *
+     * @param \AppBundle\Entity\UserGroup $iDUserGroup
+     *
+     * @return GroupParam
+     */
+    public function setIDUserGroup(\AppBundle\Entity\UserGroup $iDUserGroup = null)
+    {
+        $this->ID_UserGroup = $iDUserGroup;
+
+        return $this;
+    }
+
+    /**
+     * Get iDUserGroup
+     *
+     * @return \AppBundle\Entity\UserGroup
+     */
+    public function getIDUserGroup()
+    {
+        return $this->ID_UserGroup;
+    }
 }

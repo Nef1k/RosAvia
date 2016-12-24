@@ -5,8 +5,15 @@
 
     {% block navigation %}{% endblock %}
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-4">
             <h1>Сертификаты</h1>
+        </div>
+        <div class="col-md-5 text-right" style="padding-top: 35px; font-size: 20px">
+            <a href="{{ user_link }}">Информация о пользователе</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-9">
             <table class="table table-striped">
                 <tr>
                     <th>#</th>
@@ -58,15 +65,12 @@
                 <div class="panel-heading">Панель управления</div>
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <div class="pull-left">
+                        <div>
                             Доступно бланков: {{ certs_available }}
-                        </div>
-                        <div class="pull-right">
                         {% if certs_available > 0 %}
                             <a class="btn btn-xs btn-default" href="{{ path("edition", {"cert_id": first_blank.getIDSertificate}) }}" role="button">Выписать</a>
                         {% endif %}
                         </div>
-                        <br>
                     </li>
                 </ul>
             </div>
@@ -77,7 +81,7 @@
                     {% if total_unpaid > 0 %}
                         <li class="list-group-item">
                             К оплате: {{ total_unpaid }} р.
-                            <a href="{{ path("dealer_pay_select") }}" class="btn btn-xs btn-default">Оплатить</a>
+                            <a href="{{ path("dealer_show_pay_select") }}" class="btn btn-xs btn-default">Оплатить</a>
                         </li>
                     {% endif %}
                     <li class="list-group-item">

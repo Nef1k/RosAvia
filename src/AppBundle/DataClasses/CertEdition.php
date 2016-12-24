@@ -24,6 +24,7 @@ class CertEdition
      * @Assert\NotNull(message = "Значение не может быть нулевым")
      */
     private $cert_id;
+    
 
     /**
      * @return mixed
