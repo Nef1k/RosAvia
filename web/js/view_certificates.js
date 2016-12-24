@@ -19,10 +19,11 @@ function get_cert_status() {
     return cert_status;
 }
 function get_certificates() {
-    var fields = JSON.stringify(["ID_Sertificate", "price", "user_login", "name", "last_name", "phone_number", "cert_link", "flight_type"]);
+    var fields = JSON.stringify(["ID_Sertificate","percent", "price", "user_login", "name", "last_name", "phone_number", "cert_link", "flight_type"]);
     var cert_status = get_cert_status();
     var criteria = JSON.stringify({ "ID_SertState": [cert_status]});
     var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
+    $(".cert_loader").removeClass("hidden");
     $(".user-panel").remove();
     $(".user-table").remove();
     $(".user_price").remove();
@@ -46,6 +47,7 @@ function get_certificates() {
 }
 function fill_cert_table_with_data(list_selector, data) {
     var user = "";
+    var percent = 0
     var total_price=0;
     var user_price=0;
     data.forEach(function (item,i) {
@@ -73,11 +75,18 @@ function fill_cert_table_with_data(list_selector, data) {
         }
         if (item.user_login != user){
             user = item.user_login;
-            total_price += price;
-            user_price = price;
+            if (item.percent){
+                percent = parseInt(item.percent);
+                if (isNaN(percent))
+                    percent = 0;
+            }
+            else
+                percent = 0;
+            total_price += (1-percent/100)*price;
+            user_price = (1-percent/100)*price;
             $(list_selector).append(
                 "<div class='panel panel-default user-panel' >" +
-                    "<div class='panel-heading'><strong>"+ user +"</strong>"+
+                    "<div class='panel-heading'><strong>"+ user +" (процент от продаж: "+percent+"%)</strong>"+
                     "<div class='pull-right'>"+
                         "<button class='btn btn-xs btn-default mark_all' data-user='"+user+"' onclick='mark_all(this)'>Выделить всё</button>" +
                         "<button class='btn btn-xs btn-default unmark_all' data-user='"+user+"' onclick='unmark_all(this)'>Снять выделение</button>" +
@@ -97,7 +106,7 @@ function fill_cert_table_with_data(list_selector, data) {
                         "<th><a href='"+cert_link+"' target='_blank' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
                         "<td>" + name + " " + last_name + "</td>" +
                         "<td>" + phone_number + "</td>" +
-                        "<td><b>"+price+"</b></td>" +
+                        "<td><b>"+(1-percent/100)*price+"</b></td>" +
                         "<td>" + flight_type + "</td>" +
                     "</tr>" +
                 "</table>" +
@@ -106,15 +115,15 @@ function fill_cert_table_with_data(list_selector, data) {
 
         }
         else{
-            total_price += price;
-            user_price += price;
+            total_price += (1-percent/100)*price;
+            user_price += (1-percent/100)*price;
             $(list_selector + " table:last").append(
                 "<tr class='certificate_row' data-id='' style='cursor:pointer;'  onclick='mark(this)'>" +
                 "<td onclick='event.cancelBubble=true;'><input style='cursor: pointer' type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
                 "<th><a href='"+cert_link+"' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
                 "<td>" + name + " " + last_name + "</td>" +
                 "<td>" + phone_number + "</td>" +
-                "<td><b>"+price+"</b></td>" +
+                "<td><b>"+(1-percent/100)*price+"</b></td>" +
                 "<td>" + flight_type + "</td>" +
                 "</tr>"
             );
@@ -147,7 +156,7 @@ function mark(data) {
 
 function YesBtn(event) {
     var modal = event.data;
-
+    get_certificates();
     modal.close();
 }
 
