@@ -82,7 +82,7 @@ services:
 
      app.certificate_stuff:
          class: AppBundle\Stuff\CertificateStuff
-         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms_stuff", "@router"]
+         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms_stuff", "@router", "@app.user_stuff"]
 
      app.sms_stuff:
          class: AppBundle\Stuff\SmsStuff
