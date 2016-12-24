@@ -380,8 +380,9 @@ class CertificateStuff
                     {
                         /** @var  $certificate_pack CertificatePack*/
                         $certificate_pack = $this->em->getRepository("AppBundle:CertificatePack")->find($cert->getIDCertificatePack());
+                        $certificate_count = count($this->em->getRepository("AppBundle:Sertificate")->findBy(["ID_CertificatePack" => $certificate_pack]));
                         $certificate_pack->setCount($certificate_pack->getCount() - 1);
-                        if ($certificate_pack->getCount() == 0)
+                        if ($certificate_count == 0)
                         {
                             $this->em->remove($certificate_pack);
                         }

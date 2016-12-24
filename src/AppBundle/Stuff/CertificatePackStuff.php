@@ -106,13 +106,14 @@ class CertificatePackStuff
         $certificates_in_pack = $this->em->getRepository("AppBundle:Sertificate")->findBy(array("ID_CertificatePack" => $certificate_pack_id));
         /** @var  $certificate_in_pack Sertificate*/
         foreach($certificates_in_pack AS $certificate_in_pack){
-            $certificate_in_pack->setIDCertificatePack();
-            $this->em->persist($certificate_in_pack);
+            $certificate_in_pack->setIDCertificatePack(null);
             if ($is_pack_activated == 1) {
                 $this->certificate_stuff->activateCertificates($certificates_in_pack);
             }
+            $this->em->persist($certificate_in_pack);
         }
         $certificate_pack = $this->em->getRepository("AppBundle:CertificatePack")->find($certificate_pack_id);
+        $this->em->flush();
         $this->em->remove($certificate_pack);
         $this->em->flush();
     }
