@@ -7,6 +7,7 @@
  */
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\CertificateActionsHistory;
 use AppBundle\Entity\SertAction;
 use AppBundle\Stuff\CertificateStuff;
 use AppBundle\DataClasses\CertEdition;
@@ -20,6 +21,7 @@ use AppBundle\Entity\ParamValue;
 use AppBundle\Entity\Sertificate;
 use AppBundle\Entity\SertState;
 use AppBundle\Form\CertGroupProcessingType;
+use AppBundle\Stuff\UserStuff;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -83,17 +85,19 @@ class AdminController extends Controller{
         /** @var $em EntityManager */
         $em = $this -> getDoctrine() -> getManager();
         /** @var $users User[] */
-        $users = $em->getRepository("AppBundle:User")->findBy([],['username'=>'ASC']);
+        $users = $em->getRepository("AppBundle:User")->findBy([],['ID_UserGroup'=>'ASC']);
+        /** @var  $user_stuff UserStuff*/
+        $user_stuff = $this->get("app.user_stuff");
 
         $users_array = [];
         foreach($users as $user){
             $user_array_item = [];
             $user_array_item["userInfoLink"] = $this->get('router')->generate('user_info', ['ID_User' => $user->getIDUser()]);
             $user_array_item["ID_User"] = $user->getIDUser();
-            $user_array_item["username"] = $user->getUsername();
+            $user_array_item["username"] = $user_stuff->getDisplayName($user) == ""?$user->getUsername():$user_stuff->getDisplayName($user);
             $user_array_item["email"] = $user->getEmail();
             $user_array_item["role"] = $user->getIDUserGroup()->getDisplayName();
-
+            $user_array_item["certificate_number"] = count($em->getRepository("AppBundle:Sertificate")->findBy(array('ID_SertState' => [0, 1, 2, 3, 4], 'ID_User' => $user)));
             array_push($users_array, $user_array_item);
         }
         $unattached_certs = count($em->getRepository("AppBundle:Sertificate")->findBy(array('ID_SertState' => 0)));
@@ -197,6 +201,14 @@ class AdminController extends Controller{
                 $cert = $em->getRepository("AppBundle:Sertificate")->find($cert_id);
                 $cert->setIDUser($userAttachTo)->setIDSertState($certState);
                 $em->persist($cert);
+                $cert_action_event = new CertificateActionsHistory();
+                $date = new \DateTime();
+                $cert_action_event
+                    ->setIDSertificate($cert)
+                    ->setIDUser($this->getUser())
+                    ->setIDSertState($cert->getSertState())
+                    ->setEventTime($date);
+                $em->persist($cert_action_event);
             }
             $em->flush();
             array_push($Request_output, 'success');
@@ -238,6 +250,14 @@ class AdminController extends Controller{
                     setIDSertState($cert_state)->
                     setIDUser($user);
                 $em->persist($cert);
+                $cert_action_event = new CertificateActionsHistory();
+                $date = new \DateTime();
+                $cert_action_event
+                    ->setIDSertificate($cert)
+                    ->setIDUser($user)
+                    ->setIDSertState($cert->getSertState())
+                    ->setEventTime($date);
+                $em->persist($cert_action_event);
             }
             $em->flush();
             array_push($Request_output, 'success');
@@ -641,5 +661,32 @@ class AdminController extends Controller{
     public function viewCertificatePacks()
     {
         return $this->render("admin/packs_control.html.twig");
+    }
+
+    /**
+     * @param Request $request
+     * @Route("admin/certificate_history_events", name="admin_certificate_history_events")
+     * @Method("GET")
+     * @return Response
+     */
+    public function getHistoryEventsOnCertificate(Request $request)
+    {
+        $cur_cert_id = $request->query->get("cert_id");
+        $history_events_list = array();
+        $history_events = $this->getDoctrine()->getRepository("AppBundle:CertificateActionsHistory")->findBy(array("ID_Sertificate" => $cur_cert_id));
+        /** @var  $history_event CertificateActionsHistory*/
+        foreach ($history_events AS $history_event)
+        {
+            $history_event_info = array();
+            $history_event_info['user_name'] = $history_event->getIDUser()->getUsername();
+            $history_event_info['user_link'] = $this->get('router')->generate('user_info', ['ID_User' => $history_event->getIDUser()->getIDUser()]);
+            $history_event_info['time'] = $history_event->getEventTime();
+            $history_event_info['action'] = $history_event->getIDSertState()->getName();
+            array_push($history_events_list, $history_event_info);
+        }
+        $response = new Response();
+        $response->setContent(json_encode($history_events_list));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 }

@@ -94,14 +94,14 @@ function fill_cert_table_with_data(list_selector, data) {
                     "</tr>" +
                     "<tr class='certificate_row' data-id='' style='cursor:pointer;' onclick='mark(this)'>" +
                         "<td onclick='event.cancelBubble=true;'><input style='cursor: pointer' type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
-                        "<th><a href='"+cert_link+"' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
+                        "<th><a href='"+cert_link+"' target='_blank' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
                         "<td>" + name + " " + last_name + "</td>" +
                         "<td>" + phone_number + "</td>" +
                         "<td><b>"+price+"</b></td>" +
                         "<td>" + flight_type + "</td>" +
                     "</tr>" +
                 "</table>" +
-                "<div class='panel-heading user-price'><b>Общая сумма:<div class='pull-right'>"+user_price+"</div></b></div> "
+                "<div class='panel-heading user-price'><b>Общая сумма:<span id='user_price_"+user+"' class='pull-right'>"+user_price+"</span></b></div> "
             )
 
         }
@@ -118,7 +118,7 @@ function fill_cert_table_with_data(list_selector, data) {
                 "<td>" + flight_type + "</td>" +
                 "</tr>"
             );
-            $(".user-price:last-child div").html(user_price);
+            $("#user_price_"+user).html(user_price);
         }
 
     });
