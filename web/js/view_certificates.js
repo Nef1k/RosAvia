@@ -23,6 +23,7 @@ function get_certificates() {
     var cert_status = get_cert_status();
     var criteria = JSON.stringify({ "ID_SertState": [cert_status]});
     var sort = JSON.stringify({"ID_User":["ASC"], "ID_Sertificate":["ASC"]});
+    $(".cert_loader").removeClass("hidden");
     $(".user-panel").remove();
     $(".user-table").remove();
     $(".user_price").remove();
@@ -147,7 +148,7 @@ function mark(data) {
 
 function YesBtn(event) {
     var modal = event.data;
-
+    get_certificates();
     modal.close();
 }
 
