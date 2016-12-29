@@ -95,17 +95,19 @@ function fill_cert_table_with_data(list_selector, data) {
                 "<table class='table table-hover table-striped user-table'>" +
                     "<tr>" +
                         "<th class=''></th>" +
-                        "<th class='col-md-1'>ID</th>" +
-                        "<th class='col-md-3'>Клиент</th>" +
-                        "<th class='col-md-3'>Телефон</th>" +
-                        "<th class='col-md-2'>Цена</th> " +
-                        "<th class='col-md-3'>Тип полёта</th>" +
+                        "<th class='col-md-1 text-center' style='vertical-align: middle'>ID сертификата</th>" +
+                        "<th class='col-md-3 text-center' style='vertical-align: middle'>Клиент</th>" +
+                        "<th class='col-md-2 text-center' style='vertical-align: middle'>Телефон</th>" +
+                        "<th class='col-md-1 text-center' style='vertical-align: middle'>Цена</th> " +
+                        "<th class='col-md-2 text-center' style='vertical-align: middle'>Цена с учетом %</th> " +
+                        "<th class='col-md-3 text-center' style='vertical-align: middle'>Тип полёта</th>" +
                     "</tr>" +
-                    "<tr class='certificate_row' data-id='' style='cursor:pointer;' onclick='mark(this)'>" +
+                    "<tr class='certificate_row  text-center' data-id='' style='cursor:pointer;' onclick='mark(this)'>" +
                         "<td onclick='event.cancelBubble=true;'><input style='cursor: pointer' type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
-                        "<th><a href='"+cert_link+"' target='_blank' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
+                        "<th class='text-center'><a href='"+cert_link+"' target='_blank' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
                         "<td>" + name + " " + last_name + "</td>" +
                         "<td>" + phone_number + "</td>" +
+                        "<td>" + price + "</td>" +
                         "<td><b>"+(1-percent/100)*price+"</b></td>" +
                         "<td>" + flight_type + "</td>" +
                     "</tr>" +
@@ -118,11 +120,12 @@ function fill_cert_table_with_data(list_selector, data) {
             total_price += (1-percent/100)*price;
             user_price += (1-percent/100)*price;
             $(list_selector + " table:last").append(
-                "<tr class='certificate_row' data-id='' style='cursor:pointer;'  onclick='mark(this)'>" +
+                "<tr class='certificate_row  text-center' data-id='' style='cursor:pointer;'  onclick='mark(this)'>" +
                 "<td onclick='event.cancelBubble=true;'><input style='cursor: pointer' type='checkbox' autocomplete='off' class='certs_of_"+user+"' data-cert_id='"+item.ID_Sertificate+"'></td>"+
-                "<th><a href='"+cert_link+"' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
+                "<th class='text-center'><a href='"+cert_link+"' target='_blank' onclick='event.cancelBubble=true;'>"+item.ID_Sertificate+"</a></th>" +
                 "<td>" + name + " " + last_name + "</td>" +
                 "<td>" + phone_number + "</td>" +
+                "<td>" + price + "</td>" +
                 "<td><b>"+(1-percent/100)*price+"</b></td>" +
                 "<td>" + flight_type + "</td>" +
                 "</tr>"
