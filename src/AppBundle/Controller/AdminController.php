@@ -21,6 +21,7 @@ use AppBundle\Entity\ParamValue;
 use AppBundle\Entity\Sertificate;
 use AppBundle\Entity\SertState;
 use AppBundle\Form\CertGroupProcessingType;
+use AppBundle\Stuff\UserStuff;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -84,17 +85,19 @@ class AdminController extends Controller{
         /** @var $em EntityManager */
         $em = $this -> getDoctrine() -> getManager();
         /** @var $users User[] */
-        $users = $em->getRepository("AppBundle:User")->findBy([],['username'=>'ASC']);
+        $users = $em->getRepository("AppBundle:User")->findBy([],['ID_UserGroup'=>'ASC']);
+        /** @var  $user_stuff UserStuff*/
+        $user_stuff = $this->get("app.user_stuff");
 
         $users_array = [];
         foreach($users as $user){
             $user_array_item = [];
             $user_array_item["userInfoLink"] = $this->get('router')->generate('user_info', ['ID_User' => $user->getIDUser()]);
             $user_array_item["ID_User"] = $user->getIDUser();
-            $user_array_item["username"] = $user->getUsername();
+            $user_array_item["username"] = $user_stuff->getDisplayName($user) == ""?$user->getUsername():$user_stuff->getDisplayName($user);
             $user_array_item["email"] = $user->getEmail();
             $user_array_item["role"] = $user->getIDUserGroup()->getDisplayName();
-
+            $user_array_item["certificate_number"] = count($em->getRepository("AppBundle:Sertificate")->findBy(array('ID_SertState' => [0, 1, 2, 3, 4], 'ID_User' => $user)));
             array_push($users_array, $user_array_item);
         }
         $unattached_certs = count($em->getRepository("AppBundle:Sertificate")->findBy(array('ID_SertState' => 0)));
@@ -622,7 +625,8 @@ class AdminController extends Controller{
      */
     public function viewCertificatesAction($state_id, Request $request)
     {
-        //$state = $this->getDoctrine()->getRepository("AppBundle:SertState")->find($state_id);
+        /** @var  $state SertState*/
+        $state = $this->getDoctrine()->getRepository("AppBundle:SertState")->find($state_id);
         /**
          * @var $certificate_stuff CertificateStuff
          */
@@ -648,6 +652,7 @@ class AdminController extends Controller{
         return $this->render("admin/view_certificates.html.twig", array(
             "dealers" => $grouped_certificates,
             "action_form" => $action_form->createView(),
+            "state_name" => $state->getName()
         ));
     }
 

@@ -78,9 +78,12 @@ class CertificatePackStuff
             setCreationDate(new \DateTime());
         $this->em->persist($certificatePack);
         $this->em->flush();
+        $sum = 0;
+        $percent = 1 - (intval($this->user_stuff->getUserParam($current_user, "dealer_percent")) / 100);
         foreach($cert_ids_in_pack AS $cert_id_in_pack){
             /** @var  $certificate_in_pack Sertificate*/
             $certificate_in_pack = $this->em->getRepository("AppBundle:Sertificate")->find($cert_id_in_pack);
+            $sum = $sum + $percent*($certificate_in_pack->getIDFlightType()->getPrice());
             $certificate_in_pack->setIDCertificatePack($certificatePack);
             $this->em->persist($certificate_in_pack);
         }
@@ -91,7 +94,8 @@ class CertificatePackStuff
         }
         if ($phone_number != "")
         {
-            $this->sms_stuff->sendSms($phone_number, "Появились сертификаты, ожидающие оплаты!");
+            $name = $this->user_stuff->getDisplayName($current_user) == "" ? $current_user->getUsername() : $this->user_stuff->getDisplayName($current_user);
+            $this->sms_stuff->sendSms($phone_number, "Появились сертификаты, ожидающие оплаты ".$payment_method->getPaymentMethodName()." от дилера ".$name." на сумму ".strval($sum).".");
         }
         $this->em->flush();
         return $certificatePack->getIDCertificatePack();
@@ -106,13 +110,14 @@ class CertificatePackStuff
         $certificates_in_pack = $this->em->getRepository("AppBundle:Sertificate")->findBy(array("ID_CertificatePack" => $certificate_pack_id));
         /** @var  $certificate_in_pack Sertificate*/
         foreach($certificates_in_pack AS $certificate_in_pack){
-            $certificate_in_pack->setIDCertificatePack();
-            $this->em->persist($certificate_in_pack);
+            $certificate_in_pack->setIDCertificatePack(null);
             if ($is_pack_activated == 1) {
                 $this->certificate_stuff->activateCertificates($certificates_in_pack);
             }
+            $this->em->persist($certificate_in_pack);
         }
         $certificate_pack = $this->em->getRepository("AppBundle:CertificatePack")->find($certificate_pack_id);
+        $this->em->flush();
         $this->em->remove($certificate_pack);
         $this->em->flush();
     }

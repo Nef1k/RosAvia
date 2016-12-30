@@ -70,7 +70,6 @@ services:
          arguments: ["@doctrine.orm.entity_manager"]
          tags:
              - { name: validator.constraint_validator }
-             
      #Stuff
      app.manager_stuff:
          class: AppBundle\Stuff\ManagerStuff
@@ -82,8 +81,7 @@ services:
 
      app.certificate_stuff:
          class: AppBundle\Stuff\CertificateStuff
-         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms_stuff", "@router"]
-
+         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms_stuff", "@router", "@app.user_stuff"]
      app.sms_stuff:
          class: AppBundle\Stuff\SmsStuff
          arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@app.sms"]
@@ -95,7 +93,6 @@ services:
      app.certificate_pack_stuff:
          class: AppBundle\Stuff\CertificatePackStuff
          arguments: ["@doctrine.orm.entity_manager", "@app.certificate_stuff", "@security.token_storage", "@app.sms_stuff", "@app.user_stuff"]
-         
      #Voters
      certificate_voter:
          class: AppBundle\Security\CertificateVoter

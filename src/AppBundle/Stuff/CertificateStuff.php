@@ -2,6 +2,7 @@
 
 namespace AppBundle\Stuff;
 
+use AppBundle\Entity\CertificatePack;
 use AppBundle\Entity\FlightType;
 use AppBundle\Entity\SertAction;
 use AppBundle\Entity\SertState;
@@ -32,15 +33,22 @@ class CertificateStuff
      */
     private $smser;
 
-
+    /**
+     * @var Router
+     */
     private $router;
 
-    public function __construct(EntityManager $em, TokenStorage $tokenStorage, SmsStuff $smser, Router $router)
-    {
+    /**
+     * @var UserStuff
+     */
+    private $user_stuff;
+
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage, SmsStuff $smser, Router $router, UserStuff $user_stuff)    {
         $this->em = $em;
         $this->tokens = $tokenStorage;
         $this->smser = $smser;
         $this->router = $router;
+        $this->user_stuff = $user_stuff;
     }
 
     /**
@@ -366,17 +374,48 @@ class CertificateStuff
                     ->setIDUser($this->tokens->getToken()->getUser())
                     ->setIDSertState($cert_state)
                     ->setEventTime($date);
-                $this->em->persist($cert_action_event);
-            }
+                $this->em->persist($cert_action_event);            }
             if (in_array("id_cert_action", $field_names)) {
-                if ($field_values[array_search("id_cert_state", $field_names)] == "activate")
+                if (($field_values[array_search("id_cert_state", $field_names)] == "activate") && ($cert->getIDSertState()->getIDSertState() == 4))
                 {
                     $this->activateCertificate($cert);
+                    if ($cert->getIDCertificatePack() != null)
+                    {
+                        /** @var  $certificate_pack CertificatePack*/
+                        $certificate_pack = $this->em->getRepository("AppBundle:CertificatePack")->find($cert->getIDCertificatePack());
+                        $certificate_count = count($this->em->getRepository("AppBundle:Sertificate")->findBy(["ID_CertificatePack" => $certificate_pack]));
+                        $certificate_pack->setCount($certificate_pack->getCount() - 1);
+                        if ($certificate_count == 0)
+                        {
+                            $this->em->remove($certificate_pack);
+                        }
+                        else
+                        {
+                            $this->em->persist($certificate_pack);
+                        }
+                        $cert->setIDCertificatePack();
+                    }
+                    $this->em->flush();
                 }
                 if ($field_values[array_search("id_cert_state", $field_names)] == "close")
                 {
                     $cert_state = $this->em->getRepository("AppBundle:SertState")->find(6);
                     $cert->setSertState($cert_state);
+                    if ($cert->getIDCertificatePack() != null)
+                    {
+                        /** @var  $certificate_pack CertificatePack*/
+                        $certificate_pack = $this->em->getRepository("AppBundle:CertificatePack")->find($cert->getIDCertificatePack());
+                        $certificate_pack->setCount($certificate_pack->getCount() - 1);
+                        if ($certificate_pack->getCount() == 0)
+                        {
+                            $this->em->remove($certificate_pack);
+                        }
+                        else
+                        {
+                            $this->em->persist($certificate_pack);
+                        }
+                        $cert->setIDCertificatePack();
+                    }
                     $cert_action_event = new CertificateActionsHistory();
                     $date = new \DateTime();
                     $cert_action_event
@@ -393,6 +432,19 @@ class CertificateStuff
             if (in_array("user_id", $field_names)) {
                 $user = $this->em->getRepository("AppBundle:User")->find($field_values[array_search("user_id", $field_names)]);
                 $cert->setUser($user);
+            }
+            $user_mentor = $this->tokens->getToken()->getUser()->getMentor();
+            $mentor_phone = $this->user_stuff->getUserParam($user_mentor, "dealer_phone");
+            if ($mentor_phone == "")
+            {
+                $mentor_phone = $this->user_stuff->getUserParam($user_mentor, "admin_phone");
+            }
+            if ($mentor_phone != "")
+            {
+                /** @var  $current_user User*/
+                $current_user = $this->tokens->getToken()->getUser();
+                $user_name = $this->user_stuff->getDisplayName($current_user) == "" ? $current_user->getUsername() : $this->user_stuff->getDisplayName($current_user);
+                $this->smser->sendSms($mentor_phone, "Пользователь ".$user_name." изменил сертификат №".$cert->getIDSertificate().".");
             }
             array_push($cert_list, $cert);
         }
@@ -440,6 +492,11 @@ class CertificateStuff
             }
             if (in_array("price", $fields)){
                 $cert_info["price"] = ($cert->getFlightType() == null)?0:$cert->getFlightType()->getPrice();
+            }
+            if (in_array("percent", $fields)){
+                $user = $cert->getUser();
+                $percent = $this->user_stuff->getUserParam($user, "dealer_percent");
+                $cert_info["percent"] = $percent;
             }
         }
         return $cert_info;
