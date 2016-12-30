@@ -36,12 +36,15 @@ class CertificateStuff
 
     private $router;
 
-    public function __construct(EntityManager $em, TokenStorage $tokenStorage, SmsStuff $smser, Router $router)
+    private $user_stuff;
+
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage, SmsStuff $smser, Router $router, UserStuff $user_stuff)
     {
         $this->em = $em;
         $this->tokens = $tokenStorage;
         $this->smser = $smser;
         $this->router = $router;
+        $this->user_stuff = $user_stuff;
     }
 
     /**
@@ -376,8 +379,9 @@ class CertificateStuff
                     {
                         /** @var  $certificate_pack CertificatePack*/
                         $certificate_pack = $this->em->getRepository("AppBundle:CertificatePack")->find($cert->getIDCertificatePack());
+                        $certificate_count = count($this->em->getRepository("AppBundle:Sertificate")->findBy(["ID_CertificatePack" => $certificate_pack]));
                         $certificate_pack->setCount($certificate_pack->getCount() - 1);
-                        if ($certificate_pack->getCount() == 0)
+                        if ($certificate_count == 0)
                         {
                             $this->em->remove($certificate_pack);
                         }
@@ -471,6 +475,11 @@ class CertificateStuff
             }
             if (in_array("price", $fields)){
                 $cert_info["price"] = ($cert->getFlightType() == null)?0:$cert->getFlightType()->getPrice();
+            }
+            if (in_array("percent", $fields)){
+                $user = $cert->getUser();
+                $percent = $this->user_stuff->getUserParam($user, "dealer_percent");
+                $cert_info["percent"] = $percent;
             }
         }
         return $cert_info;

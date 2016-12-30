@@ -625,7 +625,8 @@ class AdminController extends Controller{
      */
     public function viewCertificatesAction($state_id, Request $request)
     {
-        //$state = $this->getDoctrine()->getRepository("AppBundle:SertState")->find($state_id);
+        /** @var  $state SertState*/
+        $state = $this->getDoctrine()->getRepository("AppBundle:SertState")->find($state_id);
         /**
          * @var $certificate_stuff CertificateStuff
          */
@@ -651,6 +652,7 @@ class AdminController extends Controller{
         return $this->render("admin/view_certificates.html.twig", array(
             "dealers" => $grouped_certificates,
             "action_form" => $action_form->createView(),
+            "state_name" => $state->getName()
         ));
     }
 
