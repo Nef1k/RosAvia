@@ -33,13 +33,17 @@ class CertificateStuff
      */
     private $smser;
 
-
+    /**
+     * @var Router
+     */
     private $router;
 
+    /**
+     * @var UserStuff
+     */
     private $user_stuff;
 
-    public function __construct(EntityManager $em, TokenStorage $tokenStorage, SmsStuff $smser, Router $router, UserStuff $user_stuff)
-    {
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage, SmsStuff $smser, Router $router, UserStuff $user_stuff)    {
         $this->em = $em;
         $this->tokens = $tokenStorage;
         $this->smser = $smser;
@@ -428,6 +432,19 @@ class CertificateStuff
             if (in_array("user_id", $field_names)) {
                 $user = $this->em->getRepository("AppBundle:User")->find($field_values[array_search("user_id", $field_names)]);
                 $cert->setUser($user);
+            }
+            $user_mentor = $this->tokens->getToken()->getUser()->getMentor();
+            $mentor_phone = $this->user_stuff->getUserParam($user_mentor, "dealer_phone");
+            if ($mentor_phone == "")
+            {
+                $mentor_phone = $this->user_stuff->getUserParam($user_mentor, "admin_phone");
+            }
+            if ($mentor_phone != "")
+            {
+                /** @var  $current_user User*/
+                $current_user = $this->tokens->getToken()->getUser();
+                $user_name = $this->user_stuff->getDisplayName($current_user) == "" ? $current_user->getUsername() : $this->user_stuff->getDisplayName($current_user);
+                $this->smser->sendSms($mentor_phone, "Пользователь ".$user_name." изменил сертификат №".$cert->getIDSertificate().".");
             }
             array_push($cert_list, $cert);
         }
