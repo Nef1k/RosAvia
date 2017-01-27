@@ -99,11 +99,10 @@ function PayBtnClick() {
     var checked_certs = [];
     var selector = $("input:checked");
     var payment_method = $("#payment_method").val();
-    var payment_show = payment_method==0?"Карта":"Наличные";
+    var payment_show = payment_method==2?"Карта":"Наличные";
     for (var i = 0; i<selector.length; ++i){
         checked_certs[i] = parseInt($(selector[i]).attr("data-cert_id"));
     }
-
     var yesNoDialog = new YesNoDialog;
     yesNoDialog.setModalSelector("#yes-no-modal");
     yesNoDialog.show({
