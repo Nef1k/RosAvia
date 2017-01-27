@@ -101,17 +101,18 @@ function GetCertPacks() {
                     }
                     if (cert.price) {
                         price_perc = parseInt(cert.price) * (1 - percent / 100);
+                        price = cert.price;
                     }
                     pack_price += price_perc;
                     user_price += price_perc;
                     $("#pack_" + item.pack_id).append(
                         "<tr class='certificate_row' style='width:100%'>" +
-                        "<th><a href='" + cert.cert_link + "' target='_blank'>" + cert.ID_Sertificate + "</a></th>" +
-                        "<td>" + name + " " + last_name + "</td>" +
-                        "<td>" + phone_number + "</td>" +
-                        "<td>" + price + "</td>" +
-                        "<td><b>" + price_perc + "</b></td>" +
-                        "<td>" + flight_type + "</td>" +
+                        "<th class='text-center'><a href='" + cert.cert_link + "' target='_blank'>" + cert.ID_Sertificate + "</a></th>" +
+                        "<td class='text-center'>" + name + " " + last_name + "</td>" +
+                        "<td class='text-center'>" + phone_number + "</td>" +
+                        "<td class='text-center'>" + price + "</td>" +
+                        "<td class='text-center'><b>" + price_perc + "</b></td>" +
+                        "<td class='text-center'>" + flight_type + "</td>" +
                         "</tr>"
                     )
                 });
