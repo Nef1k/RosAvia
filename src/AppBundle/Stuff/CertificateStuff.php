@@ -351,7 +351,7 @@ class CertificateStuff
                 $cert->setSertState($cert_state);
             }
             if (in_array("id_cert_action", $field_names)) {
-                if ($field_values[array_search("id_cert_state", $field_names)] == "activate")
+                if (($field_values[array_search("id_cert_state", $field_names)] == "activate") && ($cert->getIDSertState()->getIDSertState() == 4))
                     $this->activateCertificate($cert);
             }
             if (in_array("use_time", $field_names)) {

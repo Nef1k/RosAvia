@@ -115,8 +115,10 @@ class CertificatePackController extends Controller{
         $Request_output = array();
         foreach($all_certificate_packs AS $certificate_pack){
             $certificate_pack_info = array();
+            $cert_state_waiting_activation = $em->getRepository("AppBundle:SertState")->find(4);
             $cerificates_in_pack_list = $certificate_stuff->GetCertArray(array(
-                'ID_CertificatePack' =>$certificate_pack
+                'ID_CertificatePack' => $certificate_pack,
+                'ID_SertState' => $cert_state_waiting_activation
             ), array(
                 'ID_User' => 'ASC',
                 'ID_CertificatePack' => 'DESC'
