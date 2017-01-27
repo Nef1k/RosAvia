@@ -47,12 +47,12 @@ function GetCertPacks() {
                         "</div>" +
                         "<table class='table table-hover table-striped user_pack collapse' id='pack_" + item.pack_id + "'>" +
                         "<tr>" +
-                        "<th class='col-md-1' style='text-align: center; vertical-align: middle'>ID сертификата</th>" +
-                        "<th class='col-md-3' style='text-align: center; vertical-align: middle'>Клиент</th>" +
-                        "<th class='col-md-2' style='text-align: center; vertical-align: middle'>Телефон</th>" +
-                        "<th class='col-md-2' style='text-align: center; vertical-align: middle'>Цена</th> " +
-                        "<th class='col-md-2' style='text-align: center; vertical-align: middle'>Цена<br>(с учетом %)</th> " +
-                        "<th class='col-md-2' style='text-align: center; vertical-align: middle'>Тип полёта</th>" +
+                        "<th class='col-md-1 text-center' style='vertical-align: middle'>ID сертификата</th>" +
+                        "<th class='col-md-3 text-center' style='vertical-align: middle'>Клиент</th>" +
+                        "<th class='col-md-2 text-center' style='vertical-align: middle'>Телефон</th>" +
+                        "<th class='col-md-1 text-center' style='vertical-align: middle'>Цена</th> " +
+                        "<th class='col-md-2 text-center' style='vertical-align: middle'>Цена с учетом %</th> " +
+                        "<th class='col-md-3 text-center' style='vertical-align: middle'>Тип полёта</th>" +
                         "</tr>" +
                         "</table>" +
                         "</div>" +
@@ -73,12 +73,12 @@ function GetCertPacks() {
                         "</div>" +
                         "<table class='table table-hover table-striped user_pack collapse' id='pack_" + item.pack_id + "'>" +
                         "<tr style='width:100%'>" +
-                        "<th class='col-md-1' style='text-align: center; vertical-align: middle'>ID сертификата</th>" +
-                        "<th class='col-md-3' style='text-align: center; vertical-align: middle'>Клиент</th>" +
-                        "<th class='col-md-2' style='text-align: center; vertical-align: middle'>Телефон</th>" +
-                        "<th class='col-md-2' style='text-align: center; vertical-align: middle'>Цена</th> " +
-                        "<th class='col-md-2' style='text-align: center; vertical-align: middle'>Цена<br>(с учетом %)</th> " +
-                        "<th class='col-md-2' style='text-align: center; vertical-align: middle'>Тип полёта</th>" +
+                        "<th class='col-md-1 text-center' style='vertical-align: middle'>ID сертификата</th>" +
+                        "<th class='col-md-3 text-center' style='vertical-align: middle'>Клиент</th>" +
+                        "<th class='col-md-2 text-center' style='vertical-align: middle'>Телефон</th>" +
+                        "<th class='col-md-1 text-center' style='vertical-align: middle'>Цена</th> " +
+                        "<th class='col-md-2 text-center' style='vertical-align: middle'>Цена с учетом %</th> " +
+                        "<th class='col-md-3 text-center' style='vertical-align: middle'>Тип полёта</th>" +
                         "</tr>" +
                         "</table>" +
                         "</div>"
@@ -109,7 +109,7 @@ function GetCertPacks() {
                         "<th><a href='" + cert.cert_link + "' target='_blank'>" + cert.ID_Sertificate + "</a></th>" +
                         "<td>" + name + " " + last_name + "</td>" +
                         "<td>" + phone_number + "</td>" +
-                        "<td><b>" + price + "</b></td>" +
+                        "<td>" + price + "</td>" +
                         "<td><b>" + price_perc + "</b></td>" +
                         "<td>" + flight_type + "</td>" +
                         "</tr>"
