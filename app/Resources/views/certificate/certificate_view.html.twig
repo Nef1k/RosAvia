@@ -4,7 +4,7 @@
     {% include "default/navigation.html.twig" %}
 
 
-    <div class="row">
+    <div id="cert" class="row" data-cert_id="{{ certificate.getIDSertificate }}">
         <div class="col-md-5 text-center">
             <h3>Сертификат №{{ certificate.getIDSertificate }}</h3>
             <table class="table table-bordered">
@@ -49,6 +49,11 @@
                     </td>
                 </tr>
             </table>
+            {% if certificate.getIDSertState.getIDSertState == 5 %}
+            <div class="text-center">
+                <button onclick="useCert()" class="btn btn-lg btn-primary">Использовать</button>
+            </div>
+            {% endif %}
         </div>
         <div class="col-md-7 text-center">
             <h3>История изменений</h3>
@@ -66,8 +71,12 @@
             </table>
         </div>
     </div>
+    <div class="modal fade" id="attach-certificate-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        {% include "admin/modal/certificate_attach_modal.html.twig" %}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset("js/cert_history.js") }}" type="application/javascript"></script>
+    <script src="{{ asset("js/modals/YesNoDialog.js") }}" type="application/javascript"></script>
 {% endblock %}
