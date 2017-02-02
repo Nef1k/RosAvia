@@ -158,6 +158,11 @@ function fillUserTableWithData(table_selector, data){
     console.log(data);
     $("#unattached_certs_count").html(data.unattached_certs);
     data.users.forEach(function(item, i){
+        var percent = "";
+        if(item.percent != -1)
+        {
+            percent = " (" + item.percent + "%)";
+        }
         $(table_selector).after(
             "<tr>" +
             "<td>" + item.ID_User + "</td>" +
@@ -168,7 +173,7 @@ function fillUserTableWithData(table_selector, data){
             "</button>" +
             "<b>&nbsp;(" + item.certificate_number +")</b>" +
             "</td>" +
-            "<td>" + item.role + "</td>" +
+            "<td>" + item.role + percent + "</td>" +
             "<td><a href=\"mailto:"+ item.email +"\">" + item.email + "</a></td>" +
             "</tr>"
         );

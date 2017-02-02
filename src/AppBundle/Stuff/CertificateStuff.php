@@ -433,7 +433,7 @@ class CertificateStuff
                 $user = $this->em->getRepository("AppBundle:User")->find($field_values[array_search("user_id", $field_names)]);
                 $cert->setUser($user);
             }
-            $user_mentor = $this->tokens->getToken()->getUser()->getMentor();
+            $user_mentor = $this->tokens->getToken()->getUser()->getIDMentor();
             $mentor_phone = $this->user_stuff->getUserParam($user_mentor, "dealer_phone");
             if ($mentor_phone == "")
             {

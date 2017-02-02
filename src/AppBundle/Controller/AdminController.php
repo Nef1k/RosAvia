@@ -98,6 +98,16 @@ class AdminController extends Controller{
             $user_array_item["email"] = $user->getEmail();
             $user_array_item["role"] = $user->getIDUserGroup()->getDisplayName();
             $user_array_item["certificate_number"] = count($em->getRepository("AppBundle:Sertificate")->findBy(array('ID_SertState' => [0, 1, 2, 3, 4], 'ID_User' => $user)));
+            if($user->getIDUserGroup()->getIDUserGroup() == 1)
+            {
+                /** @var  $param ParamValue[]*/
+                $param = $em->getRepository("AppBundle:ParamValue")->findBy(array('ID_User' => $user->getIDUser(), 'ID_GroupParam' => 'dealer_percent'));
+                $user_array_item["percent"] = $param[0]->getValue();
+            }
+            else
+            {
+                $user_array_item["percent"] = -1;
+            }
             array_push($users_array, $user_array_item);
         }
         $unattached_certs = count($em->getRepository("AppBundle:Sertificate")->findBy(array('ID_SertState' => 0)));
