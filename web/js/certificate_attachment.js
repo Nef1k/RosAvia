@@ -159,7 +159,7 @@ function fillUserTableWithData(table_selector, data){
     $("#unattached_certs_count").html(data.unattached_certs);
     data.users.forEach(function(item, i){
         var percent = "";
-        if(item.percent != -1)
+        if((item.percent != -1) && (!isNaN(item.percent)))
         {
             percent = " (" + item.percent + "%)";
         }
