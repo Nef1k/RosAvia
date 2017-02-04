@@ -347,6 +347,7 @@ class CertificateStuff
      */
     public function CertEdition(array $ids, array $field_names, array $field_values){
         $cert_list = [];
+        $cert_list_string = "";
         foreach($ids AS $id) {
             /** @var  $cert Sertificate */
             $cert = $this->em->getRepository("AppBundle:Sertificate")->find($id);
@@ -433,20 +434,28 @@ class CertificateStuff
                 $user = $this->em->getRepository("AppBundle:User")->find($field_values[array_search("user_id", $field_names)]);
                 $cert->setUser($user);
             }
-            $user_mentor = $this->tokens->getToken()->getUser()->getIDMentor();
-            $mentor_phone = $this->user_stuff->getUserParam($user_mentor, "dealer_phone");
-            if ($mentor_phone == "")
+            if ($cert_list_string == "")
             {
-                $mentor_phone = $this->user_stuff->getUserParam($user_mentor, "admin_phone");
+                $cert_list_string = $cert->getIDSertificate();
             }
-            if ($mentor_phone != "")
+            else
             {
-                /** @var  $current_user User*/
-                $current_user = $this->tokens->getToken()->getUser();
-                $user_name = $this->user_stuff->getDisplayName($current_user) == "" ? $current_user->getUsername() : $this->user_stuff->getDisplayName($current_user);
-                $this->smser->sendSms($mentor_phone, "Пользователь ".$user_name." изменил сертификат №".$cert->getIDSertificate().".");
+                $cert_list_string = $cert_list_string.", ".$cert->getIDSertificate();
             }
-            array_push($cert_list, $cert);
+        }
+        $user_mentor = $this->tokens->getToken()->getUser()->getIDMentor();
+        $mentor_phone = $this->user_stuff->getUserParam($user_mentor, "dealer_phone");
+        if ($mentor_phone == "")
+        {
+            $mentor_phone = $this->user_stuff->getUserParam($user_mentor, "admin_phone");
+        }
+        array_push($cert_list, $cert);
+        if ($mentor_phone != "")
+        {
+            /** @var  $current_user User*/
+            $current_user = $this->tokens->getToken()->getUser();
+            $user_name = $this->user_stuff->getDisplayName($current_user) == "" ? $current_user->getUsername() : $this->user_stuff->getDisplayName($current_user);
+            $this->smser->sendSms($mentor_phone, "Пользователь ".$user_name." изменил сертификат(ы) № ".$cert_list_string.".");
         }
         return $cert_list;
     }
