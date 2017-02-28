@@ -47,7 +47,7 @@ function useCert() {
 
     var postParams = {
         ids: JSON.stringify(cert_id),
-        field_names: JSON.stringify(["id_cert_state"]),
+        field_names: JSON.stringify(["id_cert_action"]),
         field_values: JSON.stringify(["close"])
     };
 

@@ -377,7 +377,7 @@ class CertificateStuff
                     ->setEventTime($date);
                 $this->em->persist($cert_action_event);            }
             if (in_array("id_cert_action", $field_names)) {
-                if (($field_values[array_search("id_cert_state", $field_names)] == "activate") && ($cert->getIDSertState()->getIDSertState() == 4))
+                if (($field_values[array_search("id_cert_action", $field_names)] == "activate") && ($cert->getIDSertState()->getIDSertState() == 4))
                 {
                     $this->activateCertificate($cert);
                     if ($cert->getIDCertificatePack() != null)
@@ -398,7 +398,7 @@ class CertificateStuff
                     }
                     $this->em->flush();
                 }
-                if ($field_values[array_search("id_cert_state", $field_names)] == "close")
+                if ($field_values[array_search("id_cert_action", $field_names)] == "close")
                 {
                     $cert_state = $this->em->getRepository("AppBundle:SertState")->find(6);
                     $cert->setSertState($cert_state);
