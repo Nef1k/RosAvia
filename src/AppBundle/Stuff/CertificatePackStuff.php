@@ -87,6 +87,7 @@ class CertificatePackStuff
             $certificate_in_pack->setIDCertificatePack($certificatePack);
             $this->em->persist($certificate_in_pack);
         }
+        $user_mentor = $this->em->getRepository("AppBundle:User")->find($current_user->getIDMentor()->getIDUser());
         $phone_number = $this->user_stuff->getUserParam($current_user->getIDMentor(), 'dealer_phone');
         if ($phone_number == "")
         {
