@@ -96,7 +96,7 @@ class CertificatePackStuff
         if ($phone_number != "")
         {
             $name = $this->user_stuff->getDisplayName($current_user) == "" ? $current_user->getUsername() : $this->user_stuff->getDisplayName($current_user);
-            $sms_text = "Сертификаты, ожидающие оплаты.\r\n" .
+            $sms_text = "Оплата сертификатов\r\n" .
                         "Способ: " . $payment_method->getPaymentMethodName() . "\r\n" .
                         "Дилер: " . $name . "\r\n" .
                         "Сумма: " . strval($sum);
