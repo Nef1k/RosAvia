@@ -48,7 +48,7 @@
                             </td>
                             <td>
                             {% for action in cert.actions %}
-                                <a href="{{ path(action.getActionName, {"cert_id": cert.ID_Sertificate}) }}"><span class="glyphicon glyphicon-{{ action.icon }}"></span></a>
+                                <a href="{{ path(action.getActionName, {"cert_id": cert.ID_Sertificate}) }}" title="{{ action.getDisplayName }}"><span class="glyphicon glyphicon-{{ action.icon }}"></span></a>
                             {% endfor %}
                             </td>
                         </tr>

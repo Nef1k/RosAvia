@@ -29,6 +29,45 @@ function getCertHistory() {
     })
 }
 
+function useCert() {
+    var id = $("#cert").data("cert_id");
+    var cert_id= [id];
+    var yesNoDialog = new YesNoDialog;
+    console.log(cert_id);
+
+    yesNoDialog.setModalSelector("#yes-no-modal");
+    yesNoDialog.show({
+        caption: "Использование сертификата",
+        yes_caption: "Ок",
+        no_caption: "",
+        yes_handler: yesBtn
+    });
+    yesNoDialog.showLoader();
+    var msg = "Сертификат успешно использован.";
+
+    var postParams = {
+        ids: JSON.stringify(cert_id),
+        field_names: JSON.stringify(["id_cert_action"]),
+        field_values: JSON.stringify(["close"])
+    };
+
+    jQuery.post("/certificate/edit", postParams, function(data){
+        var errors = data.error_msg;
+        if (errors.length > 0){
+            msg = "Возникли следующие ошибки при добавлении сертификатов: <br>" + errors.join(" <br>");
+        }
+        yesNoDialog.message = msg;
+        yesNoDialog.hideLoader();
+        yesNoDialog.applyParams();
+    })
+}
+
+function yesBtn(event) {
+    var modal = event.data;
+    modal.close();
+    location.reload();
+}
+
 $(document).ready(function (event) {
     getCertHistory();
 });

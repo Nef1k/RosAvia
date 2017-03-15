@@ -47,11 +47,12 @@ function GetCertPacks() {
                         "</div>" +
                         "<table class='table table-hover table-striped user_pack collapse' id='pack_" + item.pack_id + "'>" +
                         "<tr>" +
-                        "<th>ID</th>" +
-                        "<th class='col-md-4'>Клиент</th>" +
-                        "<th class='col-md-3'>Телефон</th>" +
-                        "<th class='col-md-2'>Цена</th> " +
-                        "<th class='col-md-3'>Тип полёта</th>" +
+                        "<th class='col-md-1 text-center' style='vertical-align: middle'>ID сертификата</th>" +
+                        "<th class='col-md-3 text-center' style='vertical-align: middle'>Клиент</th>" +
+                        "<th class='col-md-2 text-center' style='vertical-align: middle'>Телефон</th>" +
+                        "<th class='col-md-1 text-center' style='vertical-align: middle'>Цена</th> " +
+                        "<th class='col-md-2 text-center' style='vertical-align: middle'>Цена с учетом %</th> " +
+                        "<th class='col-md-3 text-center' style='vertical-align: middle'>Тип полёта</th>" +
                         "</tr>" +
                         "</table>" +
                         "</div>" +
@@ -72,11 +73,12 @@ function GetCertPacks() {
                         "</div>" +
                         "<table class='table table-hover table-striped user_pack collapse' id='pack_" + item.pack_id + "'>" +
                         "<tr style='width:100%'>" +
-                        "<th>ID</th>" +
-                        "<th class='col-md-4'>Клиент</th>" +
-                        "<th class='col-md-3'>Телефон</th>" +
-                        "<th class='col-md-2'>Цена</th> " +
-                        "<th class='col-md-3'>Тип полёта</th>" +
+                        "<th class='col-md-1 text-center' style='vertical-align: middle'>ID сертификата</th>" +
+                        "<th class='col-md-3 text-center' style='vertical-align: middle'>Клиент</th>" +
+                        "<th class='col-md-2 text-center' style='vertical-align: middle'>Телефон</th>" +
+                        "<th class='col-md-1 text-center' style='vertical-align: middle'>Цена</th> " +
+                        "<th class='col-md-2 text-center' style='vertical-align: middle'>Цена с учетом %</th> " +
+                        "<th class='col-md-3 text-center' style='vertical-align: middle'>Тип полёта</th>" +
                         "</tr>" +
                         "</table>" +
                         "</div>"
@@ -84,7 +86,7 @@ function GetCertPacks() {
                 }
                 item.certificates.forEach(function (cert) {
                     var name = "", last_name = "", phone_number = "";
-                    var flight_type = "", price = 0;
+                    var flight_type = "", price_perc = 0, price = 0;
                     if (cert.name) {
                         name = cert.name;
                     }
@@ -98,18 +100,19 @@ function GetCertPacks() {
                         flight_type = cert.flight_type;
                     }
                     if (cert.price) {
-                        price = parseInt(cert.price) * (1 - percent / 100);
+                        price_perc = parseInt(cert.price) * (1 - percent / 100);
+                        price = cert.price;
                     }
-                    pack_price += price;
-                    user_price += price;
+                    pack_price += price_perc;
+                    user_price += price_perc;
                     $("#pack_" + item.pack_id).append(
                         "<tr class='certificate_row' style='width:100%'>" +
-                        "<th><a href='" + cert.cert_link + "' target='_blank'>" + cert.ID_Sertificate + "</a></th>" +
-                        "<td>" + name + " " + last_name + "</td>" +
-                        "<td>" + phone_number + "</td>" +
-                        "<td><b>" + price + "</b></td>" +
-                        "<td>" + flight_type + "</td>" +
-                        "</tr>"
+                        "<th class='text-center'><a href='" + cert.cert_link + "' target='_blank'>" + cert.ID_Sertificate + "</a></th>" +
+                        "<td class='text-center'>" + name + " " + last_name + "</td>" +
+                        "<td class='text-center'>" + phone_number + "</td>" +
+                        "<td class='text-center'>" + price + "</td>" +
+                        "<td class='text-center'><b>" + price_perc + "</b></td>" +
+                        "<td class='text-center'>" + flight_type + "</td>" +                        "</tr>"
                     )
                 });
                 $("#pack_price_" + item.pack_id).html(pack_price);
