@@ -95,7 +95,11 @@ class CertificatePackStuff
         if ($phone_number != "")
         {
             $name = $this->user_stuff->getDisplayName($current_user) == "" ? $current_user->getUsername() : $this->user_stuff->getDisplayName($current_user);
-            $this->sms_stuff->sendSms($phone_number, "Появились сертификаты, ожидающие оплаты ".$payment_method->getPaymentMethodName()." от дилера ".$name." на сумму ".strval($sum).".");
+            $sms_text = "Сертификаты, ожидающие оплаты.\r\n" .
+                        "Способ: " . $payment_method->getPaymentMethodName() . "\r\n" .
+                        "Дилер: " . $name . "\r\n" .
+                        "Сумма: " . strval($sum);
+            $this->sms_stuff->sendSms($phone_number, $sms_text);
         }
         $this->em->flush();
         return $certificatePack->getIDCertificatePack();
